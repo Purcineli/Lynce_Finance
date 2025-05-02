@@ -5,7 +5,7 @@ import streamlit as st
 from datetime import date, timedelta
 import plotly.express as px
 import numpy as np
-import math
+import json
 from LYNCE import verificar_login
 
 
@@ -25,7 +25,9 @@ if 'username' in st.session_state:
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-  creds = Credentials.from_service_account_file(r"C:\Users\alepu\OneDrive\Área de Trabalho\Python_projects\CONTROLE_FINANCEIRO\credentials.json", scopes=scopes)
+  service_account_info = st.secrets["gcp_service_account"]
+  creds = Credentials.from_service_account_info(service_account_info, scopes=scopes)
+  #creds = Credentials.from_service_account_file(r"C:\Users\alepu\OneDrive\Área de Trabalho\Python_projects\CONTROLE_FINANCEIRO\credentials.json", scopes=scopes)
   client = gspread.authorize(creds)
   workbook = client.open_by_key(sheet_id_login_password)
   url = f"https://docs.google.com/spreadsheets/d/{sheet_id_login_password}/gviz/tq?tqx=out:csv&sheet={sheet_name_login_password}"
