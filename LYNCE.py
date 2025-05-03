@@ -1,64 +1,55 @@
 import streamlit as st
-from streamlit_cookies_manager import EncryptedCookieManager
 from dependencies import getloginandpasswords
 
-# Configure app
-# st.set_page_config(layout="wide")
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-
-# Set up cookie manager
-cookies = EncryptedCookieManager(
-    prefix="lynce_",  # optional prefix to prevent conflicts
-    password="super-secret-key"  # 🔒 use a strong password in production
-)
-
-# Wait until cookies are ready
-if not cookies.ready():
-    st.stop()  # Wait until cookies are initialized
-
-# Check for existing login
-if cookies.get("username"):
-    st.success(f"Bem-vindo de volta, {cookies.get('name')}!")
-    st.session_state.logged_in = True
-    st.session_state.username = cookies.get("username")
-    st.session_state.name = cookies.get("name")
-    st.session_state.id = cookies.get("id")
-    st.session_state.arquivo = cookies.get("arquivo")
-    st.switch_page("pages/1_SALDOS.py")
-
-# Login form
-st.title("Tela de Login")
-username = st.text_input("Usuário")
-password = st.text_input("Senha", type="password")
-
+st.set_page_config(layout="wide") # configurar página wide
+# Função para verificar o login (simples, sem hash de senha)
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()
-    user_data = lgnpass[lgnpass["LOGIN"] == username]
-    if not user_data.empty and password == user_data["SENHA"].values[0]:
-        return user_data.iloc[0]  # Return the user row
-    return None
+    try:
+        if lgnpass[lgnpass['LOGIN']==username].index[0] >= 0:
+            user = lgnpass[lgnpass['LOGIN']==username].index[0]
+            print(user)
+            if password == lgnpass['SENHA'][user]:
+                return True
+    except:
+        return False
 
-if st.button("Entrar"):
-    user_data = verificar_login(username, password)
-    if user_data is not None:
-        nome_completo = user_data["NOME"] + " " + user_data["SOBRENOME"]
+# Função para a tela de login
+def tela_login():
+    print(f"O tipo de st é: {type(st)}")
+    st.title("Tela de Login")
+    # Inputs de login
+    username = st.text_input("Usuário")
+    password = st.text_input("Senha", type="password")
 
-        # Save in session_state
-        st.session_state.logged_in = True
-        st.session_state.username = username
-        st.session_state.name = nome_completo
-        st.session_state.id = user_data["ID ARQUIVO"]
-        st.session_state.arquivo = user_data["ARQUIVO"]
+    if st.button("Entrar"):
+        # Verifica o login
+        if verificar_login(username, password):
+            
+            st.session_state.logged_in = True
+            st.session_state.username = username
+            st.success("Login bem-sucedido!")
+            
+            lgnpass = getloginandpasswords()
+            user = lgnpass[lgnpass['LOGIN']==username].index[0]
+            nome = lgnpass['NOME'][user] + " " + lgnpass['SOBRENOME'][user]
+            id_arquivo = lgnpass['ID ARQUIVO'][user]
+            nome_arquivo = lgnpass['ARQUIVO'][user]
+            st.session_state.name = nome
+            st.session_state.id = id_arquivo
+            st.session_state.arquivo = nome_arquivo
+            st.switch_page('pages/1_SALDOS.py')  # Atualiza para a próxima página
+        else:
+            st.error("Usuário ou senha incorretos!")
 
-        # Save in cookies
-        cookies["username"] = username
-        cookies["name"] = nome_completo
-        cookies["id"] = user_data["ID ARQUIVO"]
-        cookies["arquivo"] = user_data["ARQUIVO"]
-        cookies.save()
 
-        st.success("Login bem-sucedido!")
-        st.switch_page('pages/1_SALDOS.py')
+# Função principal para controlar as páginas
+def main():
+    if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+        tela_login()  # Exibe a tela de login
     else:
-        st.error("Usuário ou senha incorretos!")
+        st.switch_page('pages/1_SALDOS.py')
+
+# Rodar a aplicação
+if __name__ == "__main__":
+    main()
