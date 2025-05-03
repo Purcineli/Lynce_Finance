@@ -12,7 +12,7 @@ cookies = EncryptedCookieManager(
 )
 
 if not cookies.ready():
-    st.stop()  # Wait until cookies are initialized
+    st.write("stop")  # Wait until cookies are initialized
 
 # Check for existing login
 if cookies.get("username"):
