@@ -3,10 +3,9 @@ from streamlit_cookies_manager import EncryptedCookieManager
 from dependencies import getloginandpasswords
 
 # Configure app
-#st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
-
 
 # Set up cookie manager
 cookies = EncryptedCookieManager(
@@ -14,8 +13,9 @@ cookies = EncryptedCookieManager(
     password="super-secret-key"  # 🔒 use a strong password in production
 )
 
+# Wait until cookies are ready
 if not cookies.ready():
-    st.write("stop")  # Wait until cookies are initialized
+    st.stop()  # Wait until cookies are initialized
 
 # Check for existing login
 if cookies.get("username"):
@@ -34,12 +34,10 @@ password = st.text_input("Senha", type="password")
 
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()
-    try:
-        user = lgnpass[lgnpass["LOGIN"] == username].index[0]
-        if password == lgnpass["SENHA"][user]:
-            return lgnpass.iloc[user]
-    except:
-        return None
+    user_data = lgnpass[lgnpass["LOGIN"] == username]
+    if not user_data.empty and password == user_data["SENHA"].values[0]:
+        return user_data.iloc[0]  # Return the user row
+    return None
 
 if st.button("Entrar"):
     user_data = verificar_login(username, password)
