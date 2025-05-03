@@ -10,11 +10,13 @@ from google.oauth2 import service_account
 
 
 def getloginandpasswords():
-  config = toml.load("secrets.toml")
-  service_account_file = config["google"]["service_account_file"]
+  #config = toml.load("secrets.toml")
+  #service_account_file = config["google"]["service_account_file"]
   scopes = ["https://www.googleapis.com/auth/spreadsheets"]
   #creds = Credentials.from_service_account_file(r"C:\Users\alepu\OneDrive\Área de Trabalho\Python_projects\CONTROLE_FINANCEIRO\credentials.json", scopes=scopes)
-  creds = service_account.Credentials.from_service_account_file(service_account_file, scopes=scopes)
+  #creds = service_account.Credentials.from_service_account_file(service_account_file, scopes=scopes)
+  service_account_info = st.secrets["gcp_service_account"]
+  creds = Credentials.from_service_account_info(service_account_info, scopes=scopes)
   #D:\Python_projects\CONTROLE_FINANCEIRO
   client = gspread.authorize(creds)
   sheet_id_login_password= st.secrets["idkey"]
