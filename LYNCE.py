@@ -58,6 +58,6 @@ if st.button("Entrar"):
         cookies.save()
 
         st.success("Login bem-sucedido!")
-        st.experimental_rerun()
+        st.switch_page('pages/1_SALDOS.py')
     else:
         st.error("Usuário ou senha incorretos!")
