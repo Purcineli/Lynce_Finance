@@ -8,8 +8,7 @@ import numpy as np
 import json
 from LYNCE import verificar_login
 
-#a
-st.title = 'SALDOS' #Nome da pagina
+
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #col1,col2,col3 = st.columns(3)
 #with col2:
@@ -17,7 +16,6 @@ st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.warning("Você precisa fazer login primeiro.")
-    st.switch_page("LYNCE.py")  # ou o caminho correto da sua página de login
     st.stop()
 
 # Agora é seguro acessar os valores da sessão

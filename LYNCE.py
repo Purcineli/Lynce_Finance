@@ -4,6 +4,9 @@ from dependencies import getloginandpasswords
 
 # Configure app
 #st.set_page_config(layout="wide")
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
 
 # Set up cookie manager
 cookies = EncryptedCookieManager(
