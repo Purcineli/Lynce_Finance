@@ -17,6 +17,7 @@ if 'username' in st.session_state:
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+  service_account_info = st.secrets["gcp_service_account"]
   creds = Credentials.from_service_account_info(service_account_info, scopes=scopes)
   #creds = Credentials.from_service_account_file(r"C:\Users\alepu\OneDrive\Área de Trabalho\Python_projects\CONTROLE_FINANCEIRO\credentials.json", scopes=scopes)
   #D:\Python_projects\CONTROLE_FINANCEIRO
