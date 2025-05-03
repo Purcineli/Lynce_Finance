@@ -3,7 +3,7 @@ from streamlit_cookies_manager import EncryptedCookieManager
 from dependencies import getloginandpasswords
 
 # Configure app
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 # Set up cookie manager
 cookies = EncryptedCookieManager(
