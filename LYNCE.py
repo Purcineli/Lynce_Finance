@@ -1,7 +1,6 @@
 import streamlit as st
 from dependencies import getloginandpasswords
 
-st.set_page_config(layout="wide") # configurar página wide
 # Função para verificar o login (simples, sem hash de senha)
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()
