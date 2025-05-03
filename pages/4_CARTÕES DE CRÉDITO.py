@@ -36,8 +36,8 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   return dados_records,workbook
 
 
-import locale
-locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+#import locale
+#locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 lançamentos, workbook = lerdados(sheeitid, sheetname)
 #CONTAS BANCÁRIAS#
