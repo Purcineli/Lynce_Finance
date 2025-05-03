@@ -15,11 +15,21 @@ st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #with col2:
   #st.image('https://i.postimg.cc/yxJnfSLs/logo-lynce.png',)
 
-#Trazer nome do usuário
+if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+    st.warning("Você precisa fazer login primeiro.")
+    st.switch_page("main.py")  # ou o caminho correto da sua página de login
+    st.stop()
+
+# Agora é seguro acessar os valores da sessão
+st.write(f"Bem-vindo, {st.session_state.name}!")
+sheeitid = st.session_state.id
+sheetname = st.session_state.arquivo
+
+'''#Trazer nome do usuário
 if 'username' in st.session_state:
   st.write(f"Bem-vindo, {st.session_state.name}!")
   sheeitid = st.session_state.id
-  sheetname = st.session_state.arquivo
+  sheetname = st.session_state.arquivo'''
 
 #ler dados do google sheet
 def lerdados(sheet_id_login_password,sheet_name_login_password):
