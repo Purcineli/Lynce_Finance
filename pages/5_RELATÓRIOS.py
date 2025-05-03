@@ -8,7 +8,7 @@ import plotly.express as px
 import numpy as np
 import math
 from LYNCE import verificar_login\
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 if 'username' in st.session_state:
   st.write(f"Bem-vindo, {st.session_state.name}!")
   sheeitid = st.session_state.id
@@ -34,8 +34,8 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   return dados_records,workbook
 
 
-sheeitid = '1mR63AgJd3tW4slEywlcylKCtEzAgcT2icHwOhUr6mdk'
-sheetname = "records"
+#sheeitid = '1mR63AgJd3tW4slEywlcylKCtEzAgcT2icHwOhUr6mdk'
+#sheetname = "records"
 lançamentos, workbook = lerdados(sheeitid, sheetname)
 sheet1 = workbook.get_worksheet(1)
 contas_cadastradas1 = sheet1.get_all_values()
