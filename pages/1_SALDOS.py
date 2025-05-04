@@ -8,7 +8,7 @@ import numpy as np
 import json
 from LYNCE import verificar_login
 
-
+st.set_page_config(layout="wide")
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #col1,col2,col3 = st.columns(3)
 #with col2:

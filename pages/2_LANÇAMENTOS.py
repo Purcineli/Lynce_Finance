@@ -10,10 +10,14 @@ import math
 from LYNCE import verificar_login
 st.set_page_config(layout="wide")
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
-if 'username' in st.session_state:
-  st.write(f"Bem-vindo, {st.session_state.name}!")
-  sheeitid = st.session_state.id
-  sheetname = st.session_state.arquivo
+if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+    st.warning("Você precisa fazer login primeiro.")
+    st.stop()
+
+# Agora é seguro acessar os valores da sessão
+st.write(f"Bem-vindo, {st.session_state.name}!")
+sheeitid = st.session_state.id
+sheetname = st.session_state.arquivo
   
 
 def lerdados(sheet_id_login_password,sheet_name_login_password):
