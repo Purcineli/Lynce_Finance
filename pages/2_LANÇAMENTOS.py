@@ -169,7 +169,7 @@ def Alt_lançamentos():
             number = st.number_input("INSIRA O VALOR", format="%0.2f")
             descricao = st.text_input('DESCRIÇÃO')
             analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS','ANALÍTICA'], index=None, placeholder="Selecione")
-            proj = st.selectbox('SELECIONE O PROJETO', projetos)
+            proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
             submit = st.form_submit_button(label="INSERIR")
 
