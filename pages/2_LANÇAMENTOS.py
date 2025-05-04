@@ -53,7 +53,7 @@ tabela_contas_banco = conta_banco_cadastradas.get_all_values()
 tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
 tabela_contas_banco = tabela_contas_banco.set_index('ID')
 tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
-tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO']]
+tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
 tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
 #CONTAS CONTÁBEIS#
 conta_cont_cadastradas = workbook.get_worksheet(3)
@@ -188,7 +188,8 @@ def Alt_lançamentos():
             sheet.update_acell(f'I{tamanho_tabela+2}', status)
             sheet.update_acell(f'J{tamanho_tabela+2}', analise)
             sheet.update_acell(f'K{tamanho_tabela+2}', proj)
-            sheet.update_acell(f'L{tamanho_tabela+2}', tabela_contas_banco_ativa.loc[(banco.split(" / ")[0]), 'MOEDA'])
+            moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
+            sheet.update_acell(f'L{tamanho_tabela+2}', moeda)
             sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
             sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             st.success("Registro inserido com sucesso!")
@@ -213,6 +214,7 @@ def Alt_lançamentos():
         idxanalises = lançamentos.loc[id_selected, 'ANALISE']
         idxanalises = analiseslist.index(idxanalises)
         analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
+        proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
         status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
         subcol3, subcol4 = st.columns(2)
         with subcol3:   
@@ -238,8 +240,9 @@ def Alt_lançamentos():
             sheet.update_acell(f'H{id_selected}', descricao2)
             sheet.update_acell(f'I{id_selected}', status2)
             sheet.update_acell(f'J{id_selected}', analise2)
-            sheet.update_acell(f'K{id_selected}', st.session_state.name)
-            sheet.update_acell(f'L{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            sheet.update_acell(f'J{id_selected}', proj2)
+            sheet.update_acell(f'M{id_selected}', st.session_state.name)
+            sheet.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             st.success("Registro editado com sucesso!")
             st.rerun()
 

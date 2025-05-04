@@ -52,9 +52,9 @@ tabela_contas_banco = conta_banco_cadastradas.get_all_values()
 tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
 tabela_contas_banco = tabela_contas_banco.set_index('ID')
 tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
-tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO']]
+tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
 tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
-tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO']]
+tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
 tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
 #CONTAS CONTÁBEIS#
 conta_cont_cadastradas = workbook.get_worksheet(3)

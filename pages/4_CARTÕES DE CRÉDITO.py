@@ -215,7 +215,7 @@ tabela_cards_cont = cards_cont_cadastradas.get_all_values()
 tabela_cards_cont = pd.DataFrame(tabela_cards_cont[1:], columns=tabela_cards_cont[0])
 tabela_cards_cont = tabela_cards_cont.set_index('ID')
 tabela_cards_cont = tabela_cards_cont[tabela_cards_cont['ATIVO']=='TRUE']
-tabela_cards_cont = tabela_cards_cont[['CARTÃO','PROPRIETÁRIO','FECHAMENTO', 'VENCIMENTO']]
+tabela_cards_cont = tabela_cards_cont[['CARTÃO','PROPRIETÁRIO','MOEDA','FECHAMENTO', 'VENCIMENTO']]
 tamanho_tabela_contas_cards = len(tabela_cards_cont)+2
 
 conta_cont_cadastradas = workbook.get_worksheet(3)
@@ -257,6 +257,8 @@ def Alt_lançamentos_CC():
             despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
             number = st.number_input("INSIRA O VALOR", format="%0.2f")
             descricao = st.text_input('DESCRIÇÃO')
+            descricao = str(descricao)
+            descricao = descricao.upper()
             analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS'], index=None, placeholder="Selecione")
             proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
@@ -264,28 +266,48 @@ def Alt_lançamentos_CC():
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
-            x = 0
-            while x<parcelas:
-              lancamento_cartao.add_rows(1)
-              lancamento_cartao.update_acell(f'B{tamanho_tabela+x+2}', (data + relativedelta(months=x)).strftime('%d/%m/%Y'))
-              lancamento_cartao.update_acell(f'C{tamanho_tabela+x+2}', cart.split(" / ")[0])
-              lancamento_cartao.update_acell(f'D{tamanho_tabela+x+2}', cart.split(" / ")[1])
-              lancamento_cartao.update_acell(f'E{tamanho_tabela+x+2}', despesa.split(" / ")[0])
-              lancamento_cartao.update_acell(f'F{tamanho_tabela+x+2}', despesa.split(" / ")[1])
-              if analise == 'DESPESAS':
-                lancamento_cartao.update_acell(f'G{tamanho_tabela+x+2}', - number/parcelas)
-              else:
-                lancamento_cartao.update_acell(f'G{tamanho_tabela+x+2}', number/parcelas)
-              lancamento_cartao.update_acell(f'H{tamanho_tabela+x+2}', f'{descricao}  {x+1}/{parcelas}')
-              lancamento_cartao.update_acell(f'I{tamanho_tabela+x+2}', status)
-              lancamento_cartao.update_acell(f'J{tamanho_tabela+x+2}', analise)
-              lancamento_cartao.update_acell(f'K{tamanho_tabela+x+2}', (data + relativedelta(months=x)).strftime('%d/%m/%Y'))
-              lancamento_cartao.update_acell(f'L{tamanho_tabela+x+2}', proj)
-              lancamento_cartao.update_acell(f'M{tamanho_tabela+x+2}', st.session_state.name)
-              lancamento_cartao.update_acell(f'N{tamanho_tabela+x+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-              st.success("Registro inserido com sucesso!")
-              x = x+1
-            st.rerun()
+          linhas = []  # Lista para armazenar as linhas a serem inseridas
+          for x in range(parcelas):
+              data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
+              valor_parcela = round(number / parcelas, 2)
+              valor_parcela = -valor_parcela if analise == 'DESPESAS' else valor_parcela
+              moeda = tabela_cards_cont.loc[
+                  (tabela_cards_cont['CARTÃO'] == cart.split(" / ")[0]) &
+                  (tabela_cards_cont['PROPRIETÁRIO'] == cart.split(" / ")[1]),
+                  'MOEDA'
+              ].values[0]
+              descricao_formatada = f'{descricao}  {x+1}/{parcelas}'
+              timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+              
+              linha = [
+                  data_parcela,                      # B - Data
+                  cart.split(" / ")[0],              # C - Cartão
+                  cart.split(" / ")[1],              # D - Proprietário
+                  despesa.split(" / ")[0],           # E - Despesa
+                  despesa.split(" / ")[1],           # F - Tipo de despesa
+                  valor_parcela,                     # G - Valor
+                  descricao_formatada,               # H - Descrição
+                  status,                            # I - Conciliado
+                  analise,                           # J - Alínea
+                  data_parcela,                      # K - Data base
+                  proj,                              # L - Projeto
+                  moeda,                             # M - Moeda
+                  st.session_state.name,             # N - Usuário
+                  timestamp                          # O - Timestamp
+              ]
+              linhas.append(linha)
+
+          # Calcular a faixa de células que será atualizada
+          lancamento_cartao.add_rows(parcelas)
+          inicio_linha = tamanho_tabela + 2
+          fim_linha = inicio_linha + parcelas - 1
+          faixa = f"B{inicio_linha}:O{fim_linha}"
+
+          # Atualizar todas as linhas de uma vez só
+          lancamento_cartao.update(values=linhas,range_name=faixa)
+
+          st.success("Registro(s) inserido(s) com sucesso!")
+          st.rerun()
     with editar:
         st.write('Editar registro')
         subcol1,subcol2 = st.columns(2)
@@ -302,11 +324,11 @@ def Alt_lançamentos_CC():
         despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
         number2 = st.number_input("VALOR", format="%0.2f", value=tabela_lancamentos_cartao.loc[id_selected, 'VALOR'])
         descricao2 = st.text_input('DESCRIÇÃO', value=tabela_lancamentos_cartao.loc[id_selected, 'DESCRIÇÃO'])
-        proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
         analiseslist = ['DESPESAS','RECEITAS']
         idxanalises = tabela_lancamentos_cartao.loc[id_selected, 'ANALISE']
         idxanalises = analiseslist.index(idxanalises)
         analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
+        proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
         status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=tabela_lancamentos_cartao.loc[id_selected, 'CONCILIADO'])
         subcol3, subcol4 = st.columns(2)
         with subcol3:   
