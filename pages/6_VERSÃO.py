@@ -11,6 +11,8 @@ import numpy as np
 import math
 from LYNCE import verificar_login
 st.set_page_config(layout="wide")
+
+st.image(https://i.ibb.co/xKhjx0ny/lynce-versao.png)
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'username' in st.session_state:
   st.write(f"Bem-vindo, {st.session_state.name}!")
