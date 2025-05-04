@@ -188,7 +188,7 @@ def Alt_lançamentos():
             sheet.update_acell(f'I{tamanho_tabela+2}', status)
             sheet.update_acell(f'J{tamanho_tabela+2}', analise)
             sheet.update_acell(f'K{tamanho_tabela+2}', proj)
-            sheet.update_acell(f'L{tamanho_tabela+2}', tabela_contas_banco_ativa.loc[banco.split(" / ")[0], 'MOEDA'])
+            sheet.update_acell(f'L{tamanho_tabela+2}', tabela_contas_banco_ativa.loc[(banco.split(" / ")[0]), 'MOEDA'])
             sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
             sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             st.success("Registro inserido com sucesso!")
