@@ -64,6 +64,14 @@ tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE
 tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 
+#PROJETOS#
+tabela_evenproj_sheet = workbook.get_worksheet(5)
+tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
+tabela_evenproj = tabela_evenproj.set_index('ID')
+tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
+tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
+tamanho_tabela_evenproj = len(tabela_evenproj_ativa)+2
 
 
 st.divider()
@@ -149,6 +157,8 @@ bancos = tabela_contas_banco_ativa['BANCO_PROP'].tolist()
 
 tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL'] + " / " + tabela_contas_cont_ativa["CATEGORIA"]
 contas = tabela_contas_cont_ativa['CONT_CAT'].tolist()
+
+projetos = tabela_evenproj_ativa['NOME'].tolist()
 def Alt_lançamentos():
     with inserir:
         st.write("Inserir novo registro")
@@ -159,6 +169,7 @@ def Alt_lançamentos():
             number = st.number_input("INSIRA O VALOR", format="%0.2f")
             descricao = st.text_input('DESCRIÇÃO')
             analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS','ANALÍTICA'], index=None, placeholder="Selecione")
+            proj = st.selectbox('SELECIONE O PROJETO', projetos)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
             submit = st.form_submit_button(label="INSERIR")
 
@@ -176,8 +187,10 @@ def Alt_lançamentos():
             sheet.update_acell(f'H{tamanho_tabela+2}', descricao)
             sheet.update_acell(f'I{tamanho_tabela+2}', status)
             sheet.update_acell(f'J{tamanho_tabela+2}', analise)
-            sheet.update_acell(f'K{tamanho_tabela+2}', st.session_state.name)
-            sheet.update_acell(f'L{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            sheet.update_acell(f'K{tamanho_tabela+2}', proj)
+            sheet.update_acell(f'L{tamanho_tabela+2}', tabela_contas_banco_ativa.loc[banco.split(" / ")[0], 'MOEDA'])
+            sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
+            sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             st.success("Registro inserido com sucesso!")
             st.rerun()
     with editar:
