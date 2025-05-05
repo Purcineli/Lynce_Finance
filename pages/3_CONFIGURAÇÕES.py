@@ -110,7 +110,7 @@ with ativos:
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
       if len(tabela_contas_banco_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', None)
+        id_selecionada = st.selectbox('SELECIONE A ID', "NONE")
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
   with col02:
