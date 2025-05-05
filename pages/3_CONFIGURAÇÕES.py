@@ -99,7 +99,7 @@ with inativos:
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
         conta_banco_cadastradas.add_rows(1)
-        conta_banco_cadastradas.update_acell(f'A{tamanho_tabela_contas_banco}', f"=ROW(B{tamanho_tabela_contas_banco})"
+        conta_banco_cadastradas.update_acell(f'A{tamanho_tabela_contas_banco}', f'=ROW(B{tamanho_tabela_contas_banco})')
         conta_banco_cadastradas.update_acell(f'B{tamanho_tabela_contas_banco}', new_bank)
         conta_banco_cadastradas.update_acell(f'C{tamanho_tabela_contas_banco}', nowner)
         conta_banco_cadastradas.update_acell(f'D{tamanho_tabela_contas_banco}', True)
