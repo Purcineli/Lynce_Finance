@@ -201,54 +201,56 @@ def Alt_lançamentos():
     with editar:
         st.write('Editar registro')
         subcol1,subcol2 = st.columns(2)
-        
-        with subcol1:
-          id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
-        with subcol2:
-          data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
-        idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
-        idxbanco = bancos.index(idxbanco)
-        banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
-        idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[id_selected, 'CATEGORIA']
-        idxdespesas = contas.index(idxdespesas)
-        despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-        number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[id_selected, 'VALOR'])
-        descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[id_selected, 'DESCRIÇÃO'])
-        analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
-        idxanalises = lançamentos.loc[id_selected, 'ANALISE']
-        idxanalises = analiseslist.index(idxanalises)
-        analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
-        proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-        status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
-        subcol3, subcol4 = st.columns(2)
-        with subcol3:   
-          Submit_edit = st.button(label="EDITAR")
-        with subcol4:
-          Submit_delete = st.button(label="DELETAR")
+        if tamanho_tabela==1:
+           st.write("INSERIR NOVO LANÇAMENTO"),
+        else:
+          with subcol1:
+            id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
+          with subcol2:
+            data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
+          idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
+          idxbanco = bancos.index(idxbanco)
+          banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
+          idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[id_selected, 'CATEGORIA']
+          idxdespesas = contas.index(idxdespesas)
+          despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
+          number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[id_selected, 'VALOR'])
+          descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[id_selected, 'DESCRIÇÃO'])
+          analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
+          idxanalises = lançamentos.loc[id_selected, 'ANALISE']
+          idxanalises = analiseslist.index(idxanalises)
+          analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
+          proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
+          status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
+          subcol3, subcol4 = st.columns(2)
+          with subcol3:   
+            Submit_edit = st.button(label="EDITAR")
+          with subcol4:
+            Submit_delete = st.button(label="DELETAR")
 
-        if Submit_delete:
-            sheet.delete_rows(id_selected2)
-            st.success("Registro deletado com sucesso!")
-            st.rerun()
+          if Submit_delete:
+              sheet.delete_rows(id_selected2)
+              st.success("Registro deletado com sucesso!")
+              st.rerun()
 
-        if Submit_edit:
-            sheet.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
-            sheet.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
-            sheet.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
-            sheet.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
-            sheet.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
-            if analise2 == 'DESPESAS':
-              sheet.update_acell(f'G{id_selected}', - number2)
-            else:
-              sheet.update_acell(f'G{id_selected}', number2)
-            sheet.update_acell(f'H{id_selected}', descricao2)
-            sheet.update_acell(f'I{id_selected}', status2)
-            sheet.update_acell(f'J{id_selected}', analise2)
-            sheet.update_acell(f'J{id_selected}', proj2)
-            sheet.update_acell(f'M{id_selected}', st.session_state.name)
-            sheet.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            st.success("Registro editado com sucesso!")
-            st.rerun()
+          if Submit_edit:
+              sheet.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
+              sheet.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
+              sheet.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
+              sheet.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
+              sheet.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
+              if analise2 == 'DESPESAS':
+                sheet.update_acell(f'G{id_selected}', - number2)
+              else:
+                sheet.update_acell(f'G{id_selected}', number2)
+              sheet.update_acell(f'H{id_selected}', descricao2)
+              sheet.update_acell(f'I{id_selected}', status2)
+              sheet.update_acell(f'J{id_selected}', analise2)
+              sheet.update_acell(f'J{id_selected}', proj2)
+              sheet.update_acell(f'M{id_selected}', st.session_state.name)
+              sheet.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+              st.success("Registro editado com sucesso!")
+              st.rerun()
 
 
 Alt_lançamentos()
