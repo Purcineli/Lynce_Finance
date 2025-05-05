@@ -197,9 +197,15 @@ with ativos_contas_cont:
     st.write('EDITAR CONTA CONTÁBIL') 
     conta,cate,atr,but,but2 =st.columns((0.25,0.28,0.2,0.14,0.16), vertical_alignment='bottom')
     with conta:
-      cont = st.text_input("CONTA",tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
+      if len(tabela_contas_cont_ativa)==0:
+        cont = st.text_input("CONTA","NONE", key="1")
+      else:
+        cont = st.text_input("CONTA",tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
     with cate:
-      categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])
+      if len(tabela_contas_cont_ativa)==0:
+         categor = st.text_input("CATEGORIA","NONE", key="2")
+      else:
+         categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
     with atr:
       Atri = st.selectbox('ATRIBUIÇÃO',['ANALÍTICA','DESPESAS','RECEITAS'], index=0)
     with but:
