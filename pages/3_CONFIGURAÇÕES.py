@@ -145,12 +145,12 @@ with ativos:
         bank = str(bank)
         bank = bank.upper()
       else:
-        bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
+        bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"])
     with prop:
       if len(tabela_contas_banco_ativa)==0:
         owner = st.text_input("NOME BANCO",value=None, key="two")
       else:
-        owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "PROPRIETÁRIO"], key="two two")
+        owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
     with but:
       #s,d = st.columns(2)
       submit = st.form_submit_button(label="EDITAR")
