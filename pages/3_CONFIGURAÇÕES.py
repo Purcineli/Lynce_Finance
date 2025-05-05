@@ -152,7 +152,10 @@ with inativos_contas_cont:
   st.dataframe(tabela_contas_cont_inativa, height=500)
   col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col11:
-      id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index))
+      if len(tabela_contas_cont_ativa)==0:
+         id_selecionada_cont = st.selectbox('SELECIONE A ID', "NONE", key="t")
+      else:
+         id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index))
   with col12:
       if st.button('ATIVAR CONTA CONTABIL'):
          conta_cont_cadastradas.update_acell(f'D{id_selecionada_cont}', True)
