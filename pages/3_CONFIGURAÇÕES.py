@@ -103,15 +103,13 @@ with inativos:
         conta_banco_cadastradas.update_acell(f'C{tamanho_tabela_contas_banco}', nowner)
         conta_banco_cadastradas.update_acell(f'D{tamanho_tabela_contas_banco}', True)
         st.rerun()
-  
 
-st.write(len(tabela_contas_banco_ativa))
 with ativos:
   st.write('ATIVAS')
   st.dataframe(tabela_contas_banco_ativa, height=500)
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
-      if len(tabela_contas_banco_ativa)==1:
+      if len(tabela_contas_banco_ativa)==0:
         id_selecionada = st.selectbox('SELECIONE A ID', None)
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
