@@ -42,7 +42,7 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 lançamentos = lerdados(sheeitid, sheetname)  # Ler a tabela de lançamentos do Google Sheets
 lançamentos = lançamentos.set_index('ID')  # Definir a coluna 'ID' como índice do DataFrame
-if len(lançamentos)==1:
+if len(lançamentos)==0:
   st.write("Sem lançamentos")
 else:
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()  # Transformar nomes dos bancos para maiúsculas
