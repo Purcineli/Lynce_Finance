@@ -260,8 +260,11 @@ def Alt_lançamentos_CC():
             analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS'], index=None, placeholder="Selecione")
             proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
-            parcelas = st.number_input('Número de parcelas',1,36)
-            data2 = st.date_input('FATURA', date.today())
+            dt,fat = st.columns(2)
+            with dt:
+              parcelas = st.number_input('Número de parcelas',1,36)
+            with fat:
+              data2 = st.date_input('FATURA', date.today())
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
