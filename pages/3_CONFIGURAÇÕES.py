@@ -122,9 +122,16 @@ with ativos:
     st.write('EDITAR CONTA BANCÁRIA') 
     nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
     with nome:
-      bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
+      if len(tabela_contas_banco_ativa)==0:
+        bank = st.text_input("NOME BANCO","NONE")
+      else:
+        bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
     with prop:
-      owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "PROPRIETÁRIO"])
+      if len(tabela_contas_banco_ativa)==0:
+        owner = st.text_input("NOME BANCO",'NONE')
+      else:
+        owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "PROPRIETÁRIO"])
+      
     with but:
       #s,d = st.columns(2)
       submit = st.form_submit_button(label="EDITAR")
