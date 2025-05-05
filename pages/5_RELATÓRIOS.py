@@ -121,9 +121,9 @@ else:
   col1, col2 = st.columns(2)
   with col1:
     st.markdown(lançamentos_conciliados_receitas['VALOR'].sum())
-    st.plotly_chart(fig1)
-    st.plotly_chart(fig3)
+    st.plotly_chart(fig1, key ='1')
+    st.plotly_chart(fig3, key ='2')
   with col2:
     st.markdown(lançamentos_conciliados_despesas['VALOR'].sum())
-    st.plotly_chart(fig2)
-    st.plotly_chart(fig4)
+    st.plotly_chart(fig2, key ='3')
+    st.plotly_chart(fig4, key ='4')
