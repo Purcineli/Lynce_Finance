@@ -272,7 +272,7 @@ with proj_ativos:
          st.rerun()
 
   with st.form(key='Editar nome'):
-    st.write('EDITAR CONTA BANCÁRIA') 
+    st.write('EDITAR PROJETO') 
     if len(tabela_evenproj_ativa)==0:
       nome = st.text_input("NOME BANCO","NONE", key="7")
     else:
