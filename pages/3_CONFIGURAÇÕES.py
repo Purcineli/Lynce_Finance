@@ -327,7 +327,7 @@ with card_ativos:
       else:
         id_selecionada6 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index))
   with col42:
-      if st.button('INATIVAR', key="1234"):
+      if st.button('INATIVAR', key="inativar cartões"):
          tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
          st.rerun()
 
