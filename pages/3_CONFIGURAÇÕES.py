@@ -331,7 +331,7 @@ with card_ativos:
          tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
          st.rerun()
 
-  with st.form(key='Editar nome'):
+  with st.form(key='Editar cartao'):
     st.write('EDITAR CARTÃO') 
     if len(tabela_cartoes)==0:
       nome = st.text_input("NOME", value=None, key="17")
