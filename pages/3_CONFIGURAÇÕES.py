@@ -88,7 +88,7 @@ tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
 tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
 tamanho_tabela_cartoes = len(tabela_cartoes)+2
 
-st.markdown('CONTAS BANCÁRIAS')
+st.title('CONTAS BANCÁRIAS')
 inativos, ativos = st.columns(2)
 with inativos:
   st.write('INATIVAS')
@@ -159,7 +159,7 @@ with ativos:
   
 st.divider()
 ### CONTAS CONTABEIS###
-st.markdown('CONTAS CONTÁBEIS')
+st.title('CONTAS CONTÁBEIS')
 inativos_contas_cont, ativos_contas_cont = st.columns(2)
 with inativos_contas_cont:
   st.write('INATIVAS')
@@ -230,7 +230,7 @@ with ativos_contas_cont:
     st.rerun()
   
 st.divider() 
-st.markdown('PROJETOS / EVENTOS')
+st.title('PROJETOS / EVENTOS')
 proj_inativos, proj_ativos = st.columns(2)
 with proj_inativos:
   st.write('INATIVOS')
@@ -285,7 +285,7 @@ with proj_ativos:
       st.rerun()
 
 st.divider() 
-st.markdown('CARTÕES DE CRÉDITO')
+st.title('CARTÕES DE CRÉDITO')
 card_inativos, card_ativos = st.columns(2)
 with card_inativos:
   st.write('INATIVOS')
