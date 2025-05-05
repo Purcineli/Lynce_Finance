@@ -15,7 +15,9 @@ st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
   #st.image('https://i.postimg.cc/yxJnfSLs/logo-lynce.png',)
 
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+    st.write("Você precisa fazer [login](https://lyncefinanceiro.streamlit.app/) primeiro ")
     st.warning("Você precisa fazer login primeiro.")
+    st.page_link("http://www.google.com", label="Google", icon="🌎")
     st.stop()
 
 # Agora é seguro acessar os valores da sessão
