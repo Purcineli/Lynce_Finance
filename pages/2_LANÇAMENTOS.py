@@ -85,12 +85,13 @@ with col02:
   data_final = pd.to_datetime(data_final)
 
 maxid = lançamentos['ID'].max()
-
-lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
 tamanho_tabela = len(lançamentos)
 if tamanho_tabela==1:
    st.write("SEM LANÇAMENTOS")
+
+
 else:
+  lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
   lançamentos['VALOR'] = lançamentos['VALOR'].str.replace('.', '', regex=False)  # remove pontos de milhar se houver
   lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)  # troca vírgula por ponto
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
