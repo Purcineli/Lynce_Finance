@@ -109,7 +109,10 @@ with ativos:
   st.dataframe(tabela_contas_banco_ativa, height=500)
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
-      id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
+      if len(tabela_contas_banco_ativa)==1:
+        id_selecionada = st.selectbox('SELECIONE A ID', None)
+      else:
+        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
   with col02:
       if st.button('INATIVAR'):
          conta_banco_cadastradas.update_acell(f'D{id_selecionada}', False)
