@@ -261,6 +261,7 @@ def Alt_lançamentos_CC():
             proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
             parcelas = st.number_input('Número de parcelas',1,36)
+            data2 = st.date_input('FATURA', date.today())
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
@@ -270,6 +271,7 @@ def Alt_lançamentos_CC():
             linhas = []  # Lista para armazenar as linhas a serem inseridas
             for x in range(parcelas):
                 data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
+                data_fatura = (data2 + relativedelta(months=x)).strftime('%d/%m/%Y')
                 valor_parcela = round(number / parcelas, 2)
                 valor_parcela = -valor_parcela if analise == 'DESPESAS' else valor_parcela
                 moeda = tabela_cards_cont.loc[
@@ -290,7 +292,7 @@ def Alt_lançamentos_CC():
                     descricao_formatada,               # H - Descrição
                     status,                            # I - Conciliado
                     analise,                           # J - Alínea
-                    data_parcela,                      # K - Data base
+                    data_fatura,                       # K - Data base
                     proj,                              # L - Projeto
                     moeda,                             # M - Moeda
                     st.session_state.name,             # N - Usuário
