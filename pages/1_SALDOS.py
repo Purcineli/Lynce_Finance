@@ -42,6 +42,7 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 lançamentos = lerdados(sheeitid, sheetname)  # Ler a tabela de lançamentos do Google Sheets
 lançamentos = lançamentos.set_index('ID')  # Definir a coluna 'ID' como índice do DataFrame
+st.write(len(lançamentos))
 if len(lançamentos)==0:
   st.write("Sem lançamentos")
 else:
