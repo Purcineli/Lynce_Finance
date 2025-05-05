@@ -123,12 +123,12 @@ with ativos:
     nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
     with nome:
       if len(tabela_contas_banco_ativa)==0:
-        bank = st.text_input("NOME BANCO","NONE", id="one")
+        bank = st.text_input("NOME BANCO","NONE", key="one")
       else:
         bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
     with prop:
       if len(tabela_contas_banco_ativa)==0:
-        owner = st.text_input("NOME BANCO","NONE",id="two")
+        owner = st.text_input("NOME BANCO","NONE", key="two")
       else:
         owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "PROPRIETÁRIO"])
     with but:
