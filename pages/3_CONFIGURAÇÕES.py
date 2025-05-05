@@ -263,7 +263,11 @@ with proj_ativos:
 
   with st.form(key='Editar nome'):
     st.write('EDITAR CONTA BANCÁRIA') 
-    nome = st.text_input("NOME BANCO",tabela_evenproj.loc[id_selecionada, "NOME"])
+    if len(tabela_evenproj_ativa)==0:
+      nome = st.text_input("NOME BANCO","NONE", key="7")
+    else:
+      nome = st.text_input("NOME BANCO",tabela_evenproj.loc[id_selecionada, "NOME"])
+
     submit = st.form_submit_button(label="EDITAR")
     if submit:
       tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada2)}', nome)
