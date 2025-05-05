@@ -55,7 +55,7 @@ tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='T
 tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
 tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
 tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
-tamanho_tabela_contas_banco = len(tabela_contas_banco)+1
+tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
 #CONTAS CONTÁBEIS#
 conta_cont_cadastradas = workbook.get_worksheet(3)
 tabela_contas_cont = conta_cont_cadastradas.get_all_values()
@@ -65,7 +65,7 @@ tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE
 tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
 tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
 tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
-tamanho_tabela_contas_cont = len(tabela_contas_cont)+1
+tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 
 #PROJETOS#
 tabela_evenproj_sheet = workbook.get_worksheet(5)
@@ -74,7 +74,7 @@ tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
 tabela_evenproj = tabela_evenproj.set_index('ID')
 tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
 tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
-tamanho_tabela_evenproj = len(tabela_evenproj)+1
+tamanho_tabela_evenproj = len(tabela_evenproj)+2
 
 
 #CARTÕES DE CRÉDITO#
@@ -86,7 +86,7 @@ tabela_cartoes_ativa = tabela_cartoes[tabela_cartoes['ATIVO']=='TRUE']
 tabela_cartoes_ativa = tabela_cartoes_ativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
 tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
 tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
-tamanho_tabela_cartoes = len(tabela_cartoes)+1
+tamanho_tabela_cartoes = len(tabela_cartoes)+2
 
 st.markdown('CONTAS BANCÁRIAS')
 inativos, ativos = st.columns(2)
