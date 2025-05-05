@@ -104,6 +104,8 @@ with inativos:
         conta_banco_cadastradas.update_acell(f'D{tamanho_tabela_contas_banco}', True)
         st.rerun()
   
+
+st.write(len(tabela_contas_banco_ativa))
 with ativos:
   st.write('ATIVAS')
   st.dataframe(tabela_contas_banco_ativa, height=500)
