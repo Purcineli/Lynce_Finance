@@ -105,10 +105,12 @@ with inativos:
     nome,prop,but =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
     with nome:
       new_bank = st.text_input('NOME')
-      new_bank = str(new_bank.upper())
+      new_bank = str(new_bank)
+      new_bank = new_bank.upper()
     with prop:
       nowner = st.text_input('PROPRIETÁRIO')
-      nowner = str(nowner.upper())
+      nowner = str(nowner)
+      nowner = nowner.upper()
     with but:
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
@@ -140,7 +142,8 @@ with ativos:
     with nome:
       if len(tabela_contas_banco_ativa)==0:
         bank = st.text_input("NOME BANCO",value=None, key="one")
-        bank = str(bank.upper())
+        bank = str(bank)
+        bank = bank.upper()
       else:
         bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
     with prop:
