@@ -243,7 +243,7 @@ with proj_inativos:
         id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
   with col22:
       if st.button('ATIVAR', key="123"):
-         tabela_evenproj_sheet.update_acell(f'D{id_selecionada}', True)
+         tabela_evenproj_sheet.update_acell(f'D{id_selecionada3}', True)
          st.rerun()
   with st.form(key="Inserir novo projeto / evento"):
     st.write('NOVA PROJETO / EVENTO')
@@ -263,23 +263,83 @@ with proj_ativos:
   col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col31:
       if len(tabela_evenproj_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', options=None, key='5')
+        id_selecionada5 = st.selectbox('SELECIONE A ID', options=None, key='5')
       else:
-        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
+        id_selecionada5 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
   with col32:
       if st.button('INATIVAR', key="1234"):
-         tabela_evenproj_sheet.update_acell(f'D{id_selecionada}', False)
+         tabela_evenproj_sheet.update_acell(f'D{id_selecionada5}', False)
          st.rerun()
 
   with st.form(key='Editar nome'):
     st.write('EDITAR PROJETO') 
     if len(tabela_evenproj_ativa)==0:
-      nome = st.text_input("NOME BANCO", value=None, key="7")
+      nome = st.text_input("NOME", value=None, key="7")
     else:
-      nome = st.text_input("NOME BANCO",tabela_evenproj.loc[id_selecionada, "NOME"])
+      nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada, "NOME"])
     submit = st.form_submit_button(label="EDITAR")
     if submit:
       tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada2)}', nome)
+      st.rerun()
+    if delete:
+      st.rerun()
+
+st.divider() 
+st.markdown('CARTÕES DE CRÉDITO')
+card_inativos, card_ativos = st.columns(2)
+with card_inativos:
+  st.write('INATIVOS')
+  st.dataframe(tabela_cartoes_inativa, height=500)
+  col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
+  with col31:
+      if len(tabela_cartoes)==0:
+        id_selecionada4 = st.selectbox('SELECIONE A ID', options=None, key="9"),
+      else:
+        id_selecionada4 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index))
+  with col32:
+      if st.button('ATIVAR', key="1234"):
+         tabela_cartoes_sheet.update_acell(f'G{id_selecionada4}', True)
+         st.rerun()
+  with st.form(key="Inserir cartão"):
+    st.write('NOVO CARTÃO DE CRÉDITO')
+    nome1,prop2,but3 =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
+    with nome1:
+      new_card = st.text_input('NOME', key="new card")
+    with prop2:
+      newcardowner = st.text_input('PROPRIETÁRIO', key="new owner")
+    with but3:
+      submit = st.form_submit_button(label="INSERIR")
+    if submit: #st.button('INSERIR NOVA CONTA'):
+      tabela_cartoes_sheet.add_rows(1)
+      tabela_cartoes_sheet.update_acell(f'A{tamanho_tabela_cartoes}', f'=ROW(B{tamanho_tabela_cartoes})')
+      tabela_cartoes_sheet.update_acell(f'B{tamanho_tabela_cartoes}', new_card)
+      tabela_cartoes_sheet.update_acell(f'C{tamanho_tabela_cartoes}', newcardowner)
+      tabela_cartoes_sheet.update_acell(f'D{tamanho_tabela_cartoes}', 'BRL')
+      st.rerun()
+  
+with card_ativos:
+  st.write('ATIVAS')
+  st.dataframe(tabela_cartoes_ativa, height=500)
+  col41, col42 = st.columns([0.2,0.8], vertical_alignment='bottom')
+  with col41:
+      if len(tabela_cartoes)==0:
+        id_selecionada6 = st.selectbox('SELECIONE A ID', options=None, key='10')
+      else:
+        id_selecionada6 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index))
+  with col42:
+      if st.button('INATIVAR', key="1234"):
+         tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
+         st.rerun()
+
+  with st.form(key='Editar nome'):
+    st.write('EDITAR CARTÃO') 
+    if len(tabela_cartoes)==0:
+      nome = st.text_input("NOME", value=None, key="17")
+    else:
+      nome = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada, "NOME"])
+    submit = st.form_submit_button(label="EDITAR")
+    if submit:
+      tabela_cartoes_sheet.update_acell(f'B{int(id_selecionada6)}', nome)
       st.rerun()
     if delete:
       st.rerun()
