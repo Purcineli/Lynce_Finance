@@ -181,35 +181,30 @@ if st.toggle('Conciliar fatura'):
       if st.button('DESCONCILIAR'):
         for id in selected_indexes:
           lancamento_cartao.update_acell(f'I{int(id)}', False)
-        st.rerun()
-
-  #'
+        st.rerun() 
+else:
+  dataini, datafim =st.columns(2)
+  with dataini:
+    data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30), format="DD/MM/YYYY")
+    data_inicio = pd.to_datetime(data_inicio,format="DD/MM/YYYY")
     
-      
-  else:
-    dataini, datafim =st.columns(2)
-    with dataini:
-      data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30), format="DD/MM/YYYY")
-      data_inicio = pd.to_datetime(data_inicio,format="DD/MM/YYYY")
-      
-    with datafim:
-      data_final = st.date_input("Data Final", date.today(), format="DD/MM/YYYY")
-      data_final = pd.to_datetime(data_final)
+  with datafim:
+    data_final = st.date_input("Data Final", date.today(), format="DD/MM/YYYY")
+    data_final = pd.to_datetime(data_final)
 
-    tabela_lancamentos_cartao['DATA'] = pd.to_datetime(tabela_lancamentos_cartao['DATA'], dayfirst=True, errors='coerce')
-    tabela_lancamentos_cartao['FATURA'] = pd.to_datetime(tabela_lancamentos_cartao['FATURA'], dayfirst=True, errors='coerce')
-    lançamentos_cartao_filtro_data = tabela_lancamentos_cartao[
-      (tabela_lancamentos_cartao['DATA'] >= data_inicio) &
-      (tabela_lancamentos_cartao['DATA'] <= data_final) &
-      (tabela_lancamentos_cartao['LANÇAMENTO'].isin(contasconta_selecionadas))&
-      (tabela_lancamentos_cartao['CATEGORIA'].isin(contascategoria_selecionadas))&
-      (tabela_lancamentos_cartao['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
-    lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA')
-    lançamentos_cartao_filtro_data['DATA'] = lançamentos_cartao_filtro_data['DATA'].dt.strftime('%d/%m/%Y')
-    lançamentos_cartao_filtro_data['FATURA'] = lançamentos_cartao_filtro_data['FATURA'].dt.strftime('%m/%Y')
-    
-    st.write(lançamentos_cartao_filtro_data)
-
+  tabela_lancamentos_cartao['DATA'] = pd.to_datetime(tabela_lancamentos_cartao['DATA'], dayfirst=True, errors='coerce')
+  tabela_lancamentos_cartao['FATURA'] = pd.to_datetime(tabela_lancamentos_cartao['FATURA'], dayfirst=True, errors='coerce')
+  lançamentos_cartao_filtro_data = tabela_lancamentos_cartao[
+    (tabela_lancamentos_cartao['DATA'] >= data_inicio) &
+    (tabela_lancamentos_cartao['DATA'] <= data_final) &
+    (tabela_lancamentos_cartao['LANÇAMENTO'].isin(contasconta_selecionadas))&
+    (tabela_lancamentos_cartao['CATEGORIA'].isin(contascategoria_selecionadas))&
+    (tabela_lancamentos_cartao['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
+  lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA')
+  lançamentos_cartao_filtro_data['DATA'] = lançamentos_cartao_filtro_data['DATA'].dt.strftime('%d/%m/%Y')
+  lançamentos_cartao_filtro_data['FATURA'] = lançamentos_cartao_filtro_data['FATURA'].dt.strftime('%m/%Y')
+  
+  st.write(lançamentos_cartao_filtro_data)
 
 st.divider()
 
