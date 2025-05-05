@@ -180,27 +180,29 @@ def Alt_lançamentos():
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
-            
-            sheet.add_rows(1)
-            sheet.update_acell(f'B{tamanho_tabela+2}', data.strftime('%d/%m/%Y'))
-            sheet.update_acell(f'C{tamanho_tabela+2}', banco.split(" / ")[0])
-            sheet.update_acell(f'D{tamanho_tabela+2}', banco.split(" / ")[1])
-            sheet.update_acell(f'E{tamanho_tabela+2}', despesa.split(" / ")[0])
-            sheet.update_acell(f'F{tamanho_tabela+2}', despesa.split(" / ")[1])
-            if analise == 'DESPESAS':
-              sheet.update_acell(f'G{tamanho_tabela+2}', - number)
-            else:
-              sheet.update_acell(f'G{tamanho_tabela+2}', number)
-            sheet.update_acell(f'H{tamanho_tabela+2}', descricao)
-            sheet.update_acell(f'I{tamanho_tabela+2}', status)
-            sheet.update_acell(f'J{tamanho_tabela+2}', analise)
-            sheet.update_acell(f'K{tamanho_tabela+2}', proj)
-            moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
-            sheet.update_acell(f'L{tamanho_tabela+2}', moeda)
-            sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
-            sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            st.success("Registro inserido com sucesso!")
-            st.rerun()
+            if banco == None or despesa == None:
+              st.warning("Preencha todos os campos")
+            else:  
+              sheet.add_rows(1)
+              sheet.update_acell(f'B{tamanho_tabela+2}', data.strftime('%d/%m/%Y'))
+              sheet.update_acell(f'C{tamanho_tabela+2}', banco.split(" / ")[0])
+              sheet.update_acell(f'D{tamanho_tabela+2}', banco.split(" / ")[1])
+              sheet.update_acell(f'E{tamanho_tabela+2}', despesa.split(" / ")[0])
+              sheet.update_acell(f'F{tamanho_tabela+2}', despesa.split(" / ")[1])
+              if analise == 'DESPESAS':
+                sheet.update_acell(f'G{tamanho_tabela+2}', - number)
+              else:
+                sheet.update_acell(f'G{tamanho_tabela+2}', number)
+              sheet.update_acell(f'H{tamanho_tabela+2}', descricao)
+              sheet.update_acell(f'I{tamanho_tabela+2}', status)
+              sheet.update_acell(f'J{tamanho_tabela+2}', analise)
+              sheet.update_acell(f'K{tamanho_tabela+2}', proj)
+              moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
+              sheet.update_acell(f'L{tamanho_tabela+2}', moeda)
+              sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
+              sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+              st.success("Registro inserido com sucesso!")
+              st.rerun()
     with editar:
         st.write('Editar registro')
         subcol1,subcol2 = st.columns(2)
