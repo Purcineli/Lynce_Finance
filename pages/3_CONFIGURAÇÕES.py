@@ -74,7 +74,7 @@ tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
 tabela_evenproj = tabela_evenproj.set_index('ID')
 tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
 tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
-tamanho_tabela_evenproj = len(tabela_evenproj_ativa)+2
+tamanho_tabela_evenproj = len(tabela_evenproj)+2
 
 st.markdown('CONTAS BANCÁRIAS')
 inativos, ativos = st.columns(2)
@@ -103,6 +103,7 @@ with inativos:
         conta_banco_cadastradas.update_acell(f'B{tamanho_tabela_contas_banco}', new_bank)
         conta_banco_cadastradas.update_acell(f'C{tamanho_tabela_contas_banco}', nowner)
         conta_banco_cadastradas.update_acell(f'D{tamanho_tabela_contas_banco}', True)
+        conta_banco_cadastradas.update_acell(f'E{tamanho_tabela_contas_banco}', 'BRL')
         st.rerun()
 
 with ativos:
@@ -174,6 +175,7 @@ with inativos_contas_cont:
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
         conta_cont_cadastradas.add_rows(1)
+        conta_cont_cadastradas.update_acell(f'A{tamanho_tabela_contas_cont}', f'=ROW(B{tamanho_tabela_contas_cont})')
         conta_cont_cadastradas.update_acell(f'B{tamanho_tabela_contas_cont}', new_conta)
         conta_cont_cadastradas.update_acell(f'C{tamanho_tabela_contas_cont}', new_cat)
         conta_cont_cadastradas.update_acell(f'D{tamanho_tabela_contas_cont}', new_atr)
@@ -243,9 +245,10 @@ with proj_inativos:
     submit = st.form_submit_button(label="INSERIR")
     if submit: #st.button('INSERIR NOVA CONTA'):
       tabela_evenproj_sheet.add_rows(1)
-      tabela_evenproj_sheet.update_acell(f'B{tamanho_tabela_contas_banco}', new_name)
-      tabela_evenproj_sheet.update_acell(f'C{tamanho_tabela_contas_banco}', True)
-      tabela_evenproj_sheet.update_acell(f'D{tamanho_tabela_contas_banco}', True)
+      tabela_evenproj_sheet.update_acell(f'A{tamanho_tabela_evenproj}', f'=ROW(B{tamanho_tabela_evenproj})')
+      tabela_evenproj_sheet.update_acell(f'B{tamanho_tabela_evenproj}', new_name)
+      tabela_evenproj_sheet.update_acell(f'C{tamanho_tabela_evenproj}', True)
+      tabela_evenproj_sheet.update_acell(f'D{tamanho_tabela_evenproj}', True)
       st.rerun()
   
 with proj_ativos:

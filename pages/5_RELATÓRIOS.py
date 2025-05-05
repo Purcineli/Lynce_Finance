@@ -78,48 +78,52 @@ with col02:
   data_final = st.date_input("Data Final", date.today())
   data_final = pd.to_datetime(data_final)
 
-maxid = lançamentos['ID'].max()
-
-lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
 tamanho_tabela = len(lançamentos)
-lançamentos['VALOR'] = lançamentos['VALOR'].str.replace('.', '', regex=False)  # remove pontos de milhar se houver
-lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)  # troca vírgula por ponto
-lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
-lançamentos = lançamentos.set_index('ID')
+if tamanho_tabela==1:
+   st.write("SEM LANÇAMENTOS")
+else:
+  maxid = lançamentos['ID'].max()
 
-listas_owners = list(lançamentos['PROPRIETÁRIO'].unique())
-lista_prop_selecionado = st.multiselect("Selecione", listas_owners, listas_owners)
+  lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
+  tamanho_tabela = len(lançamentos)
+  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace('.', '', regex=False)  # remove pontos de milhar se houver
+  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)  # troca vírgula por ponto
+  lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
+  lançamentos = lançamentos.set_index('ID')
 
-
-lançamentos = lançamentos[lançamentos['BANCO'].notna()]
-lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
-lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']==True]
-lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
-
-lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
-#st.dataframe(lançamentos_conciliados[colunas_selecionadas])
-
-lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
-
-lançamentos_conciliados_despesas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="DESPESAS"]
-lançamentos_conciliados_despesas['VALOR'] = lançamentos_conciliados_despesas['VALOR'] * -1
+  listas_owners = list(lançamentos['PROPRIETÁRIO'].unique())
+  lista_prop_selecionado = st.multiselect("Selecione", listas_owners, listas_owners)
 
 
-fig1 = px.pie(lançamentos_conciliados_receitas, names='CATEGORIA', values='VALOR')
-fig2 = px.pie(lançamentos_conciliados_despesas, names='CATEGORIA', values='VALOR')
-fig2.update_traces(textposition='inside', textinfo='percent')
-fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+  lançamentos = lançamentos[lançamentos['BANCO'].notna()]
+  lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
+  lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']==True]
+  lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
 
-fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO')
-fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO')
-fig2.update_traces(textposition='inside', textinfo='percent')
-fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
-col1, col2 = st.columns(2)
-with col1:
-  st.markdown(lançamentos_conciliados_receitas['VALOR'].sum())
-  st.plotly_chart(fig1)
-  st.plotly_chart(fig3)
-with col2:
-  st.markdown(lançamentos_conciliados_despesas['VALOR'].sum())
-  st.plotly_chart(fig2)
-  st.plotly_chart(fig4)
+  lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
+  #st.dataframe(lançamentos_conciliados[colunas_selecionadas])
+
+  lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
+
+  lançamentos_conciliados_despesas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="DESPESAS"]
+  lançamentos_conciliados_despesas['VALOR'] = lançamentos_conciliados_despesas['VALOR'] * -1
+
+
+  fig1 = px.pie(lançamentos_conciliados_receitas, names='CATEGORIA', values='VALOR')
+  fig2 = px.pie(lançamentos_conciliados_despesas, names='CATEGORIA', values='VALOR')
+  fig2.update_traces(textposition='inside', textinfo='percent')
+  fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+
+  fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO')
+  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO')
+  fig2.update_traces(textposition='inside', textinfo='percent')
+  fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+  col1, col2 = st.columns(2)
+  with col1:
+    st.markdown(lançamentos_conciliados_receitas['VALOR'].sum())
+    st.plotly_chart(fig1)
+    st.plotly_chart(fig3)
+  with col2:
+    st.markdown(lançamentos_conciliados_despesas['VALOR'].sum())
+    st.plotly_chart(fig2)
+    st.plotly_chart(fig4)
