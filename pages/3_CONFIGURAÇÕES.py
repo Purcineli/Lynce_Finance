@@ -253,7 +253,7 @@ with proj_ativos:
   col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col31:
       if len(tabela_evenproj_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', "NONE", key='5'))
+        id_selecionada = st.selectbox('SELECIONE A ID', "NONE", key='5')
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
   with col32:
