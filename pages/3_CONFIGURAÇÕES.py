@@ -62,9 +62,9 @@ tabela_contas_cont = conta_cont_cadastradas.get_all_values()
 tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
 tabela_contas_cont = tabela_contas_cont.set_index('ID')
 tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
-tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
+tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
 tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
-tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
+tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 
 #PROJETOS#
@@ -169,8 +169,6 @@ with inativos_contas_cont:
       new_conta = st.text_input('CONTA CONTÁBIL')
     with cat:
       new_cat = st.text_input('CATEGORIA')
-    with atr:
-      new_atr = st.selectbox('ATRIBUIÇÃO',['ANALÍTICA','DESPESAS','RECEITAS'])
     with but:
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
@@ -209,8 +207,6 @@ with ativos_contas_cont:
          categor = st.text_input("CATEGORIA","NONE", key="2")
       else:
          categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
-    with atr:
-      Atri = st.selectbox('ATRIBUIÇÃO',['ANALÍTICA','DESPESAS','RECEITAS'], index=0)
     with but:
       submit = st.form_submit_button(label="EDITAR")
     with but2:
