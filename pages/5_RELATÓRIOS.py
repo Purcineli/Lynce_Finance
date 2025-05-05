@@ -12,7 +12,7 @@ st.set_page_config(layout="wide")
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
-    st.warning("Você precisa fazer login primeiro.")
+    st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
 # Agora é seguro acessar os valores da sessão

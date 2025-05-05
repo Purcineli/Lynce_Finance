@@ -15,9 +15,7 @@ st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
   #st.image('https://i.postimg.cc/yxJnfSLs/logo-lynce.png',)
 
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
-    st.markdown("Você precisa fazer [login](https://lyncefinanceiro.streamlit.app/) primeiro ")
-    st.markdown('<a href="https://lyncefinanceiro.streamlit.app/" target="_self">View all</a>',unsafe_allow_html=True)
-    st.warning("Você precisa fazer login primeiro.")
+    st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
 # Agora é seguro acessar os valores da sessão
