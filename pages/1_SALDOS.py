@@ -142,9 +142,4 @@ else:
     st.plotly_chart(fig2)  # Exibe gráfico de barras
 
   st.divider()  # Linha divisória no app
-
-
-
-
-
   st.plotly_chart(fig3)
