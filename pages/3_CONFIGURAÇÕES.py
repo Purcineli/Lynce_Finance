@@ -228,7 +228,10 @@ with proj_inativos:
   st.dataframe(tabela_evenproj_inativa, height=500)
   col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col21:
-      id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
+      if len(tabela_evenproj_inativa)==0:
+        id_selecionada3 = st.selectbox('SELECIONE A ID', "NONE", key="4"),
+      else:
+        id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
   with col22:
       if st.button('ATIVAR', key="123"):
          tabela_evenproj_sheet.update_acell(f'D{id_selecionada}', True)
@@ -249,7 +252,10 @@ with proj_ativos:
   st.dataframe(tabela_evenproj_ativa, height=500)
   col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col31:
-      id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
+      if len(tabela_evenproj_ativa)==0:
+        id_selecionada = st.selectbox('SELECIONE A ID', "NONE", key='5'))
+      else:
+        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
   with col32:
       if st.button('INATIVAR', key="1234"):
          tabela_evenproj_sheet.update_acell(f'D{id_selecionada}', False)
