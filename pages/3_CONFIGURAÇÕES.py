@@ -76,6 +76,18 @@ tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
 tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
 tamanho_tabela_evenproj = len(tabela_evenproj)+2
 
+
+#CARTÕES DE CRÉDITO#
+tabela_cartoes_sheet = workbook.get_worksheet(4)
+tabela_cartoes = tabela_cartoes_sheet.get_all_values()
+tabela_cartoes = pd.DataFrame(tabela_cartoes[1:], columns=tabela_cartoes[0])
+tabela_cartoes = tabela_cartoes.set_index('ID')
+tabela_cartoes_ativa = tabela_cartoes[tabela_cartoes['ATIVO']=='TRUE']
+tabela_cartoes_ativa = tabela_contas_cont_ativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
+tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
+tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
+tamanho_tabela_cartoes = len(tabela_cartoes)+2
+
 st.markdown('CONTAS BANCÁRIAS')
 inativos, ativos = st.columns(2)
 with inativos:
