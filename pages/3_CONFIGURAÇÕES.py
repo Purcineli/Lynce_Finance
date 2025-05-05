@@ -55,7 +55,7 @@ tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='T
 tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
 tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
 tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
-tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
+tamanho_tabela_contas_banco = len(tabela_contas_banco)+1
 #CONTAS CONTÁBEIS#
 conta_cont_cadastradas = workbook.get_worksheet(3)
 tabela_contas_cont = conta_cont_cadastradas.get_all_values()
