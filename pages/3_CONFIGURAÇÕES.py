@@ -124,7 +124,7 @@ with ativos:
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
       if len(tabela_contas_banco_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', value=None)
+        id_selecionada = st.selectbox('SELECIONE A ID',options=None)
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
   with col02:
@@ -167,7 +167,7 @@ with inativos_contas_cont:
   col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col11:
       if len(tabela_contas_cont_inativa)==0:
-         id_selecionada_cont = st.selectbox('SELECIONE A ID', value=None, key="t")
+         id_selecionada_cont = st.selectbox('SELECIONE A ID', options=None, key="t")
       else:
          id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r")
   with col12:
@@ -197,7 +197,7 @@ with ativos_contas_cont:
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
       if len(tabela_contas_cont_ativa)==0:
-         id_selecionada3 = st.selectbox('SELECIONE A ID', value=None, key="four")
+         id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="four")
       else:
          id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five")
   with col02:
@@ -238,7 +238,7 @@ with proj_inativos:
   col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col21:
       if len(tabela_evenproj_inativa)==0:
-        id_selecionada3 = st.selectbox('SELECIONE A ID', value=None, key="4"),
+        id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="4"),
       else:
         id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
   with col22:
@@ -263,7 +263,7 @@ with proj_ativos:
   col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col31:
       if len(tabela_evenproj_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', value=None, key='5')
+        id_selecionada = st.selectbox('SELECIONE A ID', options=None, key='5')
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
   with col32:
