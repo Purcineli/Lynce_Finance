@@ -264,48 +264,51 @@ def Alt_lançamentos_CC():
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
-          linhas = []  # Lista para armazenar as linhas a serem inseridas
-          for x in range(parcelas):
-              data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
-              valor_parcela = round(number / parcelas, 2)
-              valor_parcela = -valor_parcela if analise == 'DESPESAS' else valor_parcela
-              moeda = tabela_cards_cont.loc[
-                  (tabela_cards_cont['CARTÃO'] == cart.split(" / ")[0]) &
-                  (tabela_cards_cont['PROPRIETÁRIO'] == cart.split(" / ")[1]),
-                  'MOEDA'
-              ].values[0]
-              descricao_formatada = f'{descricao}  {x+1}/{parcelas}'
-              timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-              
-              linha = [
-                  data_parcela,                      # B - Data
-                  cart.split(" / ")[0],              # C - Cartão
-                  cart.split(" / ")[1],              # D - Proprietário
-                  despesa.split(" / ")[0],           # E - Despesa
-                  despesa.split(" / ")[1],           # F - Tipo de despesa
-                  valor_parcela,                     # G - Valor
-                  descricao_formatada,               # H - Descrição
-                  status,                            # I - Conciliado
-                  analise,                           # J - Alínea
-                  data_parcela,                      # K - Data base
-                  proj,                              # L - Projeto
-                  moeda,                             # M - Moeda
-                  st.session_state.name,             # N - Usuário
-                  timestamp                          # O - Timestamp
-              ]
-              linhas.append(linha)
+          if cart == None or despesa == None or analise == None:
+            st.warning("Preencha todos os campos")
+          else:
+            linhas = []  # Lista para armazenar as linhas a serem inseridas
+            for x in range(parcelas):
+                data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
+                valor_parcela = round(number / parcelas, 2)
+                valor_parcela = -valor_parcela if analise == 'DESPESAS' else valor_parcela
+                moeda = tabela_cards_cont.loc[
+                    (tabela_cards_cont['CARTÃO'] == cart.split(" / ")[0]) &
+                    (tabela_cards_cont['PROPRIETÁRIO'] == cart.split(" / ")[1]),
+                    'MOEDA'
+                ].values[0]
+                descricao_formatada = f'{descricao}  {x+1}/{parcelas}'
+                timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                
+                linha = [
+                    data_parcela,                      # B - Data
+                    cart.split(" / ")[0],              # C - Cartão
+                    cart.split(" / ")[1],              # D - Proprietário
+                    despesa.split(" / ")[0],           # E - Despesa
+                    despesa.split(" / ")[1],           # F - Tipo de despesa
+                    valor_parcela,                     # G - Valor
+                    descricao_formatada,               # H - Descrição
+                    status,                            # I - Conciliado
+                    analise,                           # J - Alínea
+                    data_parcela,                      # K - Data base
+                    proj,                              # L - Projeto
+                    moeda,                             # M - Moeda
+                    st.session_state.name,             # N - Usuário
+                    timestamp                          # O - Timestamp
+                ]
+                linhas.append(linha)
 
-          # Calcular a faixa de células que será atualizada
-          lancamento_cartao.add_rows(parcelas)
-          inicio_linha = tamanho_tabela + 2
-          fim_linha = inicio_linha + parcelas - 1
-          faixa = f"B{inicio_linha}:O{fim_linha}"
+            # Calcular a faixa de células que será atualizada
+            lancamento_cartao.add_rows(parcelas)
+            inicio_linha = tamanho_tabela + 2
+            fim_linha = inicio_linha + parcelas - 1
+            faixa = f"B{inicio_linha}:O{fim_linha}"
 
-          # Atualizar todas as linhas de uma vez só
-          lancamento_cartao.update(values=linhas,range_name=faixa)
+            # Atualizar todas as linhas de uma vez só
+            lancamento_cartao.update(values=linhas,range_name=faixa)
 
-          st.success("Registro(s) inserido(s) com sucesso!")
-          st.rerun()
+            st.success("Registro(s) inserido(s) com sucesso!")
+            st.rerun()
     with editar:
         st.write('Editar registro')
         subcol1,subcol2 = st.columns(2)
