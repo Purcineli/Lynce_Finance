@@ -170,7 +170,6 @@ def Alt_lançamentos():
         with st.form(key="form_inserir", border=False):
             data = st.date_input('DATA', date.today())
             banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
-            st.write(banco)
             despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
             number = st.number_input("INSIRA O VALOR", format="%0.2f")
             descricao = st.text_input('DESCRIÇÃO')
@@ -180,7 +179,7 @@ def Alt_lançamentos():
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
-            if banco == None or despesa == None:
+            if banco == None or despesa == None or analise == None:
               st.warning("Preencha todos os campos")
             else:  
               sheet.add_rows(1)
