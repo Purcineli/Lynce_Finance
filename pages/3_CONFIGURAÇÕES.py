@@ -133,7 +133,7 @@ with ativos:
         id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
   with col02:
       if st.button('INATIVAR'):
-         conta_banco_cadastradas.update_acell(f'D{id_selecionada}', False)
+         conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
          st.rerun()
 
   with st.form(key='Editar conta'):
@@ -151,6 +151,8 @@ with ativos:
         owner = st.text_input("NOME BANCO",value=None, key="two")
       else:
         owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
+        owner = str(owner)
+        owner = owner.upper()
     with but:
       #s,d = st.columns(2)
       submit = st.form_submit_button(label="EDITAR")
