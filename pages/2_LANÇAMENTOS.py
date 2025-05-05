@@ -152,105 +152,105 @@ else:
 
 
 
-  st.divider()
+st.divider()
 
-  inserir, editar = st.columns(2, vertical_alignment='top')
+inserir, editar = st.columns(2, vertical_alignment='top')
 
-  tabela_contas_banco_ativa['BANCO_PROP'] = tabela_contas_banco_ativa["NOME BANCO"] + " / " + tabela_contas_banco_ativa["PROPRIETÁRIO"]
-  bancos = tabela_contas_banco_ativa['BANCO_PROP'].tolist()
+tabela_contas_banco_ativa['BANCO_PROP'] = tabela_contas_banco_ativa["NOME BANCO"] + " / " + tabela_contas_banco_ativa["PROPRIETÁRIO"]
+bancos = tabela_contas_banco_ativa['BANCO_PROP'].tolist()
 
-  tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL'] + " / " + tabela_contas_cont_ativa["CATEGORIA"]
-  contas = tabela_contas_cont_ativa['CONT_CAT'].tolist()
+tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL'] + " / " + tabela_contas_cont_ativa["CATEGORIA"]
+contas = tabela_contas_cont_ativa['CONT_CAT'].tolist()
 
-  projetos = tabela_evenproj_ativa['NOME'].tolist()
-  def Alt_lançamentos():
-      with inserir:
-          st.write("Inserir novo registro")
-          with st.form(key="form_inserir", border=False):
-              data = st.date_input('DATA', date.today())
-              banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
-              despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
-              number = st.number_input("INSIRA O VALOR", format="%0.2f")
-              descricao = st.text_input('DESCRIÇÃO')
-              analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS','ANALÍTICA'], index=None, placeholder="Selecione")
-              proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-              status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
-              submit = st.form_submit_button(label="INSERIR")
+projetos = tabela_evenproj_ativa['NOME'].tolist()
+def Alt_lançamentos():
+    with inserir:
+        st.write("Inserir novo registro")
+        with st.form(key="form_inserir", border=False):
+            data = st.date_input('DATA', date.today())
+            banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
+            despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
+            number = st.number_input("INSIRA O VALOR", format="%0.2f")
+            descricao = st.text_input('DESCRIÇÃO')
+            analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS','ANALÍTICA'], index=None, placeholder="Selecione")
+            proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
+            status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
+            submit = st.form_submit_button(label="INSERIR")
 
-          if submit:
-              sheet.add_rows(1)
-              sheet.update_acell(f'B{tamanho_tabela+2}', data.strftime('%d/%m/%Y'))
-              sheet.update_acell(f'C{tamanho_tabela+2}', banco.split(" / ")[0])
-              sheet.update_acell(f'D{tamanho_tabela+2}', banco.split(" / ")[1])
-              sheet.update_acell(f'E{tamanho_tabela+2}', despesa.split(" / ")[0])
-              sheet.update_acell(f'F{tamanho_tabela+2}', despesa.split(" / ")[1])
-              if analise == 'DESPESAS':
-                sheet.update_acell(f'G{tamanho_tabela+2}', - number)
-              else:
-                sheet.update_acell(f'G{tamanho_tabela+2}', number)
-              sheet.update_acell(f'H{tamanho_tabela+2}', descricao)
-              sheet.update_acell(f'I{tamanho_tabela+2}', status)
-              sheet.update_acell(f'J{tamanho_tabela+2}', analise)
-              sheet.update_acell(f'K{tamanho_tabela+2}', proj)
-              moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
-              sheet.update_acell(f'L{tamanho_tabela+2}', moeda)
-              sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
-              sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-              st.success("Registro inserido com sucesso!")
-              st.rerun()
-      with editar:
-          st.write('Editar registro')
-          subcol1,subcol2 = st.columns(2)
-          
-          with subcol1:
-            id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
-          with subcol2:
-            data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
-          idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
-          idxbanco = bancos.index(idxbanco)
-          banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
-          idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[id_selected, 'CATEGORIA']
-          idxdespesas = contas.index(idxdespesas)
-          despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-          number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[id_selected, 'VALOR'])
-          descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[id_selected, 'DESCRIÇÃO'])
-          analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
-          idxanalises = lançamentos.loc[id_selected, 'ANALISE']
-          idxanalises = analiseslist.index(idxanalises)
-          analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
-          proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-          status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
-          subcol3, subcol4 = st.columns(2)
-          with subcol3:   
-            Submit_edit = st.button(label="EDITAR")
-          with subcol4:
-            Submit_delete = st.button(label="DELETAR")
+        if submit:
+            sheet.add_rows(1)
+            sheet.update_acell(f'B{tamanho_tabela+2}', data.strftime('%d/%m/%Y'))
+            sheet.update_acell(f'C{tamanho_tabela+2}', banco.split(" / ")[0])
+            sheet.update_acell(f'D{tamanho_tabela+2}', banco.split(" / ")[1])
+            sheet.update_acell(f'E{tamanho_tabela+2}', despesa.split(" / ")[0])
+            sheet.update_acell(f'F{tamanho_tabela+2}', despesa.split(" / ")[1])
+            if analise == 'DESPESAS':
+              sheet.update_acell(f'G{tamanho_tabela+2}', - number)
+            else:
+              sheet.update_acell(f'G{tamanho_tabela+2}', number)
+            sheet.update_acell(f'H{tamanho_tabela+2}', descricao)
+            sheet.update_acell(f'I{tamanho_tabela+2}', status)
+            sheet.update_acell(f'J{tamanho_tabela+2}', analise)
+            sheet.update_acell(f'K{tamanho_tabela+2}', proj)
+            moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
+            sheet.update_acell(f'L{tamanho_tabela+2}', moeda)
+            sheet.update_acell(f'M{tamanho_tabela+2}', st.session_state.name)
+            sheet.update_acell(f'N{tamanho_tabela+2}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            st.success("Registro inserido com sucesso!")
+            st.rerun()
+    with editar:
+        st.write('Editar registro')
+        subcol1,subcol2 = st.columns(2)
+        
+        with subcol1:
+          id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
+        with subcol2:
+          data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
+        idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
+        idxbanco = bancos.index(idxbanco)
+        banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
+        idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[id_selected, 'CATEGORIA']
+        idxdespesas = contas.index(idxdespesas)
+        despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
+        number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[id_selected, 'VALOR'])
+        descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[id_selected, 'DESCRIÇÃO'])
+        analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
+        idxanalises = lançamentos.loc[id_selected, 'ANALISE']
+        idxanalises = analiseslist.index(idxanalises)
+        analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
+        proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
+        status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
+        subcol3, subcol4 = st.columns(2)
+        with subcol3:   
+          Submit_edit = st.button(label="EDITAR")
+        with subcol4:
+          Submit_delete = st.button(label="DELETAR")
 
-          if Submit_delete:
-              sheet.delete_rows(id_selected2)
-              st.success("Registro deletado com sucesso!")
-              st.rerun()
+        if Submit_delete:
+            sheet.delete_rows(id_selected2)
+            st.success("Registro deletado com sucesso!")
+            st.rerun()
 
-          if Submit_edit:
-              sheet.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
-              sheet.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
-              sheet.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
-              sheet.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
-              sheet.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
-              if analise2 == 'DESPESAS':
-                sheet.update_acell(f'G{id_selected}', - number2)
-              else:
-                sheet.update_acell(f'G{id_selected}', number2)
-              sheet.update_acell(f'H{id_selected}', descricao2)
-              sheet.update_acell(f'I{id_selected}', status2)
-              sheet.update_acell(f'J{id_selected}', analise2)
-              sheet.update_acell(f'J{id_selected}', proj2)
-              sheet.update_acell(f'M{id_selected}', st.session_state.name)
-              sheet.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-              st.success("Registro editado com sucesso!")
-              st.rerun()
+        if Submit_edit:
+            sheet.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
+            sheet.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
+            sheet.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
+            sheet.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
+            sheet.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
+            if analise2 == 'DESPESAS':
+              sheet.update_acell(f'G{id_selected}', - number2)
+            else:
+              sheet.update_acell(f'G{id_selected}', number2)
+            sheet.update_acell(f'H{id_selected}', descricao2)
+            sheet.update_acell(f'I{id_selected}', status2)
+            sheet.update_acell(f'J{id_selected}', analise2)
+            sheet.update_acell(f'J{id_selected}', proj2)
+            sheet.update_acell(f'M{id_selected}', st.session_state.name)
+            sheet.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            st.success("Registro editado com sucesso!")
+            st.rerun()
 
 
-  Alt_lançamentos()
-  st.divider()
+Alt_lançamentos()
+st.divider()
 
