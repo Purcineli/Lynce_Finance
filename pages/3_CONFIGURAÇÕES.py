@@ -124,7 +124,7 @@ with ativos:
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
       if len(tabela_contas_banco_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', "NONE")
+        id_selecionada = st.selectbox('SELECIONE A ID', value=None)
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
   with col02:
@@ -137,12 +137,12 @@ with ativos:
     nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
     with nome:
       if len(tabela_contas_banco_ativa)==0:
-        bank = st.text_input("NOME BANCO","NONE", key="one")
+        bank = st.text_input("NOME BANCO",value=None, key="one")
       else:
         bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
     with prop:
       if len(tabela_contas_banco_ativa)==0:
-        owner = st.text_input("NOME BANCO","NONE", key="two")
+        owner = st.text_input("NOME BANCO",value=None, key="two")
       else:
         owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "PROPRIETÁRIO"])
     with but:
@@ -167,7 +167,7 @@ with inativos_contas_cont:
   col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col11:
       if len(tabela_contas_cont_inativa)==0:
-         id_selecionada_cont = st.selectbox('SELECIONE A ID', "NONE", key="t")
+         id_selecionada_cont = st.selectbox('SELECIONE A ID', value=None, key="t")
       else:
          id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r")
   with col12:
@@ -197,7 +197,7 @@ with ativos_contas_cont:
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
       if len(tabela_contas_cont_ativa)==0:
-         id_selecionada3 = st.selectbox('SELECIONE A ID', "NONE", key="four")
+         id_selecionada3 = st.selectbox('SELECIONE A ID', value=None, key="four")
       else:
          id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five")
   with col02:
@@ -210,12 +210,12 @@ with ativos_contas_cont:
     conta,cate,atr,but,but2 =st.columns((0.25,0.28,0.2,0.14,0.16), vertical_alignment='bottom')
     with conta:
       if len(tabela_contas_cont_ativa)==0:
-        cont = st.text_input("CONTA","NONE", key="1")
+        cont = st.text_input("CONTA",value=None, key="1")
       else:
         cont = st.text_input("CONTA",tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
     with cate:
       if len(tabela_contas_cont_ativa)==0:
-         categor = st.text_input("CATEGORIA","NONE", key="2")
+         categor = st.text_input("CATEGORIA",value=None, key="2")
       else:
          categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
     with but:
@@ -238,7 +238,7 @@ with proj_inativos:
   col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col21:
       if len(tabela_evenproj_inativa)==0:
-        id_selecionada3 = st.selectbox('SELECIONE A ID', "NONE", key="4"),
+        id_selecionada3 = st.selectbox('SELECIONE A ID', value=None, key="4"),
       else:
         id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
   with col22:
@@ -263,7 +263,7 @@ with proj_ativos:
   col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col31:
       if len(tabela_evenproj_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID', "NONE", key='5')
+        id_selecionada = st.selectbox('SELECIONE A ID', value=None, key='5')
       else:
         id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
   with col32:
