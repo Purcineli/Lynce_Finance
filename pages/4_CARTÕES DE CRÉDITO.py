@@ -120,7 +120,7 @@ tabela_lancamentos_cartao = tabela_lancamentos_cartao[
     (tabela_lancamentos_cartao['CARTÃO'].isin(lista_cartoes_selecionado)) & 
     (tabela_lancamentos_cartao['PROPRIETÁRIO'].isin(lista_owners_selecionado))
 ]
-
+tamanho_tabela = len(tabela_lancamentos_cartao)
 if st.toggle('Conciliar fatura'):
   if tamanho_tabela==0:
      st.write("Inserir lançamentos")
