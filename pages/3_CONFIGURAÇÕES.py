@@ -105,8 +105,10 @@ with inativos:
     nome,prop,but =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
     with nome:
       new_bank = st.text_input('NOME')
+      new_bank = str(new_bank.upper())
     with prop:
       nowner = st.text_input('PROPRIETÁRIO')
+      nowner = str(nowner.upper())
     with but:
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
@@ -124,9 +126,9 @@ with ativos:
   col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
   with col01:
       if len(tabela_contas_banco_ativa)==0:
-        id_selecionada = st.selectbox('SELECIONE A ID',options=None)
+        id_selecionada2 = st.selectbox('SELECIONE A ID',options=None)
       else:
-        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
+        id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
   with col02:
       if st.button('INATIVAR'):
          conta_banco_cadastradas.update_acell(f'D{id_selecionada}', False)
@@ -138,6 +140,7 @@ with ativos:
     with nome:
       if len(tabela_contas_banco_ativa)==0:
         bank = st.text_input("NOME BANCO",value=None, key="one")
+        bank = str(bank.upper())
       else:
         bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada, "NOME BANCO"])
     with prop:
