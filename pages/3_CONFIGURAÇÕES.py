@@ -274,7 +274,7 @@ with proj_ativos:
   with st.form(key='Editar nome'):
     st.write('EDITAR PROJETO') 
     if len(tabela_evenproj_ativa)==0:
-      nome = st.text_input("NOME BANCO","NONE", key="7")
+      nome = st.text_input("NOME BANCO", value=None, key="7")
     else:
       nome = st.text_input("NOME BANCO",tabela_evenproj.loc[id_selecionada, "NOME"])
     submit = st.form_submit_button(label="EDITAR")
