@@ -112,9 +112,9 @@ listas_cartoes = list(tabela_lancamentos_cartao['CARTÃO'].unique())
 listas_owners = list(tabela_lancamentos_cartao['PROPRIETÁRIO'].unique())
 colun1, colun2 = st.columns(2)
 with colun1:
-  lista_cartoes_selecionado = st.multiselect("Selecione", listas_cartoes, listas_cartoes)
+  lista_cartoes_selecionado = st.multiselect("Selecione", listas_cartoes, listas_cartoes, key="1")
 with colun2:
-  lista_owners_selecionado = st.multiselect("Selecione", listas_owners, listas_owners)
+  lista_owners_selecionado = st.multiselect("Selecione", listas_owners, listas_owners, key="2")
 
 tabela_lancamentos_cartao = tabela_lancamentos_cartao[
     (tabela_lancamentos_cartao['CARTÃO'].isin(lista_cartoes_selecionado)) & 
