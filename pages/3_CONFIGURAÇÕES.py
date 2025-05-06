@@ -40,7 +40,7 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 
 lançamentos, workbook = lerdados(sheeitid, sheetname)
-toggle11,toggle12,toggle13,toggle14 = st.col(4)
+toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
   togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS')
 with toggle12:
