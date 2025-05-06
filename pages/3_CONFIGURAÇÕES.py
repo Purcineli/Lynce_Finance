@@ -128,8 +128,6 @@ if togglecontas_bancarias:
           owner = owner.upper()
       with but:
         submit = st.form_submit_button(label="EDITAR")
-      with but2:
-        ###
     if submit:
       conta_banco_cadastradas.update_acell(f'B{int(id_selecionada2)}', bank)
       conta_banco_cadastradas.update_acell(f'C{int(id_selecionada2)}', owner)
