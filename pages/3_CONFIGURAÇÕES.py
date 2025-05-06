@@ -59,6 +59,7 @@ if togglecontas_bancarias:
   tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
   tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
   tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+  st.write(len(tabela_contas_banco))
   if len(tabela_contas_banco) == 0:
     tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
   elif len(tabela_contas_banco) == 1:
@@ -157,6 +158,7 @@ if togglecontas_contábeis:
   tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
   tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
   tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
+  st.write(len(tabela_contas_cont))
   if len(tabela_contas_cont) == 0:
     tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
   elif len(tabela_contas_cont) == 1:
