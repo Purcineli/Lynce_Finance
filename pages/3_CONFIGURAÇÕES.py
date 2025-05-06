@@ -64,7 +64,7 @@ if togglecontas_bancarias:
   elif len(tabela_contas_banco) == 1:
     tamanho_tabela_contas_banco = len(tabela_contas_banco)+1
   else:
-    tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
+    tamanho_tabela_contas_banco = len(tabela_contas_banco)+1
   st.title('CONTAS BANCÁRIAS')
   inativos, ativos = st.columns(2)
   with inativos:
