@@ -321,7 +321,7 @@ if togglecontas_card:
     st.dataframe(tabela_cartoes_inativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
-        if len(tabela_cartoes)<1:
+        if len(tabela_cartoes_inativa)<1:
           id_selecionada4 = st.selectbox('SELECIONE A ID', options=None, key="9"),
         else:
           id_selecionada4 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index))
@@ -367,7 +367,7 @@ if togglecontas_card:
 
     with st.form(key='Editar cartao'):
       st.write('EDITAR CARTÃO') 
-      if len(tabela_cartoes)<1:
+      if len(tabela_cartoes_ativa)<1:
         new_nome_card = st.text_input("NOME", value=None, key="17")
       else:
         new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"])
