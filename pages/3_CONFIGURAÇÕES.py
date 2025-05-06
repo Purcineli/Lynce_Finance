@@ -100,7 +100,7 @@ if togglecontas_bancarias:
     st.dataframe(tabela_contas_banco_ativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
-        if len(tabela_contas_banco_ativa)==0:
+        if len(tabela_contas_banco_ativa)<=1:
           id_selecionada2 = st.selectbox('SELECIONE A ID',options=None)
         else:
           id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
@@ -113,14 +113,14 @@ if togglecontas_bancarias:
       st.write('EDITAR CONTA BANCÁRIA') 
       nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
       with nome:
-        if len(tabela_contas_banco_ativa)==0:
+        if len(tabela_contas_banco_ativa)<=1:
           bank = st.text_input("NOME BANCO",value=None, key="one")
           bank = str(bank)
           bank = bank.upper()
         else:
           bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"])
       with prop:
-        if len(tabela_contas_banco_ativa)==0:
+        if len(tabela_contas_banco_ativa)<=1:
           owner = st.text_input("NOME BANCO",value=None, key="two")
         else:
           owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
@@ -162,7 +162,7 @@ if togglecontas_contábeis:
     st.dataframe(tabela_contas_cont_inativa, height=500)
     col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col11:
-        if len(tabela_contas_cont_inativa)==0:
+        if len(tabela_contas_cont_inativa)<=1:
           id_selecionada_cont = st.selectbox('SELECIONE A ID', options=None, key="t")
         else:
           id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r")
@@ -196,7 +196,7 @@ if togglecontas_contábeis:
     st.dataframe(tabela_contas_cont_ativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
-        if len(tabela_contas_cont_ativa)==0:
+        if len(tabela_contas_cont_ativa)<=1:
           id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="four")
         else:
           id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five")
@@ -209,14 +209,14 @@ if togglecontas_contábeis:
       st.write('EDITAR CONTA CONTÁBIL') 
       conta,cate,atr,but,but2 =st.columns((0.25,0.28,0.2,0.14,0.16), vertical_alignment='bottom')
       with conta:
-        if len(tabela_contas_cont_ativa)==0:
+        if len(tabela_contas_cont_ativa)<=1:
           cont = st.text_input("CONTA",value=None, key="1")
         else:
           cont = st.text_input("CONTA",tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
         cont = str(cont)
         cont = cont.upper()
       with cate:
-        if len(tabela_contas_cont_ativa)==0:
+        if len(tabela_contas_cont_ativa)<=1:
           categor = st.text_input("CATEGORIA",value=None, key="2")
         else:
           categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
@@ -255,7 +255,7 @@ if togglecontas_proj:
     st.dataframe(tabela_evenproj_inativa, height=500)
     col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col21:
-        if len(tabela_evenproj_inativa)==0:
+        if len(tabela_evenproj_inativa)<=1:
           id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="4"),
         else:
           id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
@@ -282,7 +282,7 @@ if togglecontas_proj:
     st.dataframe(tabela_evenproj_ativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
-        if len(tabela_evenproj_ativa)==0:
+        if len(tabela_evenproj_ativa)<=1:
           id_selecionada5 = st.selectbox('SELECIONE A ID', options=None, key='5')
         else:
           id_selecionada5 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
@@ -293,7 +293,7 @@ if togglecontas_proj:
 
     with st.form(key='Editar nome'):
       st.write('EDITAR PROJETO') 
-      if len(tabela_evenproj_ativa)==0:
+      if len(tabela_evenproj_ativa)<=1:
         nome = st.text_input("NOME", value=None, key="7")
       else:
         nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada, "NOME"])
@@ -328,7 +328,7 @@ if togglecontas_card:
     st.dataframe(tabela_cartoes_inativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
-        if len(tabela_cartoes)==0:
+        if len(tabela_cartoes)<=1:
           id_selecionada4 = st.selectbox('SELECIONE A ID', options=None, key="9"),
         else:
           id_selecionada4 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index))
@@ -362,7 +362,7 @@ if togglecontas_card:
     st.dataframe(tabela_cartoes_ativa, height=500)
     col41, col42 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col41:
-        if len(tabela_cartoes)==0:
+        if len(tabela_cartoes)<=1:
           id_selecionada6 = st.selectbox('SELECIONE A ID', options=None, key='10')
         else:
           id_selecionada6 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index))
@@ -373,13 +373,13 @@ if togglecontas_card:
 
     with st.form(key='Editar cartao'):
       st.write('EDITAR CARTÃO') 
-      if len(tabela_cartoes)==0:
+      if len(tabela_cartoes)<=1:
         new_nome_card = st.text_input("NOME", value=None, key="17")
       else:
         new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada, "NOME"])
       new_nome_card = str(new_nome_card)
       new_nome_card = new_nome_card.upper()
-      if len(tabela_cartoes)==0:
+      if len(tabela_cartoes)<=1:
         new_nome_owner = st.text_input("PROPRIETÁRIO", value=None, key="18")
       else:
         new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada, 'PROPRIETÁRIO'])
