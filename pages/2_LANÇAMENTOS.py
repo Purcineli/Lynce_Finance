@@ -62,7 +62,7 @@ tabela_contas_cont = conta_cont_cadastradas.get_all_values()
 tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
 tabela_contas_cont = tabela_contas_cont.set_index('ID')
 tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
-tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
+tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 
 #PROJETOS#
@@ -233,7 +233,7 @@ def Alt_lançamentos():
             Submit_delete = st.button(label="DELETAR")
 
           if Submit_delete:
-              sheet.delete_rows(id_selected2)
+              sheet.delete_rows(id_selected)
               st.success("Registro deletado com sucesso!")
               st.rerun()
 
