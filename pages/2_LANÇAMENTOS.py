@@ -210,11 +210,11 @@ def Alt_lançamentos():
         if tamanho_tabela==0:
            st.write("INSERIR NOVO LANÇAMENTO"),
         else:
+          with subcol1:
+            id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
+          with subcol2:
+            data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
           with st.form(key="form_editar", border=False):
-            with subcol1:
-              id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
-            with subcol2:
-              data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
             idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
             idxbanco = bancos.index(idxbanco)
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
@@ -231,9 +231,9 @@ def Alt_lançamentos():
             status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
             subcol3, subcol4 = st.columns(2)
             with subcol3:   
-              Submit_edit = st.button(label="EDITAR")
+              Submit_edit = st.form_submit_button(label="EDITAR")
             with subcol4:
-              Submit_delete = st.button(label="DELETAR")
+              Submit_delete = st.form_submit_button(label="DELETAR")
 
             if Submit_delete:
                 sheet.delete_rows(id_selected)
