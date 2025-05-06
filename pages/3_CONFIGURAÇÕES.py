@@ -369,13 +369,13 @@ if togglecontas_card:
       if len(tabela_cartoes)<1:
         new_nome_card = st.text_input("NOME", value=None, key="17")
       else:
-        new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada, "NOME"])
+        new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada6, "NOME"])
       new_nome_card = str(new_nome_card)
       new_nome_card = new_nome_card.upper()
       if len(tabela_cartoes)<1:
         new_nome_owner = st.text_input("PROPRIETÁRIO", value=None, key="18")
       else:
-        new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada, 'PROPRIETÁRIO'])
+        new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada6, 'PROPRIETÁRIO'])
       new_nome_owner = str(new_nome_owner)
       new_nome_owner = new_nome_owner.upper()
       submit = st.form_submit_button(label="EDITAR")
