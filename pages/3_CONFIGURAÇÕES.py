@@ -40,9 +40,12 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 
 lançamentos, workbook = lerdados(sheeitid, sheetname)
-
+togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS')
+togglecontas_contábeis = st.toggle('CONTAS CONTÁBEIS')
+togglecontas_proj = st.toggle('PROJETOS/EVENTOS')
+togglecontas_card = st.toggle('CARTÕES DE CRÉDITO')
 ###################CONTAS BANCÁRIAS####################
-if st.toggle("CONTAS BANCÁRIAS"):
+if togglecontas_bancarias:
   conta_banco_cadastradas = workbook.get_worksheet(2)
   tabela_contas_banco = conta_banco_cadastradas.get_all_values()
   tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
@@ -118,10 +121,8 @@ if st.toggle("CONTAS BANCÁRIAS"):
           owner = str(owner)
           owner = owner.upper()
       with but:
-        #s,d = st.columns(2)
         submit = st.form_submit_button(label="EDITAR")
       with but2:
-        delete = st.form_submit_button(label="DELETAR")
     if submit:
       conta_banco_cadastradas.update_acell(f'B{int(id_selecionada2)}', bank)
       conta_banco_cadastradas.update_acell(f'C{int(id_selecionada2)}', owner)
@@ -135,7 +136,7 @@ if st.toggle("CONTAS BANCÁRIAS"):
 ###################CONTAS CONTÁBEIS####################
 
 #CONTAS CONTÁBEIS#
-if st.toggle("CONTAS CONTÁBEIS"):
+if togglecontas_contábeis:
   st.divider()
   conta_cont_cadastradas = workbook.get_worksheet(3)
   tabela_contas_cont = conta_cont_cadastradas.get_all_values()
@@ -166,8 +167,12 @@ if st.toggle("CONTAS CONTÁBEIS"):
       nome1,cat, atr,but =st.columns((0.3,0.3,0.25,0.15), vertical_alignment='bottom')
       with nome1:
         new_conta = st.text_input('CONTA CONTÁBIL')
+        new_conta = str(new_conta)
+        new_conta = new_conta.upper()
       with cat:
         new_cat = st.text_input('CATEGORIA')
+        new_cat = str(new_cat)
+        new_cat = new_cat.upper()
       with but:
         submit = st.form_submit_button(label="INSERIR")
         if submit: #st.button('INSERIR NOVA CONTA'):
@@ -200,11 +205,15 @@ if st.toggle("CONTAS CONTÁBEIS"):
           cont = st.text_input("CONTA",value=None, key="1")
         else:
           cont = st.text_input("CONTA",tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
+        cont = str(cont)
+        cont = cont.upper()
       with cate:
         if len(tabela_contas_cont_ativa)==0:
           categor = st.text_input("CATEGORIA",value=None, key="2")
         else:
           categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
+        categor = str(categor)
+        categor = categor.upper()
       with but:
         submit = st.form_submit_button(label="EDITAR")
       with but2:
@@ -221,7 +230,7 @@ if st.toggle("CONTAS CONTÁBEIS"):
 
 ###################PROJETOS/EVENTOS####################
 #PROJETOS#
-if st.toggle("PROJETOS/EVENTOS"):
+if togglecontas_proj:
   tabela_evenproj_sheet = workbook.get_worksheet(5)
   tabela_evenproj = tabela_evenproj_sheet.get_all_values()
   tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
@@ -248,6 +257,8 @@ if st.toggle("PROJETOS/EVENTOS"):
     with st.form(key="Inserir novo projeto / evento"):
       st.write('NOVA PROJETO / EVENTO')
       new_name = st.text_input('NOME')
+      new_name = str(new_name)
+      new_name = new_name.upper()
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
         tabela_evenproj_sheet.add_rows(1)
@@ -277,6 +288,8 @@ if st.toggle("PROJETOS/EVENTOS"):
         nome = st.text_input("NOME", value=None, key="7")
       else:
         nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada, "NOME"])
+      nome = str(nome)
+      nome = nome.upper()
       submit = st.form_submit_button(label="EDITAR")
       if submit:
         tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada2)}', nome)
@@ -287,7 +300,7 @@ if st.toggle("PROJETOS/EVENTOS"):
 
 ###################CARTÕES DE CRÉDITOS####################
 #CARTÕES DE CRÉDITO#
-if st.toggle("CARTÕES DE CRÉDITO"):
+if togglecontas_card:
   tabela_cartoes_sheet = workbook.get_worksheet(4)
   tabela_cartoes = tabela_cartoes_sheet.get_all_values()
   tabela_cartoes = pd.DataFrame(tabela_cartoes[1:], columns=tabela_cartoes[0])
@@ -318,8 +331,12 @@ if st.toggle("CARTÕES DE CRÉDITO"):
       nome1,prop2,but3 =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
       with nome1:
         new_card = st.text_input('NOME', key="new card")
+        new_card = str(new_card)
+        new_card = new_card.upper()
       with prop2:
         newcardowner = st.text_input('PROPRIETÁRIO', key="new owner")
+        newcardowner = str(newcardowner)
+        newcardowner = newcardowner.upper()
       with but3:
         submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
@@ -347,12 +364,21 @@ if st.toggle("CARTÕES DE CRÉDITO"):
     with st.form(key='Editar cartao'):
       st.write('EDITAR CARTÃO') 
       if len(tabela_cartoes)==0:
-        nome = st.text_input("NOME", value=None, key="17")
+        new_nome_card = st.text_input("NOME", value=None, key="17")
       else:
-        nome = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada, "NOME"])
+        new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada, "NOME"])
+      new_nome_card = str(new_nome_card)
+      new_nome_card = new_nome_card.upper()
+      if len(tabela_cartoes)==0:
+        new_nome_owner = st.text_input("PROPRIETÁRIO", value=None, key="18")
+      else:
+        new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada, 'PROPRIETÁRIO'])
+      new_nome_owner = str(new_nome_owner)
+      new_nome_owner = new_nome_owner.upper()
       submit = st.form_submit_button(label="EDITAR")
       if submit:
-        tabela_cartoes_sheet.update_acell(f'B{int(id_selecionada6)}', nome)
+        tabela_cartoes_sheet.update_acell(f'B{int(id_selecionada6)}', new_nome_card)
+        tabela_cartoes_sheet.update_acell(f'C{int(id_selecionada6)}', new_nome_owner)
         st.rerun()
       if delete:
         st.rerun()
