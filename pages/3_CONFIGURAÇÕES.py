@@ -348,6 +348,7 @@ if togglecontas_card:
         tabela_cartoes_sheet.update_acell(f'B{tamanho_tabela_cartoes}', new_card)
         tabela_cartoes_sheet.update_acell(f'C{tamanho_tabela_cartoes}', newcardowner)
         tabela_cartoes_sheet.update_acell(f'D{tamanho_tabela_cartoes}', 'BRL')
+        tabela_cartoes_sheet.update_acell(f'G{tamanho_tabela_cartoes}', True)
         st.rerun()
     
   with card_ativos:
