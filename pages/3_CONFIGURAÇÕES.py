@@ -131,11 +131,12 @@ if st.toggle("CONTAS BANCÁRIAS"):
 ########################################################################
 
 
-st.divider()
+
 ###################CONTAS CONTÁBEIS####################
 
 #CONTAS CONTÁBEIS#
 if st.toggle("CONTAS CONTÁBEIS"):
+  st.divider()
   conta_cont_cadastradas = workbook.get_worksheet(3)
   tabela_contas_cont = conta_cont_cadastradas.get_all_values()
   tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
