@@ -373,7 +373,7 @@ if togglecontas_card:
         new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"])
       new_nome_card = str(new_nome_card)
       new_nome_card = new_nome_card.upper()
-      if len(tabela_cartoes)<1:
+      if len(tabela_cartoes_ativa)<1:
         new_nome_owner = st.text_input("PROPRIETÁRIO", value=None, key="18")
       else:
         new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"], key="20")
