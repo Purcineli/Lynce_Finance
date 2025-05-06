@@ -176,6 +176,7 @@ def Alt_lançamentos():
             descricao = str(descricao)
             descricao = descricao.upper()
             analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS','ANALÍTICA'], index=None, placeholder="Selecione")
+            analise2 = st.radio("SELECIONE A ALINEA",['DESPESAS','RECEITAS','ANALÍTICA'])
             proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
             submit = st.form_submit_button(label="INSERIR")
