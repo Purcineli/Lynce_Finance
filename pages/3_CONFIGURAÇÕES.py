@@ -376,7 +376,7 @@ if togglecontas_card:
       if len(tabela_cartoes)<1:
         new_nome_owner = st.text_input("PROPRIETÁRIO", value=None, key="18")
       else:
-        new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"])
+        new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"], key="20")
       new_nome_owner = str(new_nome_owner)
       new_nome_owner = new_nome_owner.upper()
       submit = st.form_submit_button(label="EDITAR")
