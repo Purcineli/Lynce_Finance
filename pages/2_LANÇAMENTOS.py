@@ -226,8 +226,7 @@ def Alt_lançamentos():
             analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
             idxanalises = lançamentos.loc[id_selected, 'ANALISE']
             idxanalises = analiseslist.index(idxanalises)
-            analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
-            analise3 = st.radio('SELECIONE A ALÍNEA',analiseslist,index=idxanalises)
+            analise2 = st.radio('SELECIONE A ALÍNEA',analiseslist,index=idxanalises, horizontal=True)
             proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
             subcol3, subcol4 = st.columns(2)
