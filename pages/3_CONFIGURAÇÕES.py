@@ -165,7 +165,7 @@ if togglecontas_contábeis:
           id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r")
     with col12:
         if st.button('ATIVAR CONTA CONTABIL'):
-          conta_cont_cadastradas.update_acell(f'D{id_selecionada_cont}', True)
+          conta_cont_cadastradas.update_acell(f'E{id_selecionada_cont}', True)
           st.rerun()
     with st.form(key="Inserir nova conta contabil"):
       st.write('NOVA CONTA CONTÁBIL')
