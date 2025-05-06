@@ -59,6 +59,7 @@ if togglecontas_bancarias:
   tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
   tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
   tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+  st.write(len(tabela_contas_banco))
   tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
   st.title('CONTAS BANCÁRIAS')
   inativos, ativos = st.columns(2)
@@ -152,6 +153,7 @@ if togglecontas_contábeis:
   tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
   tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
   tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
+  st.write(len(tabela_contas_cont))
   tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
   st.title('CONTAS CONTÁBEIS')
   inativos_contas_cont, ativos_contas_cont = st.columns(2)
@@ -243,6 +245,7 @@ if togglecontas_proj:
   tabela_evenproj = tabela_evenproj.set_index('ID')
   tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
   tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
+  st.write(len(tabela_evenproj))
   tamanho_tabela_evenproj = len(tabela_evenproj)+2
   st.divider() 
   st.title('PROJETOS / EVENTOS')
@@ -315,6 +318,7 @@ if togglecontas_card:
   tabela_cartoes_ativa = tabela_cartoes_ativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
   tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
   tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
+  st.write(len(tabela_cartoes))
   tamanho_tabela_cartoes = len(tabela_cartoes)+2
   st.divider() 
   st.title('CARTÕES DE CRÉDITO')
