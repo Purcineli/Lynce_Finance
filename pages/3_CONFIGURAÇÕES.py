@@ -292,12 +292,12 @@ if togglecontas_proj:
       if len(tabela_evenproj_ativa)<1:
         nome = st.text_input("NOME", value=None, key="7")
       else:
-        nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada, "NOME"])
+        nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada5, "NOME"])
       nome = str(nome)
       nome = nome.upper()
       submit = st.form_submit_button(label="EDITAR")
       if submit:
-        tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada2)}', nome)
+        tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada5)}', nome)
         st.rerun()
 ########################################################################
 
