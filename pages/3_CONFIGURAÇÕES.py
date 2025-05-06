@@ -39,23 +39,101 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   return dados_records,workbook
 
 
-
-
-
-
-
-
 lançamentos, workbook = lerdados(sheeitid, sheetname)
-#CONTAS BANCÁRIAS#
-conta_banco_cadastradas = workbook.get_worksheet(2)
-tabela_contas_banco = conta_banco_cadastradas.get_all_values()
-tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
-tabela_contas_banco = tabela_contas_banco.set_index('ID')
-tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
-tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
-tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
-tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
-tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
+
+###################CONTAS BANCÁRIAS####################
+if st.toggle("CONTAS BANCÁRIAS"):
+  conta_banco_cadastradas = workbook.get_worksheet(2)
+  tabela_contas_banco = conta_banco_cadastradas.get_all_values()
+  tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
+  tabela_contas_banco = tabela_contas_banco.set_index('ID')
+  tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
+  tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+  tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
+  tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+  tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
+  st.title('CONTAS BANCÁRIAS')
+  inativos, ativos = st.columns(2)
+  with inativos:
+    st.write('INATIVAS')
+    st.dataframe(tabela_contas_banco_inativa, height=500)
+    col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
+    with col01:
+        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index))
+    with col02:
+        if st.button('ATIVAR'):
+          conta_banco_cadastradas.update_acell(f'D{id_selecionada}', True)
+          st.rerun()
+    with st.form(key="Inserir nova conta"):
+      st.write('NOVA CONTA BANCÁRIA')
+      nome,prop,but =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
+      with nome:
+        new_bank = st.text_input('NOME')
+        new_bank = str(new_bank)
+        new_bank = new_bank.upper()
+      with prop:
+        nowner = st.text_input('PROPRIETÁRIO')
+        nowner = str(nowner)
+        nowner = nowner.upper()
+      with but:
+        submit = st.form_submit_button(label="INSERIR")
+        if submit: #st.button('INSERIR NOVA CONTA'):
+          conta_banco_cadastradas.add_rows(1)
+          conta_banco_cadastradas.update_acell(f'A{tamanho_tabela_contas_banco}', f'=ROW(B{tamanho_tabela_contas_banco})')
+          conta_banco_cadastradas.update_acell(f'B{tamanho_tabela_contas_banco}', new_bank)
+          conta_banco_cadastradas.update_acell(f'C{tamanho_tabela_contas_banco}', nowner)
+          conta_banco_cadastradas.update_acell(f'D{tamanho_tabela_contas_banco}', True)
+          conta_banco_cadastradas.update_acell(f'E{tamanho_tabela_contas_banco}', 'BRL')
+          st.rerun()
+
+  with ativos:
+    st.write('ATIVAS')
+    st.dataframe(tabela_contas_banco_ativa, height=500)
+    col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
+    with col01:
+        if len(tabela_contas_banco_ativa)==0:
+          id_selecionada2 = st.selectbox('SELECIONE A ID',options=None)
+        else:
+          id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
+    with col02:
+        if st.button('INATIVAR'):
+          conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
+          st.rerun()
+
+    with st.form(key='Editar conta'):
+      st.write('EDITAR CONTA BANCÁRIA') 
+      nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
+      with nome:
+        if len(tabela_contas_banco_ativa)==0:
+          bank = st.text_input("NOME BANCO",value=None, key="one")
+          bank = str(bank)
+          bank = bank.upper()
+        else:
+          bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"])
+      with prop:
+        if len(tabela_contas_banco_ativa)==0:
+          owner = st.text_input("NOME BANCO",value=None, key="two")
+        else:
+          owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
+          owner = str(owner)
+          owner = owner.upper()
+      with but:
+        #s,d = st.columns(2)
+        submit = st.form_submit_button(label="EDITAR")
+      with but2:
+        delete = st.form_submit_button(label="DELETAR")
+    if submit:
+      conta_banco_cadastradas.update_acell(f'B{int(id_selecionada2)}', bank)
+      conta_banco_cadastradas.update_acell(f'C{int(id_selecionada2)}', owner)
+      st.rerun()
+    if delete:
+      st.rerun()
+########################################################################
+
+
+st.divider()
+###################CONTAS CONTÁBEIS####################
+
 #CONTAS CONTÁBEIS#
 conta_cont_cadastradas = workbook.get_worksheet(3)
 tabela_contas_cont = conta_cont_cadastradas.get_all_values()
@@ -66,107 +144,6 @@ tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORI
 tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
 tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
-
-#PROJETOS#
-tabela_evenproj_sheet = workbook.get_worksheet(5)
-tabela_evenproj = tabela_evenproj_sheet.get_all_values()
-tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
-tabela_evenproj = tabela_evenproj.set_index('ID')
-tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
-tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
-tamanho_tabela_evenproj = len(tabela_evenproj)+2
-
-
-#CARTÕES DE CRÉDITO#
-tabela_cartoes_sheet = workbook.get_worksheet(4)
-tabela_cartoes = tabela_cartoes_sheet.get_all_values()
-tabela_cartoes = pd.DataFrame(tabela_cartoes[1:], columns=tabela_cartoes[0])
-tabela_cartoes = tabela_cartoes.set_index('ID')
-tabela_cartoes_ativa = tabela_cartoes[tabela_cartoes['ATIVO']=='TRUE']
-tabela_cartoes_ativa = tabela_cartoes_ativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
-tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
-tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
-tamanho_tabela_cartoes = len(tabela_cartoes)+2
-
-st.title('CONTAS BANCÁRIAS')
-inativos, ativos = st.columns(2)
-with inativos:
-  st.write('INATIVAS')
-  st.dataframe(tabela_contas_banco_inativa, height=500)
-  col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
-  with col01:
-      id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index))
-  with col02:
-      if st.button('ATIVAR'):
-         conta_banco_cadastradas.update_acell(f'D{id_selecionada}', True)
-         st.rerun()
-  with st.form(key="Inserir nova conta"):
-    st.write('NOVA CONTA BANCÁRIA')
-    nome,prop,but =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
-    with nome:
-      new_bank = st.text_input('NOME')
-      new_bank = str(new_bank)
-      new_bank = new_bank.upper()
-    with prop:
-      nowner = st.text_input('PROPRIETÁRIO')
-      nowner = str(nowner)
-      nowner = nowner.upper()
-    with but:
-      submit = st.form_submit_button(label="INSERIR")
-      if submit: #st.button('INSERIR NOVA CONTA'):
-        conta_banco_cadastradas.add_rows(1)
-        conta_banco_cadastradas.update_acell(f'A{tamanho_tabela_contas_banco}', f'=ROW(B{tamanho_tabela_contas_banco})')
-        conta_banco_cadastradas.update_acell(f'B{tamanho_tabela_contas_banco}', new_bank)
-        conta_banco_cadastradas.update_acell(f'C{tamanho_tabela_contas_banco}', nowner)
-        conta_banco_cadastradas.update_acell(f'D{tamanho_tabela_contas_banco}', True)
-        conta_banco_cadastradas.update_acell(f'E{tamanho_tabela_contas_banco}', 'BRL')
-        st.rerun()
-
-with ativos:
-  st.write('ATIVAS')
-  st.dataframe(tabela_contas_banco_ativa, height=500)
-  col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
-  with col01:
-      if len(tabela_contas_banco_ativa)==0:
-        id_selecionada2 = st.selectbox('SELECIONE A ID',options=None)
-      else:
-        id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index))
-  with col02:
-      if st.button('INATIVAR'):
-         conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
-         st.rerun()
-
-  with st.form(key='Editar conta'):
-    st.write('EDITAR CONTA BANCÁRIA') 
-    nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
-    with nome:
-      if len(tabela_contas_banco_ativa)==0:
-        bank = st.text_input("NOME BANCO",value=None, key="one")
-        bank = str(bank)
-        bank = bank.upper()
-      else:
-        bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"])
-    with prop:
-      if len(tabela_contas_banco_ativa)==0:
-        owner = st.text_input("NOME BANCO",value=None, key="two")
-      else:
-        owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
-        owner = str(owner)
-        owner = owner.upper()
-    with but:
-      #s,d = st.columns(2)
-      submit = st.form_submit_button(label="EDITAR")
-    with but2:
-      delete = st.form_submit_button(label="DELETAR")
-  if submit:
-    conta_banco_cadastradas.update_acell(f'B{int(id_selecionada2)}', bank)
-    conta_banco_cadastradas.update_acell(f'C{int(id_selecionada2)}', owner)
-    st.rerun()
-  if delete:
-    st.rerun()
-  
-st.divider()
-### CONTAS CONTABEIS###
 st.title('CONTAS CONTÁBEIS')
 inativos_contas_cont, ativos_contas_cont = st.columns(2)
 with inativos_contas_cont:
@@ -236,7 +213,19 @@ with ativos_contas_cont:
     st.rerun()
   if delete:
     st.rerun()
-  
+
+########################################################################
+
+
+###################PROJETOS/EVENTOS####################
+#PROJETOS#
+tabela_evenproj_sheet = workbook.get_worksheet(5)
+tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
+tabela_evenproj = tabela_evenproj.set_index('ID')
+tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
+tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
+tamanho_tabela_evenproj = len(tabela_evenproj)+2
 st.divider() 
 st.title('PROJETOS / EVENTOS')
 proj_inativos, proj_ativos = st.columns(2)
@@ -291,7 +280,19 @@ with proj_ativos:
       st.rerun()
     if delete:
       st.rerun()
+########################################################################
 
+###################CARTÕES DE CRÉDITOS####################
+#CARTÕES DE CRÉDITO#
+tabela_cartoes_sheet = workbook.get_worksheet(4)
+tabela_cartoes = tabela_cartoes_sheet.get_all_values()
+tabela_cartoes = pd.DataFrame(tabela_cartoes[1:], columns=tabela_cartoes[0])
+tabela_cartoes = tabela_cartoes.set_index('ID')
+tabela_cartoes_ativa = tabela_cartoes[tabela_cartoes['ATIVO']=='TRUE']
+tabela_cartoes_ativa = tabela_cartoes_ativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
+tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
+tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
+tamanho_tabela_cartoes = len(tabela_cartoes)+2
 st.divider() 
 st.title('CARTÕES DE CRÉDITO')
 card_inativos, card_ativos = st.columns(2)
