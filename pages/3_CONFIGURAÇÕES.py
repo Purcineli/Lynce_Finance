@@ -316,8 +316,6 @@ if togglecontas_proj:
       if submit:
         tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada2)}', nome)
         st.rerun()
-      if delete:
-        st.rerun()
 ########################################################################
 
 ###################CARTÕES DE CRÉDITOS####################
@@ -406,6 +404,4 @@ if togglecontas_card:
       if submit:
         tabela_cartoes_sheet.update_acell(f'B{int(id_selecionada6)}', new_nome_card)
         tabela_cartoes_sheet.update_acell(f'C{int(id_selecionada6)}', new_nome_owner)
-        st.rerun()
-      if delete:
         st.rerun()
