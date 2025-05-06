@@ -40,10 +40,15 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 
 lançamentos, workbook = lerdados(sheeitid, sheetname)
-togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS')
-togglecontas_contábeis = st.toggle('CONTAS CONTÁBEIS')
-togglecontas_proj = st.toggle('PROJETOS/EVENTOS')
-togglecontas_card = st.toggle('CARTÕES DE CRÉDITO')
+toggle11,toggle12,toggle13,toggle14 = st.col(4)
+with toggle11:
+  togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS')
+with toggle12:
+  togglecontas_contábeis = st.toggle('CONTAS CONTÁBEIS')
+with toggle13:
+  togglecontas_proj = st.toggle('PROJETOS/EVENTOS')
+with toggle14:
+  togglecontas_card = st.toggle('CARTÕES DE CRÉDITO')
 ###################CONTAS BANCÁRIAS####################
 if togglecontas_bancarias:
   conta_banco_cadastradas = workbook.get_worksheet(2)
