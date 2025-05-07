@@ -60,6 +60,7 @@ tabela_lancamentos_cartao['FATURA'] = pd.to_datetime(tabela_lancamentos_cartao['
 
 tabela_lancamentos_cartao['VALOR'] = tabela_lancamentos_cartao['VALOR'].str.replace('.', '', regex=False)  # Remover pontos de milhar
 tabela_lancamentos_cartao['VALOR'] = tabela_lancamentos_cartao['VALOR'].str.replace(',', '.', regex=False)  # Trocar vírgula por ponto decimal
+tabela_lancamentos_cartao['VALOR'] = tabela_lancamentos_cartao['VALOR'].replace('', np.nan)
 tabela_lancamentos_cartao['VALOR'] = tabela_lancamentos_cartao['VALOR'].astype(float)
 tabela_lancamentos_cartao['VALOR'] = tabela_lancamentos_cartao['VALOR'].round(2)
 
@@ -372,3 +373,4 @@ def Alt_lançamentos_CC():
 
 Alt_lançamentos_CC()
 st.divider()
+
