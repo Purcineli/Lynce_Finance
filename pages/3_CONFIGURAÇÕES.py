@@ -335,7 +335,7 @@ if togglecontas_card:
   tamanho_tabela_cartoes = len(tabela_cartoes)+1
 
   tabela_cartoes.index = pd.to_numeric(tabela_cartoes.index, errors='coerce')
-  tabela_cartoes = tabela_cartoes[tabela_cartoes.index.isna()]
+  tabela_cartoes = tabela_cartoes[~tabela_cartoes.index.isna()]
   tabela_cartoes.index = tabela_cartoes.index.astype(int)
   tamanho_tabela_cartoes = tabela_cartoes.index.max()
   if pd.isna(tamanho_tabela_cartoes):
