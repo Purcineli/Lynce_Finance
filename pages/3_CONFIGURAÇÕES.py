@@ -267,10 +267,6 @@ if togglecontas_proj:
   else:
     tamanho_tabela_evenproj = tamanho_tabela_evenproj + 1
 
-  st.dataframe(tabela_evenproj)
-  st.dataframe(tabela_evenproj_ativa)
-  st.dataframe(tabela_evenproj_inativa)
-  
   st.divider() 
   st.title('PROJETOS / EVENTOS')
   proj_inativos, proj_ativos = st.columns(2)
@@ -317,7 +313,7 @@ if togglecontas_proj:
       if pd.isna(tabela_evenproj_ativa.index.max()):
         nome = st.text_input("NOME", value=None, key="7")
       else:
-        nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada5, "NOME"])
+        nome = st.text_input("NOME",tabela_evenproj_ativa.loc[id_selecionada5, "NOME"])
       nome = str(nome)
       nome = nome.upper()
       submit = st.form_submit_button(label="EDITAR")
