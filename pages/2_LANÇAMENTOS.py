@@ -87,6 +87,8 @@ with col02:
 maxid = lançamentos['ID'].max()
 tamanho_tabela = len(lançamentos)
 tamanho_tabela = lançamentos.shape[0] + 2
+st.write(tamanho_tabela)
+
 if tamanho_tabela==2:
    st.write("SEM LANÇAMENTOS")
 
@@ -120,6 +122,7 @@ else:
   lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
   #lançamentos_conciliados = lançamentos_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
   lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['BANCO'].isin(contasbancarias_selecionadas))&(lançamentos_conciliados['LANÇAMENTO'].isin(contasconta_selecionadas))&(lançamentos_conciliados['CATEGORIA'].isin(contascategoria_selecionadas))&(lançamentos_conciliados['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
+  st.dataframe(lançamentos)
   st.dataframe(lançamentos_conciliados[colunas_selecionadas])
   st.markdown(f'SALDO TOTAL: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
   #st.write(lançamentos_conciliados)
