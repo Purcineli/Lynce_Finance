@@ -214,7 +214,7 @@ def Alt_lançamentos():
             idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
             idxbanco = bancos.index(idxbanco)
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
-            idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
+            idxdespesas = lançamentos.loc[str(id_selected), 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
             idxdespesas = contas.index(idxdespesas)
             despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
             number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[str(id_selected), 'VALOR'])
