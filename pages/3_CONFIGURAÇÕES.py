@@ -257,9 +257,8 @@ if togglecontas_proj:
   tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
   tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
 
-
   tabela_evenproj.index = pd.to_numeric(tabela_evenproj.index, errors='coerce')
-  tabela_evenproj = tabela_evenproj[tabela_evenproj.index.isna()]
+  tabela_evenproj = tabela_evenproj[~tabela_evenproj.index.isna()]
   tabela_evenproj.index = tabela_evenproj.index.astype(int)
   tamanho_tabela_evenproj = tabela_evenproj.index.max()
   if pd.isna(tamanho_tabela_evenproj):
