@@ -205,7 +205,7 @@ def Alt_lançamentos():
     with editar:
         st.write('Editar registro')
         subcol1,subcol2 = st.columns(2)
-        if tamanho_tabela==0:
+        if tamanho_tabela==2:
            st.write("INSERIR NOVO LANÇAMENTO"),
         else:
           with subcol1:
