@@ -217,7 +217,7 @@ def Alt_lançamentos():
             idxdespesas = lançamentos.loc[str(id_selected), 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
             idxdespesas = contas.index(idxdespesas)
             despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-            number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[str(id_selected), 'VALOR'])
+            number2 = st.number_input("VALOR", format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
             descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
             analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
             idxanalises = lançamentos.loc[str(id_selected), 'ANALISE']
