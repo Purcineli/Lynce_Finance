@@ -79,7 +79,7 @@ if togglecontas_bancarias:
     st.dataframe(tabela_contas_banco_inativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
-        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index))
+        id_selecionada = str(st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index)))
     with col02:
         if st.button('ATIVAR'):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada}', True)
