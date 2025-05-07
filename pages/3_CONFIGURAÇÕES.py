@@ -312,7 +312,7 @@ if togglecontas_proj:
       if pd.isna(tabela_evenproj_ativa.index.max()):
         nome = st.text_input("NOME", value=None, key="7")
       else:
-        nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada5, "NOME"])
+        nome = st.text_input("NOME",tabela_evenproj.loc[int(id_selecionada5), "NOME"])
       nome = str(nome)
       nome = nome.upper()
       submit = st.form_submit_button(label="EDITAR")
