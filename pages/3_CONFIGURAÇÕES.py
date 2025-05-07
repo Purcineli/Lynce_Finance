@@ -267,7 +267,7 @@ if togglecontas_proj:
   else:
     tamanho_tabela_evenproj = tamanho_tabela_evenproj + 1
 
-  st.write(tabela_evenproj.index)
+  st.write(tabela_evenproj)
 
   st.divider() 
   st.title('PROJETOS / EVENTOS')
