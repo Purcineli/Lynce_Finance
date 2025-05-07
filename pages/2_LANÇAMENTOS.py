@@ -89,7 +89,7 @@ maxid = lançamentos['ID'].max()
 tamanho_tabela = len(lançamentos)
 tamanho_tabela = tamanho_tabela+1
 
-if tamanho_tabela==0:
+if tamanho_tabela==1:
    st.write("SEM LANÇAMENTOS")
 
 
