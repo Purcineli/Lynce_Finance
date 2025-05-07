@@ -60,8 +60,15 @@ if togglecontas_bancarias:
   tabela_contas_banco_inativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='FALSE']
   tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
   #st.write(len(tabela_contas_banco))
+  tabela_contas_banco.index = pd.to_numeric(tabela_contas_banco.index, errors='coerce')
   tamanho_tabela_contas_banco = tabela_contas_banco.index.max()
-  st.write(tabela_contas_banco.index.max())
+  if pd.isna(tamanho_tabela_contas_banco):
+    tamanho_tabela_contas_banco = 2
+  else:
+    tamanho_tabela_contas_banco = tamanho_tabela_contas_banco + 1
+  
+
+
   st.title('CONTAS BANCÁRIAS')
   inativos, ativos = st.columns(2)
   with inativos:
