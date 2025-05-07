@@ -41,14 +41,12 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   return dados_records,workbook
 
 
-lançamentos2, workbook = lerdados(sheeitid, sheetname)
+lançamentos, workbook = lerdados(sheeitid, sheetname)
+sheet = workbook.get_worksheet(0)
 hoje = pd.to_datetime(date.today()) 
 
-
-lançamentos = workbook.get_worksheet(0)
-lançamentos = lançamentos.get_all_values()
+lançamentos = sheet.get_all_values()
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
-
 #CONTAS BANCÁRIAS#
 conta_banco_cadastradas = workbook.get_worksheet(2)
 tabela_contas_banco = conta_banco_cadastradas.get_all_values()
