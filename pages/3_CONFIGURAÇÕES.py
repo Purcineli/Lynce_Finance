@@ -273,10 +273,7 @@ if togglecontas_proj:
     st.dataframe(tabela_evenproj_inativa, height=500)
     col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col21:
-        if len(tabela_evenproj_inativa)<1:
-          id_selecionada3 = int(st.selectbox('SELECIONE A ID', options=None, key="4"),)
-        else:
-          id_selecionada3 = int(st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index)))
+        id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
     with col22:
         if st.button('ATIVAR', key="123"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada3}', True)
@@ -353,10 +350,7 @@ if togglecontas_card:
     st.dataframe(tabela_cartoes_inativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
-        if len(tabela_cartoes_inativa)<1:
-          id_selecionada4 = int(st.selectbox('SELECIONE A ID', options=None, key="9"))
-        else:
-          id_selecionada4 = int(st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index)))
+        id_selecionada4 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index))
     with col32:
         if st.button('ATIVAR', key="ativa cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada4}', True)
