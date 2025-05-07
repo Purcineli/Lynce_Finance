@@ -84,14 +84,15 @@ with col02:
   data_final = st.date_input("Data Final", date.today())
   data_final = pd.to_datetime(data_final)
 
-maxid = lançamentos['ID'].max()
-maxid = int(maxid)
+
 tamanho_tabela = len(lançamentos)
 tamanho_tabela = lançamentos.shape[0] + 2
 st.write(tamanho_tabela)
 if tamanho_tabela==2:
    st.write("SEM LANÇAMENTOS")
 else:
+  maxid = lançamentos['ID'].max()
+  maxid = int(maxid)
   tamanho_tabela = tamanho_tabela - 1
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
   lançamentos = lançamentos.set_index('ID')
