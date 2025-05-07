@@ -117,7 +117,7 @@ else:
 
   pesqdescri = st.sidebar.text_input('Pesquisar descrição')
 
-
+  lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   lançamentos = lançamentos[lançamentos['BANCO'].notna()]
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
