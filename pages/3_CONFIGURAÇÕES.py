@@ -67,6 +67,7 @@ if togglecontas_bancarias:
   else:
     tamanho_tabela_contas_banco = tamanho_tabela_contas_banco + 1
   
+  st.write(tamanho_tabela_contas_banco)
 
 
   st.title('CONTAS BANCÁRIAS')
