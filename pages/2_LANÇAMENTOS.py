@@ -98,7 +98,7 @@ if tamanho_tabela==2:
 
 else:
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
-  lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
+  #lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   lançamentos = lançamentos.set_index('ID')
   colunas = list(lançamentos.columns)
   colunas_selecionadas = st.multiselect('Selecione as colunas da tabela:', colunas, colunas,)
