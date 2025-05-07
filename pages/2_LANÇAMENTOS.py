@@ -90,7 +90,7 @@ tamanho_tabela = lançamentos.shape[0] + 2
 st.write(tamanho_tabela)
 if tamanho_tabela==2:
    st.write("SEM LANÇAMENTOS")
-elif tamanho_tabela == 4:
+elif tamanho_tabela==4:
   tamanho_tabela = 3
 else: 
   tamanho_tabela = tamanho_tabela
