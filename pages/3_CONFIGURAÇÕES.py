@@ -386,7 +386,7 @@ if togglecontas_card:
         if pd.isna(tabela_cartoes_ativa.index.max()):
           id_selecionada6 = st.selectbox('SELECIONE A ID', options=None, key='10')
         else:
-          id_selecionada6 = int(st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index)))
+          id_selecionada6 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index))
     with col42:
         if st.button('INATIVAR', key="inativar cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
