@@ -176,10 +176,7 @@ if togglecontas_contábeis:
     st.dataframe(tabela_contas_cont_inativa, height=500)
     col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col11:
-        if len(tabela_contas_cont_inativa)<1:
-          id_selecionada_cont = int(st.selectbox('SELECIONE A ID', options=None, key="t"))
-        else:
-          id_selecionada_cont = int(st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r"))
+        id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index))
     with col12:
         if st.button('ATIVAR CONTA CONTABIL'):
           conta_cont_cadastradas.update_acell(f'D{id_selecionada_cont}', True)
