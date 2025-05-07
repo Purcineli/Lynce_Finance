@@ -47,7 +47,7 @@ contas_cadastradas1 = sheet1.get_all_values()
 sheet = workbook.get_worksheet(0)
 contas_cadastradas = pd.DataFrame(contas_cadastradas1[1:], columns=contas_cadastradas1[0])
 hoje = pd.to_datetime(date.today()) 
-
+st.dataframe(lançamentos)
 
 lançamentos = workbook.get_worksheet(0)
 lançamentos = lançamentos.get_all_values()
