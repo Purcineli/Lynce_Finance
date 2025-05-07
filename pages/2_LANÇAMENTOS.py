@@ -125,9 +125,6 @@ else:
   st.dataframe(lançamentos_conciliados[colunas_selecionadas])
   st.markdown(f'SALDO TOTAL: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
   #st.write(lançamentos_conciliados)
-
-
-
   lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] < hoje)]
   lançamentos_nao_conciliados = lançamentos_nao_conciliados[colunas_selecionadas]
   #lançamentos_nao_conciliados = lançamentos_nao_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]

@@ -46,8 +46,7 @@ if len(lançamentos)==0:
   st.write("Sem lançamentos")
 else:
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()  # Transformar nomes dos bancos para maiúsculas
-  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace('.', '', regex=False)  # Remover pontos de milhar
-  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)  # Trocar vírgula por ponto decimal
+  lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)  # Converter 'VALOR' de texto para float
   lançamentos = lançamentos[lançamentos['CONCILIADO'] == True]  # Filtrar apenas registros conciliados
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')  # Converter 'DATA' para datetime (dia/mês/ano)
