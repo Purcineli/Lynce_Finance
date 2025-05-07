@@ -207,25 +207,24 @@ def Alt_lançamentos():
            st.write("INSERIR NOVO LANÇAMENTO"),
         else:
           with subcol1:
-            st.write(lançamentos.index)
             id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
           with subcol2:
             data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(key="form_editar", border=False):
-            idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
+            idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
             idxbanco = bancos.index(idxbanco)
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
-            idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[id_selected, 'CATEGORIA']
+            idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
             idxdespesas = contas.index(idxdespesas)
             despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-            number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[id_selected, 'VALOR'])
+            number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[str(id_selected), 'VALOR'])
             descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[id_selected, 'DESCRIÇÃO'])
             analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
             idxanalises = lançamentos.loc[id_selected, 'ANALISE']
             idxanalises = analiseslist.index(idxanalises)
             analise2 = st.radio('SELECIONE A ALÍNEA',analiseslist,index=idxanalises, horizontal=True)
             proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-            status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[id_selected, 'CONCILIADO'])
+            status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[str(id_selected), 'CONCILIADO'])
             subcol3, subcol4 = st.columns(2)
             with subcol3:   
               Submit_edit = st.form_submit_button(label="EDITAR")
