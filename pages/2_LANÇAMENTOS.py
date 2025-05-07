@@ -210,7 +210,7 @@ def Alt_lançamentos():
             st.write(lançamentos.index)
             id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
           with subcol2:
-            data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
+            data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(key="form_editar", border=False):
             idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[id_selected, 'PROPRIETÁRIO']
             idxbanco = bancos.index(idxbanco)
