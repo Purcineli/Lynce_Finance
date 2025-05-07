@@ -256,7 +256,9 @@ if togglecontas_proj:
   tabela_evenproj = tabela_evenproj.set_index('ID')
   tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
   tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
-
+  st.dataframe(tabela_evenproj)
+  st.dataframe(tabela_evenproj_ativa)
+  st.dataframe(tabela_evenproj_inativa)
 
   tabela_evenproj.index = pd.to_numeric(tabela_evenproj.index, errors='coerce')
   tabela_evenproj = tabela_evenproj[tabela_evenproj.index.isna()]
