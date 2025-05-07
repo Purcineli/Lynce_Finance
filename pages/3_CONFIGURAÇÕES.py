@@ -297,7 +297,7 @@ if togglecontas_proj:
     st.dataframe(tabela_evenproj_ativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
-        if len(tabela_evenproj_ativa)<1:
+        if pd.isna(tabela_evenproj_ativa.index.max()):
           id_selecionada5 = int(st.selectbox('SELECIONE A ID', options=None, key='5'))
         else:
           id_selecionada5 = int(st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index)))
@@ -382,7 +382,7 @@ if togglecontas_card:
     st.dataframe(tabela_cartoes_ativa, height=500)
     col41, col42 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col41:
-        if len(tabela_cartoes)<1:
+        if pd.isna(tabela_cartoes_ativa.index.max()):
           id_selecionada6 = int(st.selectbox('SELECIONE A ID', options=None, key='10'))
         else:
           id_selecionada6 = int(st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index)))
