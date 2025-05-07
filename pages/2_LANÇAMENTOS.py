@@ -90,66 +90,64 @@ tamanho_tabela = lançamentos.shape[0] + 2
 st.write(tamanho_tabela)
 if tamanho_tabela==2:
    st.write("SEM LANÇAMENTOS")
-elif tamanho_tabela==4:
-  tamanho_tabela = 3
-else: 
-  tamanho_tabela = tamanho_tabela
-
-
 else:
-  lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
-  
-  lançamentos = lançamentos.set_index('ID')
-  colunas = list(lançamentos.columns)
-  colunas_selecionadas = st.multiselect('Selecione as colunas da tabela:', colunas, colunas,)
+  if tamanho_tabela==4:
+    tamanho_tabela = 3
+  else: 
+    tamanho_tabela = tamanho_tabela
+    lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
+    
+    lançamentos = lançamentos.set_index('ID')
+    colunas = list(lançamentos.columns)
+    colunas_selecionadas = st.multiselect('Selecione as colunas da tabela:', colunas, colunas,)
 
-  contasbancarias_selecionadas = st.sidebar.multiselect('Selecione o banco',lançamentos['BANCO'].unique(),None)
-  if not contasbancarias_selecionadas:
-    contasbancarias_selecionadas = lançamentos['BANCO'].unique()
+    contasbancarias_selecionadas = st.sidebar.multiselect('Selecione o banco',lançamentos['BANCO'].unique(),None)
+    if not contasbancarias_selecionadas:
+      contasbancarias_selecionadas = lançamentos['BANCO'].unique()
 
-  contasconta_selecionadas = st.sidebar.multiselect('Selecione o tipo de lançamento',lançamentos['LANÇAMENTO'].unique(),None)
-  if not contasconta_selecionadas:
-    contasconta_selecionadas = lançamentos['LANÇAMENTO'].unique()
+    contasconta_selecionadas = st.sidebar.multiselect('Selecione o tipo de lançamento',lançamentos['LANÇAMENTO'].unique(),None)
+    if not contasconta_selecionadas:
+      contasconta_selecionadas = lançamentos['LANÇAMENTO'].unique()
 
-  contascategoria_selecionadas = st.sidebar.multiselect('Selecione a categoria',lançamentos['CATEGORIA'].unique(),None)
-  if not contascategoria_selecionadas:
-    contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
+    contascategoria_selecionadas = st.sidebar.multiselect('Selecione a categoria',lançamentos['CATEGORIA'].unique(),None)
+    if not contascategoria_selecionadas:
+      contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
 
-  pesqdescri = st.sidebar.text_input('Pesquisar descrição')
+    pesqdescri = st.sidebar.text_input('Pesquisar descrição')
 
-  lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
-  lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
-  lançamentos = lançamentos[lançamentos['BANCO'].notna()]
-  lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
-  lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']=="TRUE"]
-  lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
-  #lançamentos_conciliados = lançamentos_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
-  lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['BANCO'].isin(contasbancarias_selecionadas))&(lançamentos_conciliados['LANÇAMENTO'].isin(contasconta_selecionadas))&(lançamentos_conciliados['CATEGORIA'].isin(contascategoria_selecionadas))&(lançamentos_conciliados['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
-  st.dataframe(lançamentos_conciliados[colunas_selecionadas])
-  st.markdown(f'SALDO TOTAL: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
-  #st.write(lançamentos_conciliados)
-  lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] < hoje)]
-  lançamentos_nao_conciliados = lançamentos_nao_conciliados[colunas_selecionadas]
-  #lançamentos_nao_conciliados = lançamentos_nao_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
-  if len(lançamentos_nao_conciliados) >0:
-    st.divider()
-    st.write('Você tem lançamentos não conciliados. Favor verificar.')
-    st.write(lançamentos_nao_conciliados)
-    col11, col12 = st.columns(2)
-    with col11:
-      if st.button("Conciliar todos"):
-        ids = pd.Series(lançamentos_nao_conciliados.index)
-        ids = ids.tolist()
-        for i in reversed(ids):
-          sheet.update_acell(f'I{i}',True)
-        st.success("Todos os lançamentos foram conciliados!")
-        st.rerun()
-      else:
-        st.write()
-    with col12:
-      st.button('Editar Lançamentos')
-  else:
-    st.write()
+    lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
+    lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
+    lançamentos = lançamentos[lançamentos['BANCO'].notna()]
+    lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
+    lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']=="TRUE"]
+    lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
+    #lançamentos_conciliados = lançamentos_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
+    lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['BANCO'].isin(contasbancarias_selecionadas))&(lançamentos_conciliados['LANÇAMENTO'].isin(contasconta_selecionadas))&(lançamentos_conciliados['CATEGORIA'].isin(contascategoria_selecionadas))&(lançamentos_conciliados['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
+    st.dataframe(lançamentos_conciliados[colunas_selecionadas])
+    st.markdown(f'SALDO TOTAL: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
+    #st.write(lançamentos_conciliados)
+    lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] < hoje)]
+    lançamentos_nao_conciliados = lançamentos_nao_conciliados[colunas_selecionadas]
+    #lançamentos_nao_conciliados = lançamentos_nao_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
+    if len(lançamentos_nao_conciliados) >0:
+      st.divider()
+      st.write('Você tem lançamentos não conciliados. Favor verificar.')
+      st.write(lançamentos_nao_conciliados)
+      col11, col12 = st.columns(2)
+      with col11:
+        if st.button("Conciliar todos"):
+          ids = pd.Series(lançamentos_nao_conciliados.index)
+          ids = ids.tolist()
+          for i in reversed(ids):
+            sheet.update_acell(f'I{i}',True)
+          st.success("Todos os lançamentos foram conciliados!")
+          st.rerun()
+        else:
+          st.write()
+      with col12:
+        st.button('Editar Lançamentos')
+    else:
+      st.write()
 
 
 
