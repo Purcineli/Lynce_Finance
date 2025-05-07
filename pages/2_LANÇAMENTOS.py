@@ -183,6 +183,7 @@ def Alt_lançamentos():
               st.warning("Preencha todos os campos")
             else:  
               sheet.add_rows(1)
+              sheet.update_acell(f'A{tamanho_tabela+2}', f"=ROW(B{tamanho_tabela+2})")
               sheet.update_acell(f'B{tamanho_tabela+2}', data.strftime('%d/%m/%Y'))
               sheet.update_acell(f'C{tamanho_tabela+2}', banco.split(" / ")[0])
               sheet.update_acell(f'D{tamanho_tabela+2}', banco.split(" / ")[1])
