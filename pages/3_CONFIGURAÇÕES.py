@@ -68,8 +68,7 @@ if togglecontas_bancarias:
     tamanho_tabela_contas_banco = 2
   else:
     tamanho_tabela_contas_banco = tamanho_tabela_contas_banco + 1
-  
-  st.write(tamanho_tabela_contas_banco)
+
 
 
   st.title('CONTAS BANCÁRIAS')
@@ -79,7 +78,7 @@ if togglecontas_bancarias:
     st.dataframe(tabela_contas_banco_inativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
-        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index))
+        id_selecionada = int(st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index)))
     with col02:
         if st.button('ATIVAR'):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada}', True)
@@ -160,8 +159,15 @@ if togglecontas_contábeis:
   tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
   tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
   tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
-  #st.write(len(tabela_contas_cont))
-  tamanho_tabela_contas_cont = len(tabela_contas_cont)+1
+
+  tabela_contas_cont.index = pd.to_numeric(tabela_contas_cont.index, errors='coerce')
+  tabela_contas_cont = tabela_contas_cont[~tabela_contas_cont.index.isna()]
+  tabela_contas_cont.index = tabela_contas_cont.index.astype(int)
+  tamanho_tabela_contas_cont = tabela_contas_cont.index.max()
+  if pd.isna(tamanho_tabela_contas_cont):
+    tamanho_tabela_contas_cont = 2
+  else:
+    tamanho_tabela_contas_cont = tamanho_tabela_contas_cont + 1
 
   st.title('CONTAS CONTÁBEIS')
   inativos_contas_cont, ativos_contas_cont = st.columns(2)
@@ -171,9 +177,9 @@ if togglecontas_contábeis:
     col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col11:
         if len(tabela_contas_cont_inativa)<1:
-          id_selecionada_cont = st.selectbox('SELECIONE A ID', options=None, key="t")
+          id_selecionada_cont = int(st.selectbox('SELECIONE A ID', options=None, key="t"))
         else:
-          id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r")
+          id_selecionada_cont = int(st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key ="r"))
     with col12:
         if st.button('ATIVAR CONTA CONTABIL'):
           conta_cont_cadastradas.update_acell(f'D{id_selecionada_cont}', True)
@@ -205,9 +211,9 @@ if togglecontas_contábeis:
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
         if len(tabela_contas_cont_ativa)<1:
-          id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="four")
+          id_selecionada3 = int(st.selectbox('SELECIONE A ID', options=None, key="four"))
         else:
-          id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five")
+          id_selecionada3 = int(st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five"))
     with col02:
         if st.button('INATIVAR CONTA CONTÁBIL'):
           conta_cont_cadastradas.update_acell(f'E{id_selecionada3}', False)
@@ -253,7 +259,15 @@ if togglecontas_proj:
   tabela_evenproj = tabela_evenproj.set_index('ID')
   tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
   tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
-  tamanho_tabela_evenproj = len(tabela_evenproj)+1
+  tabela_evenproj.index = pd.to_numeric(tabela_evenproj.index, errors='coerce')
+  tabela_evenproj = tabela_evenproj[tabela_evenproj.index.isna()]
+  tabela_evenproj.index = tabela_evenproj.index.astype(int)
+  tamanho_tabela_evenproj = tabela_evenproj.index.max()
+  if pd.isna(tamanho_tabela_evenproj):
+    tamanho_tabela_evenproj = 2
+  else:
+    tamanho_tabela_evenproj = tamanho_tabela_evenproj + 1
+
   st.divider() 
   st.title('PROJETOS / EVENTOS')
   proj_inativos, proj_ativos = st.columns(2)
@@ -263,9 +277,9 @@ if togglecontas_proj:
     col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col21:
         if len(tabela_evenproj_inativa)<1:
-          id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="4"),
+          id_selecionada3 = int(st.selectbox('SELECIONE A ID', options=None, key="4"),)
         else:
-          id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index))
+          id_selecionada3 = int(st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index)))
     with col22:
         if st.button('ATIVAR', key="123"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada3}', True)
@@ -290,9 +304,9 @@ if togglecontas_proj:
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
         if len(tabela_evenproj_ativa)<1:
-          id_selecionada5 = st.selectbox('SELECIONE A ID', options=None, key='5')
+          id_selecionada5 = int(st.selectbox('SELECIONE A ID', options=None, key='5'))
         else:
-          id_selecionada5 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
+          id_selecionada5 = int(st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index)))
     with col32:
         if st.button('INATIVAR', key="1234"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada5}', False)
@@ -324,6 +338,16 @@ if togglecontas_card:
   tabela_cartoes_inativa = tabela_cartoes[tabela_cartoes['ATIVO']=='FALSE']
   tabela_cartoes_inativa = tabela_cartoes_inativa[['CARTÃO', 'PROPRIETÁRIO', 'FECHAMENTO', 'VENCIMENTO']]
   tamanho_tabela_cartoes = len(tabela_cartoes)+1
+
+  tabela_cartoes.index = pd.to_numeric(tabela_cartoes.index, errors='coerce')
+  tabela_cartoes = tabela_cartoes[tabela_cartoes.index.isna()]
+  tabela_cartoes.index = tabela_cartoes.index.astype(int)
+  tamanho_tabela_cartoes = tabela_cartoes.index.max()
+  if pd.isna(tamanho_tabela_cartoes):
+    tamanho_tabela_cartoes = 2
+  else:
+    tamanho_tabela_cartoes = tamanho_tabela_cartoes + 1
+
   st.divider() 
   st.title('CARTÕES DE CRÉDITO')
   card_inativos, card_ativos = st.columns(2)
@@ -333,9 +357,9 @@ if togglecontas_card:
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
         if len(tabela_cartoes_inativa)<1:
-          id_selecionada4 = st.selectbox('SELECIONE A ID', options=None, key="9"),
+          id_selecionada4 = int(st.selectbox('SELECIONE A ID', options=None, key="9"))
         else:
-          id_selecionada4 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index))
+          id_selecionada4 = int(st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index)))
     with col32:
         if st.button('ATIVAR', key="ativa cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada4}', True)
@@ -368,9 +392,9 @@ if togglecontas_card:
     col41, col42 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col41:
         if len(tabela_cartoes)<1:
-          id_selecionada6 = st.selectbox('SELECIONE A ID', options=None, key='10')
+          id_selecionada6 = int(st.selectbox('SELECIONE A ID', options=None, key='10'))
         else:
-          id_selecionada6 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index))
+          id_selecionada6 = int(st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index)))
     with col42:
         if st.button('INATIVAR', key="inativar cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
