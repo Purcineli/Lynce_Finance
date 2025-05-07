@@ -119,11 +119,9 @@ else:
   lançamentos = lançamentos[lançamentos['BANCO'].notna()]
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
   lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']=="TRUE"]
-  st.dataframe(lançamentos_conciliados)
   lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
   #lançamentos_conciliados = lançamentos_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
   lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['BANCO'].isin(contasbancarias_selecionadas))&(lançamentos_conciliados['LANÇAMENTO'].isin(contasconta_selecionadas))&(lançamentos_conciliados['CATEGORIA'].isin(contascategoria_selecionadas))&(lançamentos_conciliados['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
-  st.dataframe(lançamentos)
   st.dataframe(lançamentos_conciliados[colunas_selecionadas])
   st.markdown(f'SALDO TOTAL: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
   #st.write(lançamentos_conciliados)
