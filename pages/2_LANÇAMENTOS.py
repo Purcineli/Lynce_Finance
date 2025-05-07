@@ -273,7 +273,7 @@ def inserir_lançamento():
         valor = st.number_input("INSIRA O VALOR", format="%0.2f", key="valor_transf")
         inserir_transf = st.form_submit_button(label="INSERIR")
         if inserir_transf:
-          if banco_origem == banco_destino 
+          if banco_origem == banco_destino:
             st.warning("Selecione contas diferentes")
           elif banco_origem == None or banco_destino == None or valor==0:
             st.warning("Preencha todos os campos")
