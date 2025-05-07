@@ -61,6 +61,7 @@ if togglecontas_bancarias:
   tabela_contas_banco_inativa = tabela_contas_banco_inativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
   #st.write(len(tabela_contas_banco))
   tabela_contas_banco.index = pd.to_numeric(tabela_contas_banco.index, errors='coerce')
+  tabela_contas_banco.index = tabela_contas_banco.index.astype(int)
   tamanho_tabela_contas_banco = tabela_contas_banco.index.max()
   if pd.isna(tamanho_tabela_contas_banco):
     tamanho_tabela_contas_banco = 2
