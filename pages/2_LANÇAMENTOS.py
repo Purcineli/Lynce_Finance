@@ -207,6 +207,7 @@ def Alt_lançamentos():
            st.write("INSERIR NOVO LANÇAMENTO"),
         else:
           with subcol1:
+            st.write(lançamentos.index)
             id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
           with subcol2:
             data2 = st.date_input('DATA',value=lançamentos.loc[id_selected, 'DATA'])
