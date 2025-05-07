@@ -300,7 +300,7 @@ if togglecontas_proj:
         if pd.isna(tabela_evenproj_ativa.index.max()):
           id_selecionada5 = st.selectbox('SELECIONE A ID', options=None, key='5')
         else:
-          id_selecionada5 = int(st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index)))
+          id_selecionada5 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
     with col32:
         if st.button('INATIVAR', key="1234"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada5}', False)
@@ -308,7 +308,7 @@ if togglecontas_proj:
 
     with st.form(key='Editar nome'):
       st.write('EDITAR PROJETO') 
-      if len(tabela_evenproj_ativa)<1:
+      if pd.isna(tabela_evenproj_ativa.index.max()):
         nome = st.text_input("NOME", value=None, key="7")
       else:
         nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada5, "NOME"])
