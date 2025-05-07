@@ -118,7 +118,7 @@ else:
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   lançamentos = lançamentos[lançamentos['BANCO'].notna()]
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
-  lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']=="True"]
+  lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']=="TRUE"]
   st.dataframe(lançamentos_conciliados)
   lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
   #lançamentos_conciliados = lançamentos_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
@@ -130,7 +130,7 @@ else:
 
 
 
-  lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "False") & (lançamentos['DATA'] < hoje)]
+  lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] < hoje)]
   lançamentos_nao_conciliados = lançamentos_nao_conciliados[colunas_selecionadas]
   #lançamentos_nao_conciliados = lançamentos_nao_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
   if len(lançamentos_nao_conciliados) >0:
