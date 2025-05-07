@@ -110,7 +110,7 @@ if togglecontas_bancarias:
     st.dataframe(tabela_contas_banco_ativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
-        if len(tabela_contas_banco_ativa)<1:
+        if pd.isna(tabela_contas_banco_ativa.index.max()):
           id_selecionada2 = int(st.selectbox('SELECIONE A ID',options=None, key="id_contas"))
         else:
           id_selecionada2 = int(st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index), key="id_contas2"))
