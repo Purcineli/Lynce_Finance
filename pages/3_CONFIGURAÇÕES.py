@@ -112,9 +112,11 @@ if togglecontas_bancarias:
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
         if len(tabela_contas_banco_ativa)<1:
-          id_selecionada2 = str(st.selectbox('SELECIONE A ID',options=None, key="id_contas"))
+          id_selecionada2 = st.selectbox('SELECIONE A ID',options=None, key="id_contas")
+          id_selecionada2 = str(id_selecionada2)
         else:
-          id_selecionada2 = str(st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index), key="id_contas2"))
+          id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index), key="id_contas2")
+          id_selecionada2 = str(id_selecionada2)
     with col02:
         if st.button('INATIVAR'):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
