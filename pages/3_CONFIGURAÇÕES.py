@@ -113,10 +113,8 @@ if togglecontas_bancarias:
     with col01:
         if len(tabela_contas_banco_ativa)<1:
           id_selecionada2 = st.selectbox('SELECIONE A ID',options=None, key="id_contas")
-          id_selecionada2 = str(id_selecionada2)
         else:
           id_selecionada2 = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index), key="id_contas2")
-          id_selecionada2 = str(id_selecionada2)
     with col02:
         if st.button('INATIVAR'):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
@@ -131,12 +129,12 @@ if togglecontas_bancarias:
           bank = str(bank)
           bank = bank.upper()
         else:
-          bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"])
+          bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[str(id_selecionada2), "NOME BANCO"])
       with prop:
         if len(tabela_contas_banco_ativa)<1:
           owner = st.text_input("NOME BANCO",value=None, key="two")
         else:
-          owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
+          owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[str(id_selecionada2), "PROPRIETÁRIO"], key="two two")
           owner = str(owner)
           owner = owner.upper()
       with but:
