@@ -220,7 +220,7 @@ def Alt_lançamentos():
             number2 = st.number_input("VALOR", format="%0.2f", value=lançamentos.loc[str(id_selected), 'VALOR'])
             descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
             analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
-            idxanalises = lançamentos.loc[id_selected, 'ANALISE']
+            idxanalises = lançamentos.loc[str(id_selected), 'ANALISE']
             idxanalises = analiseslist.index(idxanalises)
             analise2 = st.radio('SELECIONE A ALÍNEA',analiseslist,index=idxanalises, horizontal=True)
             proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
