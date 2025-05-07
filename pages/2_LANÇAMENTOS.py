@@ -184,7 +184,7 @@ def Alt_lançamentos():
               if tamanho_tabela == 4:
                  tamanho_tabela = 3
               else: 
-                 tamanho_tabela
+                 tamanho_tabela = tamanho_tabela
               sheet.update_acell(f'A{tamanho_tabela}', f"=ROW(B{tamanho_tabela})")
               sheet.update_acell(f'B{tamanho_tabela}', data.strftime('%d/%m/%Y'))
               sheet.update_acell(f'C{tamanho_tabela}', banco.split(" / ")[0])
