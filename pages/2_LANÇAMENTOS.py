@@ -268,9 +268,9 @@ def inserir_lançamento():
       st.write("Inserir nova transferência entre contas")
       with st.form(key="form_inserir_transf", border=False):
         data_transf = st.date_input('DATA', date.today())
-        banco_origem = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
-        banco_destino = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
-        valor = st.number_input("INSIRA O VALOR", format="%0.2f")
+        banco_origem = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione", key="banco_origem")
+        banco_destino = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione", key="banco_destino")
+        valor = st.number_input("INSIRA O VALOR", format="%0.2f", key="valor_transf")
         inserir_transf = st.form_submit_button(label="INSERIR")
         if inserir_transf:
           if banco_origem == banco_destino or banco_origem == None or banco_destino == None or valor==0:
