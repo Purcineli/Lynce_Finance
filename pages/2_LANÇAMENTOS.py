@@ -94,8 +94,7 @@ if tamanho_tabela==2:
 else:
   tamanho_tabela = tamanho_tabela - 1
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
-  
-  lançamentos = lançamentos.set_index('ID')
+  lançamentos = lançamentos.set_index('ID', inplace=True)
   colunas = list(lançamentos.columns)
   colunas_selecionadas = st.multiselect('Selecione as colunas da tabela:', colunas, colunas,)
 
