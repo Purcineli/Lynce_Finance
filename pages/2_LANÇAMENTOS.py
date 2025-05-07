@@ -48,7 +48,7 @@ hoje = pd.to_datetime(date.today())
 lançamentos = workbook.get_worksheet(0)
 lançamentos = lançamentos.get_all_values()
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
-st.dataframe(lançamentos)
+
 #CONTAS BANCÁRIAS#
 conta_banco_cadastradas = workbook.get_worksheet(2)
 tabela_contas_banco = conta_banco_cadastradas.get_all_values()
