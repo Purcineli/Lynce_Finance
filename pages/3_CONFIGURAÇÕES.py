@@ -208,7 +208,7 @@ if togglecontas_contábeis:
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
         if pd.isna(tabela_contas_cont_ativa.index.max()):
-          id_selecionada3 = int(st.selectbox('SELECIONE A ID', options=None, key="four"))
+          id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="four")
         else:
           id_selecionada3 = int(st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five"))
     with col02:
