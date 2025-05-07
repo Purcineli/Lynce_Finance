@@ -261,3 +261,52 @@ def Alt_lançamentos():
 Alt_lançamentos()
 st.divider()
 
+transf, pagarfatura = st.columns(2, vertical_alignment='top')
+
+def inserir_lançamento():
+    with transf:
+      st.write("Inserir nova transferência entre contas")
+      with st.form(key="form_inserir", border=False):
+        data_transf = st.date_input('DATA', date.today())
+        banco_origem = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
+        banco_destino = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
+        valor = st.number_input("INSIRA O VALOR", format="%0.2f")
+        inserir_transf = st.form_submit_button(label="INSERIR")
+        if inserir_transf:
+          if banco_origem == banco_destino or banco_origem == None or banco_destino == None or valor==0:
+            st.warning("Preencha todos os campos")
+          else:
+            sheet.add_rows(1)
+            sheet.update_acell(f'A{tamanho_tabela}', f"=ROW(B{tamanho_tabela})")
+            sheet.update_acell(f'B{tamanho_tabela}', data_transf.strftime('%d/%m/%Y'))
+            sheet.update_acell(f'C{tamanho_tabela}', banco_origem.split(" / ")[0])
+            sheet.update_acell(f'D{tamanho_tabela}', banco_origem.split(" / ")[1])
+            sheet.update_acell(f'E{tamanho_tabela}', "TRANSFERÊNCIA")
+            sheet.update_acell(f'F{tamanho_tabela}', "TRANSFERÊNCIA")
+            sheet.update_acell(f'G{tamanho_tabela}', - valor)
+            sheet.update_acell(f'H{tamanho_tabela}', "TRANSFERÊNCIA ENTRE CONTAS")
+            sheet.update_acell(f'I{tamanho_tabela}', "TRUE")
+            sheet.update_acell(f'J{tamanho_tabela}', "ANALÍTICA")
+            moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco_origem.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco_origem.split(" / ")[1]),'MOEDA'].values[0]
+            sheet.update_acell(f'L{tamanho_tabela}', moeda)
+            sheet.update_acell(f'M{tamanho_tabela}', st.session_state.name)
+            sheet.update_acell(f'N{tamanho_tabela}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            sheet.add_rows(1)
+            sheet.update_acell(f'A{tamanho_tabela+1}', f"=ROW(B{tamanho_tabela+1})")
+            sheet.update_acell(f'B{tamanho_tabela+1}', data_transf.strftime('%d/%m/%Y'))
+            sheet.update_acell(f'C{tamanho_tabela+1}', banco_destino.split(" / ")[0])
+            sheet.update_acell(f'D{tamanho_tabela+1}', banco_destino.split(" / ")[1])
+            sheet.update_acell(f'E{tamanho_tabela+1}', "TRANSFERÊNCIA")
+            sheet.update_acell(f'F{tamanho_tabela+1}', "TRANSFERÊNCIA")
+            sheet.update_acell(f'G{tamanho_tabela+1}', valor)
+            sheet.update_acell(f'H{tamanho_tabela+1}', "TRANSFERÊNCIA ENTRE CONTAS")
+            sheet.update_acell(f'I{tamanho_tabela+1}', "TRUE")
+            sheet.update_acell(f'J{tamanho_tabela+1}', "ANALÍTICA")
+            moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco_destino.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco_destino.split(" / ")[1]),'MOEDA'].values[0]
+            sheet.update_acell(f'L{tamanho_tabela+1}', moeda)
+            sheet.update_acell(f'M{tamanho_tabela+1}', st.session_state.name)
+            sheet.update_acell(f'N{tamanho_tabela+1}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            st.success("Registro inserido com sucesso!")
+            st.rerun()
+
+inserir_lançamento()
