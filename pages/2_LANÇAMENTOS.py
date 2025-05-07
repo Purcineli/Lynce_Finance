@@ -211,7 +211,7 @@ def Alt_lançamentos():
           with subcol2:
             data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(key="form_editar", border=False):
-            idxbanco = lançamentos.loc[id_selected, 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
+            idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
             idxbanco = bancos.index(idxbanco)
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
             idxdespesas = lançamentos.loc[id_selected, 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
