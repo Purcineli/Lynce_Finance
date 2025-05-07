@@ -266,7 +266,7 @@ transf, pagarfatura = st.columns(2, vertical_alignment='top')
 def inserir_lançamento():
     with transf:
       st.write("Inserir nova transferência entre contas")
-      with st.form(key="form_inserir", border=False):
+      with st.form(key="form_inserir_transf", border=False):
         data_transf = st.date_input('DATA', date.today())
         banco_origem = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
         banco_destino = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
