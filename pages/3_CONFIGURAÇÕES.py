@@ -256,9 +256,7 @@ if togglecontas_proj:
   tabela_evenproj = tabela_evenproj.set_index('ID')
   tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
   tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
-  st.dataframe(tabela_evenproj)
-  st.dataframe(tabela_evenproj_ativa)
-  st.dataframe(tabela_evenproj_inativa)
+
 
   tabela_evenproj.index = pd.to_numeric(tabela_evenproj.index, errors='coerce')
   tabela_evenproj = tabela_evenproj[tabela_evenproj.index.isna()]
@@ -269,8 +267,10 @@ if togglecontas_proj:
   else:
     tamanho_tabela_evenproj = tamanho_tabela_evenproj + 1
 
-  st.write(tabela_evenproj)
-
+  st.dataframe(tabela_evenproj)
+  st.dataframe(tabela_evenproj_ativa)
+  st.dataframe(tabela_evenproj_inativa)
+  
   st.divider() 
   st.title('PROJETOS / EVENTOS')
   proj_inativos, proj_ativos = st.columns(2)
