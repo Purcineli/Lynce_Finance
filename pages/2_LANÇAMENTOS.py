@@ -182,7 +182,7 @@ def Alt_lançamentos():
             else:  
               sheet.add_rows(1)
               if tamanho_tabela == 4:
-                 tamanho_tabela == 3
+                 tamanho_tabela = 3
               else: 
                  tamanho_tabela
               sheet.update_acell(f'A{tamanho_tabela}', f"=ROW(B{tamanho_tabela})")
