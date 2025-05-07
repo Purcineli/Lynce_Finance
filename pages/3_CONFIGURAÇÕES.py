@@ -257,6 +257,7 @@ if togglecontas_proj:
   tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
   tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
 
+
   tabela_evenproj.index = pd.to_numeric(tabela_evenproj.index, errors='coerce')
   tabela_evenproj = tabela_evenproj[tabela_evenproj.index.isna()]
   tabela_evenproj.index = tabela_evenproj.index.astype(int)
@@ -314,7 +315,7 @@ if togglecontas_proj:
       if pd.isna(tabela_evenproj_ativa.index.max()):
         nome = st.text_input("NOME", value=None, key="7")
       else:
-        nome = st.text_input("NOME",tabela_evenproj.loc[int(id_selecionada5), "NOME"])
+        nome = st.text_input("NOME",tabela_evenproj.loc[id_selecionada5, "NOME"])
       nome = str(nome)
       nome = nome.upper()
       submit = st.form_submit_button(label="EDITAR")
