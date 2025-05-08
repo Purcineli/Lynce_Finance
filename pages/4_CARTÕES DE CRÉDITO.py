@@ -139,9 +139,9 @@ tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
     (tabela_lancamentos_cartao['PROPRIETÁRIO'] == lista_owners_selecionado)
 ]
 
-tamanho_tabela = len(tabela_lancamentos_cartao)
+tamanho_tabela = tabela_lancamentos_cartao.shape[0] + 2
 if st.toggle('Conciliar fatura'):
-  if tamanho_tabela==0:
+  if tamanho_tabela==2:
      st.write("Inserir lançamentos")
   else:
     # Step 1: Create a FATURA_MES column as Period for natural month sorting
@@ -218,7 +218,7 @@ if st.toggle('Conciliar fatura'):
             if pagar_fatura:
               now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
               row_cartao = [
-                f"=ROW(B{tamanho_tabela+2})",
+                f"=ROW(B{tamanho_tabela})",
                 data.strftime('%d/%m/%Y'),
                 lista_cartoes_selecionado,
                 lista_owners_selecionado,
@@ -251,9 +251,9 @@ if st.toggle('Conciliar fatura'):
                 st.session_state.name,
                 now
               ]
-              
-              lancamento_cartao.add_rows(1)
-              lancamento_cartao.update(f'A{tamanho_tabela+2}:O{tamanho_tabela+2}', [row_cartao], raw=False)
+              if tamanho_tabela > 2:
+                lancamento_cartao.add_rows(1)
+              lancamento_cartao.update(f'A{tamanho_tabela}:O{tamanho_tabela}', [row_cartao], raw=False)
               sheet.add_rows(1)
               sheet.update(f'A{tamanho_tabela_lançamentos}:O{tamanho_tabela_lançamentos}', [row_banco], raw=False)
 
@@ -360,7 +360,7 @@ def Alt_lançamentos_CC():
                 ].values[0]
                 descricao_formatada = f'{descricao}  {x+1}/{parcelas}'
                 timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-                row = f"=ROW(B{tamanho_tabela + 2 + x})"
+                row = f"=ROW(B{tamanho_tabela + x})"
                 if analise:
                   analise = "ANALÍTICA"
                 else:
@@ -386,8 +386,11 @@ def Alt_lançamentos_CC():
                 linhas.append(linha)
 
             # Calcular a faixa de células que será atualizada
-            lancamento_cartao.add_rows(parcelas)
-            inicio_linha = tamanho_tabela + 2
+            if tamanho_tabela > 2:
+              lancamento_cartao.add_rows(parcelas)
+            else: 
+              lancamento_cartao.add_rows(parcelas-1)
+            inicio_linha = tamanho_tabela 
             fim_linha = inicio_linha + parcelas - 1
             faixa = f"A{inicio_linha}:O{fim_linha}"
 
@@ -399,7 +402,7 @@ def Alt_lançamentos_CC():
     with editar:
         st.write('Editar registro')
         subcol1,subcol2 = st.columns(2)
-        if tamanho_tabela==0:
+        if tamanho_tabela==2:
            st.write("INSERIR NOVO LANÇAMENTO")
         else:
           with subcol1:

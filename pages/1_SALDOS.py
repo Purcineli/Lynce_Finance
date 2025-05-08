@@ -46,6 +46,7 @@ if len(lançamentos)==0:
   st.write("Sem lançamentos")
 else:
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()  # Transformar nomes dos bancos para maiúsculas
+  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
   lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)  # Converter 'VALOR' de texto para float
   lançamentos = lançamentos[lançamentos['CONCILIADO'] == True]  # Filtrar apenas registros conciliados
@@ -53,7 +54,6 @@ else:
 
   contas = list(lançamentos['BANCO'].dropna().unique())  # Lista de bancos únicos, ignorando valores nulos
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
-
 
 
   col01, col02, col03 = st.columns([0.1, 0.1, 0.8])  # Define layout de 3 colunas com larguras proporcionais

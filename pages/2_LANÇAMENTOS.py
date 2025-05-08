@@ -87,13 +87,17 @@ with col02:
 
 tamanho_tabela = len(lançamentos)
 tamanho_tabela = lançamentos.shape[0] + 2
+#maxid = lançamentos['ID'].max()
+#maxid = int(maxid)
+tamanho_tabela = tamanho_tabela
+#st.write(maxid)
+st.write(tamanho_tabela)
 if tamanho_tabela==2:
    st.write("SEM LANÇAMENTOS")
-   maxid = 0
+   maxid = tamanho_tabela
 else:
-  maxid = lançamentos['ID'].max()
-  maxid = int(maxid)
-  tamanho_tabela = tamanho_tabela - 1
+
+
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
   lançamentos = lançamentos.set_index('ID')
   colunas = list(lançamentos.columns)
@@ -112,8 +116,14 @@ else:
     contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
 
   pesqdescri = st.sidebar.text_input('Pesquisar descrição')
-
+  #lançamentos['VALOR'] = (
+  #  lançamentos['VALOR']
+  #  .str.replace('.', '', regex=False)        # Remove separador de milhar
+  #  .str.replace(',', '.', regex=False)       # Converte vírgula decimal para ponto
+#)
+  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
   lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
+
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   lançamentos = lançamentos[lançamentos['BANCO'].notna()]
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
@@ -179,8 +189,9 @@ def Alt_lançamentos():
         if submit:
             if banco == None or despesa == None:
               st.warning("Preencha todos os campos")
-            else:  
-              sheet.add_rows(1)
+            else:
+              if tamanho_tabela > 2:     
+                sheet.add_rows(1)
               sheet.update_acell(f'A{tamanho_tabela}', f"=ROW(B{tamanho_tabela})")
               sheet.update_acell(f'B{tamanho_tabela}', data.strftime('%d/%m/%Y'))
               sheet.update_acell(f'C{tamanho_tabela}', banco.split(" / ")[0])
@@ -209,7 +220,7 @@ def Alt_lançamentos():
            st.write("INSERIR NOVO LANÇAMENTO"),
         else:
           with subcol1:
-            id_selected = st.number_input('Digite o ID', min_value=0, max_value=maxid, step=1, format="%d", value=maxid)
+            id_selected = st.number_input('Digite o ID', min_value=0, max_value=tamanho_tabela-1, step=1, format="%d", value=tamanho_tabela-1)
           with subcol2:
             data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(key="form_editar", border=False):
@@ -281,8 +292,8 @@ def inserir_lançamento():
                     st.warning("Preencha todos os campos")
                 else:
                     # Linhas onde os dados serão inseridos
-                    linha_origem = tamanho_tabela + 1
-                    linha_destino = tamanho_tabela + 2
+                    linha_origem = tamanho_tabela 
+                    linha_destino = tamanho_tabela + 1
 
                     # Informações comuns
                     data_str = data_transf.strftime('%d/%m/%Y')

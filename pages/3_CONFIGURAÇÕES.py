@@ -63,12 +63,7 @@ if togglecontas_bancarias:
   tabela_contas_banco.index = pd.to_numeric(tabela_contas_banco.index, errors='coerce')
   tabela_contas_banco = tabela_contas_banco[~tabela_contas_banco.index.isna()]
   tabela_contas_banco.index = tabela_contas_banco.index.astype(int)
-  tamanho_tabela_contas_banco = tabela_contas_banco.index.max()
-  if pd.isna(tamanho_tabela_contas_banco):
-    tamanho_tabela_contas_banco = 2
-  else:
-    tamanho_tabela_contas_banco = tamanho_tabela_contas_banco + 1
-
+  tamanho_tabela_contas_banco = tabela_contas_banco.shape[0] + 2
 
 
   st.title('CONTAS BANCÁRIAS')
@@ -97,7 +92,8 @@ if togglecontas_bancarias:
       with but:
         submit = st.form_submit_button(label="INSERIR")
         if submit: #st.button('INSERIR NOVA CONTA'):
-          conta_banco_cadastradas.add_rows(1)
+          if tamanho_tabela_contas_banco > 2:
+            conta_banco_cadastradas.add_rows(1)
           conta_banco_cadastradas.update_acell(f'A{tamanho_tabela_contas_banco}', f'=ROW(B{tamanho_tabela_contas_banco})')
           conta_banco_cadastradas.update_acell(f'B{tamanho_tabela_contas_banco}', new_bank)
           conta_banco_cadastradas.update_acell(f'C{tamanho_tabela_contas_banco}', nowner)
@@ -156,18 +152,14 @@ if togglecontas_contábeis:
   tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
   tabela_contas_cont = tabela_contas_cont.set_index('ID')
   tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
-  tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
+  tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA', 'ATRIBUIÇÃO']]
   tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
   tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA', 'ATRIBUIÇÃO']]
 
   tabela_contas_cont.index = pd.to_numeric(tabela_contas_cont.index, errors='coerce')
   tabela_contas_cont = tabela_contas_cont[~tabela_contas_cont.index.isna()]
   tabela_contas_cont.index = tabela_contas_cont.index.astype(int)
-  tamanho_tabela_contas_cont = tabela_contas_cont.index.max()
-  if pd.isna(tamanho_tabela_contas_cont):
-    tamanho_tabela_contas_cont = 2
-  else:
-    tamanho_tabela_contas_cont = tamanho_tabela_contas_cont + 1
+  tamanho_tabela_contas_cont = tabela_contas_cont.shape[0] + 2
 
   st.title('CONTAS CONTÁBEIS')
   inativos_contas_cont, ativos_contas_cont = st.columns(2)
@@ -199,7 +191,8 @@ if togglecontas_contábeis:
       with but:
         submit = st.form_submit_button(label="INSERIR")
         if submit: #st.button('INSERIR NOVA CONTA'):
-          conta_cont_cadastradas.add_rows(1)
+          if tamanho_tabela_contas_cont > 2:
+            conta_cont_cadastradas.add_rows(1)
           conta_cont_cadastradas.update_acell(f'A{tamanho_tabela_contas_cont}', f'=ROW(B{tamanho_tabela_contas_cont})')
           conta_cont_cadastradas.update_acell(f'B{tamanho_tabela_contas_cont}', new_conta)
           conta_cont_cadastradas.update_acell(f'C{tamanho_tabela_contas_cont}', new_cat)
@@ -277,13 +270,9 @@ if togglecontas_proj:
   tabela_evenproj.index = pd.to_numeric(tabela_evenproj.index, errors='coerce')
   tabela_evenproj = tabela_evenproj[~tabela_evenproj.index.isna()]
   tabela_evenproj.index = tabela_evenproj.index.astype(int)
-  tamanho_tabela_evenproj = tabela_evenproj.index.max()
-  if pd.isna(tamanho_tabela_evenproj):
-    tamanho_tabela_evenproj = 2
-  else:
-    tamanho_tabela_evenproj = tamanho_tabela_evenproj + 1
+  tamanho_tabela_evenproj = tabela_evenproj.shape[0] + 2
 
-  st.divider() 
+
   st.title('PROJETOS / EVENTOS')
   proj_inativos, proj_ativos = st.columns(2)
   with proj_inativos:
@@ -303,7 +292,8 @@ if togglecontas_proj:
       new_name = new_name.upper()
       submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
-        tabela_evenproj_sheet.add_rows(1)
+        if tamanho_tabela_evenproj > 2:
+          tabela_evenproj_sheet.add_rows(1)
         tabela_evenproj_sheet.update_acell(f'A{tamanho_tabela_evenproj}', f'=ROW(B{tamanho_tabela_evenproj})')
         tabela_evenproj_sheet.update_acell(f'B{tamanho_tabela_evenproj}', new_name)
         tabela_evenproj_sheet.update_acell(f'C{tamanho_tabela_evenproj}', True)
@@ -354,11 +344,8 @@ if togglecontas_card:
   tabela_cartoes.index = pd.to_numeric(tabela_cartoes.index, errors='coerce')
   tabela_cartoes = tabela_cartoes[~tabela_cartoes.index.isna()]
   tabela_cartoes.index = tabela_cartoes.index.astype(int)
-  tamanho_tabela_cartoes = tabela_cartoes.index.max()
-  if pd.isna(tamanho_tabela_cartoes):
-    tamanho_tabela_cartoes = 2
-  else:
-    tamanho_tabela_cartoes = tamanho_tabela_cartoes + 1
+  tamanho_tabela_cartoes = tabela_cartoes.shape[0] + 2
+
 
   st.divider() 
   st.title('CARTÕES DE CRÉDITO')
@@ -387,7 +374,8 @@ if togglecontas_card:
       with but3:
         submit = st.form_submit_button(label="INSERIR")
       if submit: #st.button('INSERIR NOVA CONTA'):
-        tabela_cartoes_sheet.add_rows(1)
+        if tamanho_tabela_cartoes > 2:
+          tabela_cartoes_sheet.add_rows(1)
         tabela_cartoes_sheet.update_acell(f'A{tamanho_tabela_cartoes}', f'=ROW(B{tamanho_tabela_cartoes})')
         tabela_cartoes_sheet.update_acell(f'B{tamanho_tabela_cartoes}', new_card)
         tabela_cartoes_sheet.update_acell(f'C{tamanho_tabela_cartoes}', newcardowner)
