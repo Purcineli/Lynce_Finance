@@ -158,7 +158,7 @@ if togglecontas_contábeis:
   tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
   tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
   tabela_contas_cont_inativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='FALSE']
-  tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA']]
+  tabela_contas_cont_inativa = tabela_contas_cont_inativa[['CONTA CONTÁBIL','CATEGORIA', 'ATRIBUIÇÃO']]
 
   tabela_contas_cont.index = pd.to_numeric(tabela_contas_cont.index, errors='coerce')
   tabela_contas_cont = tabela_contas_cont[~tabela_contas_cont.index.isna()]
@@ -192,6 +192,10 @@ if togglecontas_contábeis:
         new_cat = st.text_input('CATEGORIA')
         new_cat = str(new_cat)
         new_cat = new_cat.upper()
+      with atr:
+        new_atr = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
+        new_atr = str(new_atr)
+        new_atr = new_atr.upper()
       with but:
         submit = st.form_submit_button(label="INSERIR")
         if submit: #st.button('INSERIR NOVA CONTA'):
@@ -200,6 +204,7 @@ if togglecontas_contábeis:
           conta_cont_cadastradas.update_acell(f'B{tamanho_tabela_contas_cont}', new_conta)
           conta_cont_cadastradas.update_acell(f'C{tamanho_tabela_contas_cont}', new_cat)
           conta_cont_cadastradas.update_acell(f'D{tamanho_tabela_contas_cont}', True)
+          conta_cont_cadastradas.update_acell(f'E{tamanho_tabela_contas_cont}', new_atr)
           st.rerun()
     
   with ativos_contas_cont:
@@ -233,6 +238,17 @@ if togglecontas_contábeis:
           categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
         categor = str(categor)
         categor = categor.upper()
+      with atr:
+        
+        if len(tabela_contas_cont_ativa)<1:
+          atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
+        else:
+          analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
+          idxanalises = lançamentos.loc[id_selecionada3, 'ANALISE']
+          idxanalises = analiseslist.index(idxanalises)
+          atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=idxanalises)    
+        atrib = str(atrib)
+        atrib = atrib.upper()
       with but:
         submit = st.form_submit_button(label="EDITAR")
       with but2:
@@ -240,6 +256,7 @@ if togglecontas_contábeis:
     if submit:
       conta_cont_cadastradas.update_acell(f'B{int(id_selecionada3)}', cont)
       conta_cont_cadastradas.update_acell(f'C{int(id_selecionada3)}', categor)
+      conta_cont_cadastradas.update_acell(f'E{int(id_selecionada3)}', atrib)
       st.rerun()
     if delete:
       st.rerun()

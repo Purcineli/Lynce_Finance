@@ -43,12 +43,13 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 #sheeitid = '1mR63AgJd3tW4slEywlcylKCtEzAgcT2icHwOhUr6mdk'
 #sheetname = "records"
 lançamentos, workbook = lerdados(sheeitid, sheetname)
-sheet1 = workbook.get_worksheet(1)
-contas_cadastradas1 = sheet1.get_all_values()
 sheet = workbook.get_worksheet(0)
-contas_cadastradas = pd.DataFrame(contas_cadastradas1[1:], columns=contas_cadastradas1[0])
 hoje = pd.to_datetime(date.today()) 
-
+lançamentos = sheet.get_all_values()
+lançamentos_CONTAS = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
+lançamentos_CONTAS = lançamentos_CONTAS.set_index('ID')
+lançamentos_CONTAS = lançamentos_CONTAS[lançamentos_CONTAS["CONCILIADO"]=="TRUE"]
+lançamentos_CONTAS = lançamentos_CONTAS[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA']]
 #CONTAS BANCÁRIAS#
 conta_banco_cadastradas = workbook.get_worksheet(2)
 tabela_contas_banco = conta_banco_cadastradas.get_all_values()
@@ -63,8 +64,23 @@ tabela_contas_cont = conta_cont_cadastradas.get_all_values()
 tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
 tabela_contas_cont = tabela_contas_cont.set_index('ID')
 tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
-tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
+tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA', 'ATRIBUIÇÃO']]
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
+
+#CARTÕES#
+lancamento_cartao = workbook.get_worksheet(1)
+tabela_lancamentos_cartao = lancamento_cartao.get_all_values()
+tabela_lancamentos_cartao = pd.DataFrame(tabela_lancamentos_cartao[1:], columns=tabela_lancamentos_cartao[0])
+tabela_lancamentos_cartao = tabela_lancamentos_cartao.set_index('ID')
+tabela_lancamentos_cartao.index = tabela_lancamentos_cartao.index.astype(int)
+tabela_lancamentos_cartao = tabela_lancamentos_cartao[tabela_lancamentos_cartao["CONCILIADO"]=="TRUE"]
+tabela_lancamentos_cartao = tabela_lancamentos_cartao[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA']]
+#CONTAS BANCÁRIAS#
+
+lançamentos = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=0)
+lançamentos = lançamentos.reset_index()
+lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA']]
+
 
 
 
@@ -82,23 +98,20 @@ tamanho_tabela = len(lançamentos)
 if tamanho_tabela==1:
    st.write("SEM LANÇAMENTOS")
 else:
-  maxid = lançamentos['ID'].max()
-
-  lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()
   tamanho_tabela = len(lançamentos)
-  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace('.', '', regex=False)  # remove pontos de milhar se houver
-  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)  # troca vírgula por ponto
+  lançamentos['VALOR'] = (
+    lançamentos['VALOR']
+    .str.replace('.', '', regex=False)        # Remove separador de milhar
+    .str.replace(',', '.', regex=False)       # Converte vírgula decimal para ponto
+)
+  lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
-  lançamentos = lançamentos.set_index('ID')
-
+  
   listas_owners = list(lançamentos['PROPRIETÁRIO'].unique())
   lista_prop_selecionado = st.multiselect("Selecione", listas_owners, listas_owners)
 
-
-  lançamentos = lançamentos[lançamentos['BANCO'].notna()]
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
-  lançamentos_conciliados = lançamentos[lançamentos['CONCILIADO']==True]
-  lançamentos_conciliados = lançamentos_conciliados.iloc[::-1]
+  lançamentos_conciliados = lançamentos.iloc[::-1]
 
   lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
   #st.dataframe(lançamentos_conciliados[colunas_selecionadas])
@@ -106,16 +119,16 @@ else:
   lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
 
   lançamentos_conciliados_despesas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="DESPESAS"]
-  lançamentos_conciliados_despesas['VALOR'] = lançamentos_conciliados_despesas['VALOR'] * -1
+  lançamentos_conciliados_despesas['VALOR'] = abs(lançamentos_conciliados_despesas['VALOR'])
 
 
-  fig1 = px.pie(lançamentos_conciliados_receitas, names='CATEGORIA', values='VALOR')
-  fig2 = px.pie(lançamentos_conciliados_despesas, names='CATEGORIA', values='VALOR')
+  fig1 = px.pie(lançamentos_conciliados_receitas, names='CATEGORIA', values='VALOR',color_discrete_sequence=px.colors.sequential.Plasma)
+  fig2 = px.pie(lançamentos_conciliados_despesas, names='CATEGORIA', values='VALOR',color_discrete_sequence=px.colors.sequential.RdBu)
   fig2.update_traces(textposition='inside', textinfo='percent')
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
-  fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO')
-  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO')
+  fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.Plasma)
+  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.RdBu)
   fig2.update_traces(textposition='inside', textinfo='percent')
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
   col1, col2 = st.columns(2)

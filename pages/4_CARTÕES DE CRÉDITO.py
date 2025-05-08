@@ -2,7 +2,6 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
-import streamlit as st
 from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
 
@@ -45,6 +44,22 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 #locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 lançamentos, workbook = lerdados(sheeitid, sheetname)
+
+sheet = workbook.get_worksheet(0)
+lançamentos = sheet.get_all_values()
+lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
+tamanho_tabela_lançamentos = lançamentos.shape[0] + 2
+#CONTAS BANCÁRIAS#
+conta_banco_cadastradas = workbook.get_worksheet(2)
+tabela_contas_banco = conta_banco_cadastradas.get_all_values()
+tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
+tabela_contas_banco = tabela_contas_banco.set_index('ID')
+tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
+tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
+
+tabela_contas_banco_ativa['BANCO_PROP'] = tabela_contas_banco_ativa["NOME BANCO"] + " / " + tabela_contas_banco_ativa["PROPRIETÁRIO"]
+bancos = tabela_contas_banco_ativa['BANCO_PROP'].tolist()
 #CONTAS BANCÁRIAS#
 lancamento_cartao = workbook.get_worksheet(1)
 
@@ -53,6 +68,8 @@ tabela_lancamentos_cartao = lancamento_cartao.get_all_values()
 tabela_lancamentos_cartao = pd.DataFrame(tabela_lancamentos_cartao[1:], columns=tabela_lancamentos_cartao[0])
 
 tabela_lancamentos_cartao = tabela_lancamentos_cartao.set_index('ID')
+tabela_lancamentos_cartao.index = tabela_lancamentos_cartao.index.astype(int)
+tamanhotabela_lancamento_cartao = tabela_lancamentos_cartao.index.max()
 tabela_lancamentos_cartao = tabela_lancamentos_cartao.iloc[::-1]
 
 
@@ -109,44 +126,48 @@ st.write(faturas_cartao)
 
 
 st.markdown(f'VALOR TOTAL À PAGAR: {-faturas_cartao.values.sum()}')
-listas_cartoes = list(tabela_lancamentos_cartao['CARTÃO'].unique())
-listas_owners = list(tabela_lancamentos_cartao['PROPRIETÁRIO'].unique())
+listas_cartoes = list(tabela_lancamentos_cartao['CARTÃO'].dropna().unique())
+listas_owners = list(tabela_lancamentos_cartao['PROPRIETÁRIO'].dropna().unique())
 colun1, colun2 = st.columns(2)
 with colun1:
-  lista_cartoes_selecionado = st.multiselect("Selecione", listas_cartoes, listas_cartoes, key="1")
+  lista_cartoes_selecionado = st.selectbox("Selecione", listas_cartoes, index=0, key="1")
 with colun2:
-  lista_owners_selecionado = st.multiselect("Selecione", listas_owners, listas_owners, key="2")
+  lista_owners_selecionado = st.selectbox("Selecione", listas_owners, index=0, key="2")
 
-tabela_lancamentos_cartao = tabela_lancamentos_cartao[
-    (tabela_lancamentos_cartao['CARTÃO'].isin(lista_cartoes_selecionado)) & 
-    (tabela_lancamentos_cartao['PROPRIETÁRIO'].isin(lista_owners_selecionado))
+tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
+    (tabela_lancamentos_cartao['CARTÃO'] == lista_cartoes_selecionado) & 
+    (tabela_lancamentos_cartao['PROPRIETÁRIO'] == lista_owners_selecionado)
 ]
+
 tamanho_tabela = len(tabela_lancamentos_cartao)
 if st.toggle('Conciliar fatura'):
   if tamanho_tabela==0:
      st.write("Inserir lançamentos")
   else:
     # Step 1: Create a FATURA_MES column as Period for natural month sorting
-    tabela_lancamentos_cartao['FATURA_MES'] = tabela_lancamentos_cartao['FATURA'].dt.to_period('M')
+    tabela_lancamentos_cartao_filtrada['FATURA_MES'] = tabela_lancamentos_cartao_filtrada['FATURA'].dt.to_period('M')
 
     # Step 2: Get unique months, sort them, and convert to string (e.g., 'Apr/2025')
-    lista_faturas = sorted(tabela_lancamentos_cartao['FATURA_MES'].dropna().unique())
-    lista_faturas_str = [f.strftime('%b/%Y') for f in pd.PeriodIndex(lista_faturas).to_timestamp()]
-
+    lista_faturas = sorted(tabela_lancamentos_cartao_filtrada['FATURA_MES'].dropna().unique())
+    lista_faturas_str = [f.strftime('%b/%Y') for f in pd.PeriodIndex(lista_faturas).to_timestamp()][::-1]
 
     hoje = hoje.strftime(('%b/%Y'))
-    hojed = lista_faturas_str.index(hoje)
+    try:
+      hojed = lista_faturas_str.index(hoje)
+    except ValueError:
+      hojed = 2  # ou outro valor padrão
+
 
     # Step 3: Show in selectbox
-    fatura_str = st.selectbox("SELECIONE A FATURA", lista_faturas_str,hojed)
+    fatura_str = st.selectbox("SELECIONE A FATURA", faturas_cartao.columns, index=0)
 
     # Step 4: Convert selection back to datetime for filtering
     fatura_dt = pd.to_datetime(fatura_str, format='%b/%Y')
     fatura_period = fatura_dt.to_period('M')
 
     # Step 5: Filter rows where FATURA_MES matches the selected one
-    lançamentos_cartao_filtro_fatura = tabela_lancamentos_cartao[
-        tabela_lancamentos_cartao['FATURA_MES'] == fatura_period
+    lançamentos_cartao_filtro_fatura = tabela_lancamentos_cartao_filtrada[
+        tabela_lancamentos_cartao_filtrada['FATURA_MES'] == fatura_period
     ]
     # Step 6: Display filtered results
     lançamentos_cartao_filtro_fatura['FATURA_MES'] = lançamentos_cartao_filtro_fatura['FATURA_MES'].dt.strftime('%b/%Y')
@@ -174,15 +195,70 @@ if st.toggle('Conciliar fatura'):
       lançamentos_cartao_filtro_fatura_visual_true = lançamentos_cartao_filtro_fatura_visual_true[['DATA', 'LANÇAMENTO','VALOR', 'DESCRIÇÃO']]
       lançamentos_cartao_filtro_fatura_visual_true.insert(3,'SELECIONAR',False)
       editar_lançamentos_cartao_filtro_fatura_visual_true = st.data_editor(lançamentos_cartao_filtro_fatura_visual_true, 
-                                                                            column_config={"SELECIONAR": st.column_config.CheckboxColumn('SELECT')},hide_index=False, height=500)
+                                                                            column_config={"SELECIONAR": st.column_config.CheckboxColumn('SELECT')},hide_index=False, height=500, key="editdataframe")
       selected_rows = editar_lançamentos_cartao_filtro_fatura_visual_true[editar_lançamentos_cartao_filtro_fatura_visual_true["SELECIONAR"]]
       selected_indexes = selected_rows.index.tolist()
       st.markdown(f'TOTAL SELECIONADO: {selected_rows["VALOR"].sum():,.2f}')
       st.markdown(f'TOTAL: {lançamentos_cartao_filtro_fatura_visual_true['VALOR'].sum()}')
-      if st.button('DESCONCILIAR'):
-        for id in selected_indexes:
-          lancamento_cartao.update_acell(f'I{int(id)}', False)
-        st.rerun() 
+      DESCONCILIAR, PAGAR = st.columns(2)
+      with DESCONCILIAR:
+        if st.button('DESCONCILIAR'):
+          for id in selected_indexes:
+            lancamento_cartao.update_acell(f'I{int(id)}', False)
+          st.rerun() 
+      with PAGAR:
+        with st.popover("PAGAR FATURA"):
+          with st.form(key="form_pagar_fatura", border=False):
+            fatura_data = datetime.strptime(fatura_str, '%b/%Y').replace(day=1)
+            fatura_data_str = fatura_data.strftime('%Y-%m-%d')
+            data = st.date_input('DATA', date.today())
+            banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
+            number = abs(st.number_input("INSIRA O VALOR", format="%0.2f", value=lançamentos_cartao_filtro_fatura_visual_true['VALOR'].sum()))
+            pagar_fatura = st.form_submit_button("PAGAR FATURA")
+            if pagar_fatura:
+              now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+              row_cartao = [
+                f"=ROW(B{tamanho_tabela+2})",
+                data.strftime('%d/%m/%Y'),
+                lista_cartoes_selecionado,
+                lista_owners_selecionado,
+                "FATURA",
+                "CARTÃO DE CRÉDITO",
+                number,
+                f"PAGAMENTO FATURA CARTÃO REF. {fatura_str}",
+                True,
+                "ANALÍTICA",
+                fatura_data_str,
+                "",
+                "BRL",
+                st.session_state.name,
+                now
+              ]
+              
+              row_banco = [
+                f"=ROW(B{tamanho_tabela_lançamentos})",
+                data.strftime('%d/%m/%Y'),
+                banco.split(" / ")[0],
+                banco.split(" / ")[1],
+                "FATURA",
+                "CARTÃO DE CRÉDITO",
+                -number,
+                f"PAGAMENTO FATURA CARTÃO REF. {fatura_str}",
+                True,
+                "ANALÍTICA",
+                "",
+                "BRL",
+                st.session_state.name,
+                now
+              ]
+              
+              lancamento_cartao.add_rows(1)
+              lancamento_cartao.update(f'A{tamanho_tabela+2}:O{tamanho_tabela+2}', [row_cartao], raw=False)
+              sheet.add_rows(1)
+              sheet.update(f'A{tamanho_tabela_lançamentos}:O{tamanho_tabela_lançamentos}', [row_banco], raw=False)
+
+
+          
 else:
   dataini, datafim =st.columns(2)
   with dataini:
@@ -234,7 +310,7 @@ tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
 tabela_evenproj_inativa = tabela_evenproj[tabela_evenproj['ATIVO']=='FALSE']
 tamanho_tabela_evenproj = len(tabela_evenproj_ativa)+2
 
-tamanho_tabela = len(tabela_lancamentos_cartao)
+#tamanho_tabela = len(tabela_lancamentos_cartao)
 
 
 inserir, editar = st.columns(2, vertical_alignment='top')
@@ -258,9 +334,9 @@ def Alt_lançamentos_CC():
             descricao = st.text_input('DESCRIÇÃO')
             descricao = str(descricao)
             descricao = descricao.upper()
-            analise = st.selectbox('SELECIONE A ALÍNEA', ['DESPESAS','RECEITAS'], index=None, placeholder="Selecione")
             proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
             status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
+            analise = st.checkbox("ANALÍTICA", key='lançamento analitico')
             dt,fat = st.columns(2)
             with dt:
               parcelas = st.number_input('Número de parcelas',1,36)
@@ -277,7 +353,6 @@ def Alt_lançamentos_CC():
                 data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
                 data_fatura = (data2 + relativedelta(months=x)).strftime('%d/%m/%Y')
                 valor_parcela = round(number / parcelas, 2)
-                valor_parcela = -valor_parcela if analise == 'DESPESAS' else valor_parcela
                 moeda = tabela_cards_cont.loc[
                     (tabela_cards_cont['CARTÃO'] == cart.split(" / ")[0]) &
                     (tabela_cards_cont['PROPRIETÁRIO'] == cart.split(" / ")[1]),
@@ -285,8 +360,14 @@ def Alt_lançamentos_CC():
                 ].values[0]
                 descricao_formatada = f'{descricao}  {x+1}/{parcelas}'
                 timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                row = f"=ROW(B{tamanho_tabela + 2 + x})"
+                if analise:
+                  analise = "ANALÍTICA"
+                else:
+                  analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
                 
                 linha = [
+                    row,                               # A - Row 
                     data_parcela,                      # B - Data
                     cart.split(" / ")[0],              # C - Cartão
                     cart.split(" / ")[1],              # D - Proprietário
@@ -308,10 +389,10 @@ def Alt_lançamentos_CC():
             lancamento_cartao.add_rows(parcelas)
             inicio_linha = tamanho_tabela + 2
             fim_linha = inicio_linha + parcelas - 1
-            faixa = f"B{inicio_linha}:O{fim_linha}"
+            faixa = f"A{inicio_linha}:O{fim_linha}"
 
             # Atualizar todas as linhas de uma vez só
-            lancamento_cartao.update(values=linhas,range_name=faixa)
+            lancamento_cartao.update(values=linhas,range_name=faixa,raw=False)
 
             st.success("Registro(s) inserido(s) com sucesso!")
             st.rerun()
@@ -322,23 +403,25 @@ def Alt_lançamentos_CC():
            st.write("INSERIR NOVO LANÇAMENTO")
         else:
           with subcol1:
-            id_selected = str(st.number_input('Digite o ID', min_value=0, max_value=tamanho_tabela+1, step=1, format="%d", value=tamanho_tabela+1))
+            id_selected = st.number_input('Digite o ID', min_value=0, max_value=tamanhotabela_lancamento_cartao, step=1, format="%d", value=tamanhotabela_lancamento_cartao)
           with subcol2:
-            data2 = st.date_input('DATA',value=tabela_lancamentos_cartao.loc[id_selected, 'DATA'])
+            data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
+            data2 = st.date_input('DATA', value=pd.to_datetime(data_raw).date())
           idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
           idxbanco = cards.index(idxbanco)
           banco2 = st.selectbox('SELECIONE O BANCO', cards, index=idxbanco, placeholder="Selecione")
-          idxdespesas = tabela_lancamentos_cartao.loc[id_selected, 'LANÇAMENTO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'CATEGORIA']
-          idxdespesas = contas.index(idxdespesas)
+          try:
+            idxdespesas = tabela_lancamentos_cartao.loc[id_selected, 'LANÇAMENTO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'CATEGORIA']
+            idxdespesas = contas.index(idxdespesas)
+          except ValueError:
+            idxdespesas = None
           despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
           number2 = st.number_input("VALOR", format="%0.2f", value=tabela_lancamentos_cartao.loc[id_selected, 'VALOR'])
           descricao2 = st.text_input('DESCRIÇÃO', value=tabela_lancamentos_cartao.loc[id_selected, 'DESCRIÇÃO'])
-          analiseslist = ['DESPESAS','RECEITAS']
-          idxanalises = tabela_lancamentos_cartao.loc[id_selected, 'ANALISE']
-          idxanalises = analiseslist.index(idxanalises)
-          analise2 = st.selectbox('SELECIONE A ALÍNEA', analiseslist , index=idxanalises, placeholder="Selecione")
+
           proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
           status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=tabela_lancamentos_cartao.loc[id_selected, 'CONCILIADO'])
+          analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
           subcol3, subcol4 = st.columns(2)
           with subcol3:   
             Submit_edit = st.button(label="EDITAR")
@@ -356,13 +439,11 @@ def Alt_lançamentos_CC():
               lancamento_cartao.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
               lancamento_cartao.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
               lancamento_cartao.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
-              if analise2 == 'DESPESAS':
-                lancamento_cartao.update_acell(f'G{id_selected}', - number2)
-              else:
-                lancamento_cartao.update_acell(f'G{id_selected}', number2)
+              lancamento_cartao.update_acell(f'G{id_selected}',number2)
               lancamento_cartao.update_acell(f'H{id_selected}', descricao2)
               lancamento_cartao.update_acell(f'I{id_selected}', status2)
-              lancamento_cartao.update_acell(f'J{id_selected}', analise2)
+              if analise2:
+                lancamento_cartao.update_acell(f'J{id_selected}', "ANALÍTICA")
               lancamento_cartao.update_acell(f'K{id_selected}', data2.strftime('%d/%m/%Y'))
               lancamento_cartao.update_acell(f'L{id_selected}', proj2)
               lancamento_cartao.update_acell(f'M{id_selected}', st.session_state.name)
