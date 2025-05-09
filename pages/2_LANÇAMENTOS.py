@@ -235,8 +235,11 @@ def Alt_lançamentos():
             data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(key="form_editar", border=False):
             contas.append('TRANSFERÊNCIA / TRANSFERÊNCIA')
-            idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
-            idxbanco = bancos.index(idxbanco)
+            try:
+              idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
+              idxbanco = bancos.index(idxbanco)
+            else:
+              idxbanco = None
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
             try:
               idxdespesas = lançamentos.loc[str(id_selected), 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
