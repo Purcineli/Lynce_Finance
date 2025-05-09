@@ -238,7 +238,7 @@ def Alt_lançamentos():
             try:
               idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
               idxbanco = bancos.index(idxbanco)
-            else:
+            except:
               idxbanco = None
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
             try:
