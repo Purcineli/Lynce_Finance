@@ -149,74 +149,75 @@ tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
 
 tamanho_tabela = tabela_lancamentos_cartao.shape[0] + 2
 if st.toggle('Conciliar fatura'):
-  if tamanho_tabela==2:
-     st.write("Inserir lançamentos")
-  else:
-    # Step 1: Create a FATURA_MES column as Period for natural month sorting
-    tabela_lancamentos_cartao_filtrada['FATURA_MES'] = tabela_lancamentos_cartao_filtrada['FATURA'].dt.to_period('M')
+  with st.form(key="form_ediar_con", border=False):
+    if tamanho_tabela==2:
+      st.write("Inserir lançamentos")
+    else:
+      # Step 1: Create a FATURA_MES column as Period for natural month sorting
+      tabela_lancamentos_cartao_filtrada['FATURA_MES'] = tabela_lancamentos_cartao_filtrada['FATURA'].dt.to_period('M')
 
-    # Step 2: Get unique months, sort them, and convert to string (e.g., 'Apr/2025')
-    lista_faturas = sorted(tabela_lancamentos_cartao_filtrada['FATURA_MES'].dropna().unique())
-    lista_faturas_str = [f.strftime('%b/%Y') for f in pd.PeriodIndex(lista_faturas).to_timestamp()][::-1]
+      # Step 2: Get unique months, sort them, and convert to string (e.g., 'Apr/2025')
+      lista_faturas = sorted(tabela_lancamentos_cartao_filtrada['FATURA_MES'].dropna().unique())
+      lista_faturas_str = [f.strftime('%b/%Y') for f in pd.PeriodIndex(lista_faturas).to_timestamp()][::-1]
 
-    hoje = hoje.strftime(('%b/%Y'))
-    try:
-      hojed = lista_faturas_str.index(hoje)
-    except ValueError:
-      hojed = 2  # ou outro valor padrão
+      hoje = hoje.strftime(('%b/%Y'))
+      try:
+        hojed = lista_faturas_str.index(hoje)
+      except ValueError:
+        hojed = 2  # ou outro valor padrão
 
 
-    # Step 3: Show in selectbox
-    fatura_str = st.selectbox("SELECIONE A FATURA", faturas_cartao.columns, index=0)
+      # Step 3: Show in selectbox
+      fatura_str = st.selectbox("SELECIONE A FATURA", faturas_cartao.columns, index=0)
+      pesquisar = st.form_submit_button('PESQUISAR')
 
-    # Step 4: Convert selection back to datetime for filtering
-    fatura_dt = pd.to_datetime(fatura_str, format='%b/%Y')
-    fatura_period = fatura_dt.to_period('M')
+      # Step 4: Convert selection back to datetime for filtering
+      fatura_dt = pd.to_datetime(fatura_str, format='%b/%Y')
+      fatura_period = fatura_dt.to_period('M')
 
-    # Step 5: Filter rows where FATURA_MES matches the selected one
-    lançamentos_cartao_filtro_fatura = tabela_lancamentos_cartao_filtrada[
-        tabela_lancamentos_cartao_filtrada['FATURA_MES'] == fatura_period
-    ]
-    # Step 6: Display filtered results
-    lançamentos_cartao_filtro_fatura['FATURA_MES'] = lançamentos_cartao_filtro_fatura['FATURA_MES'].dt.strftime('%b/%Y')
-    lançamentos_cartao_filtro_fatura_visual = lançamentos_cartao_filtro_fatura[['DATA','CARTÃO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE', 'FATURA_MES']]
-    lançamentos_cartao_filtro_fatura_visual = lançamentos_cartao_filtro_fatura.rename(columns={'FATURA_MES': 'FATURA CARTÃO'})
-    lançamentos_cartao_filtro_fatura_visual_false = lançamentos_cartao_filtro_fatura[lançamentos_cartao_filtro_fatura['CONCILIADO']=="FALSE"]
-    lançamentos_cartao_filtro_fatura_visual_true = lançamentos_cartao_filtro_fatura[lançamentos_cartao_filtro_fatura['CONCILIADO']=="TRUE"]
-    naoconc, conc = st.columns(2)
-    with naoconc:
-      lançamentos_cartao_filtro_fatura_visual_false = lançamentos_cartao_filtro_fatura_visual_false[['DATA', 'LANÇAMENTO','VALOR', 'DESCRIÇÃO']]
-      lançamentos_cartao_filtro_fatura_visual_false.insert(3,'SELECIONAR',False)
-      editar_lançamentos_cartao_filtro_fatura_visual_false = st.data_editor(lançamentos_cartao_filtro_fatura_visual_false, 
-                                                                            column_config={"SELECIONAR": st.column_config.CheckboxColumn('SELECT')},hide_index=False, height=500)
-      selected_rows = editar_lançamentos_cartao_filtro_fatura_visual_false[editar_lançamentos_cartao_filtro_fatura_visual_false["SELECIONAR"]]
-      selected_indexes = selected_rows.index.tolist()
-      st.markdown(f'TOTAL SELECIONADO: {selected_rows["VALOR"].sum():,.2f}')
-      st.markdown(f'TOTAL: {lançamentos_cartao_filtro_fatura_visual_false['VALOR'].sum()}')
-      if st.button('CONCILIAR'):
-        for id in selected_indexes:
-          lancamento_cartao.update_acell(f'I{int(id)}', True)
-        st.rerun()
-        
-      
-    with conc:
-      lançamentos_cartao_filtro_fatura_visual_true = lançamentos_cartao_filtro_fatura_visual_true[['DATA', 'LANÇAMENTO','VALOR', 'DESCRIÇÃO']]
-      lançamentos_cartao_filtro_fatura_visual_true.insert(3,'SELECIONAR',False)
-      editar_lançamentos_cartao_filtro_fatura_visual_true = st.data_editor(lançamentos_cartao_filtro_fatura_visual_true, 
-                                                                            column_config={"SELECIONAR": st.column_config.CheckboxColumn('SELECT')},hide_index=False, height=500, key="editdataframe")
-      selected_rows = editar_lançamentos_cartao_filtro_fatura_visual_true[editar_lançamentos_cartao_filtro_fatura_visual_true["SELECIONAR"]]
-      selected_indexes = selected_rows.index.tolist()
-      st.markdown(f'TOTAL SELECIONADO: {selected_rows["VALOR"].sum():,.2f}')
-      st.markdown(f'TOTAL: {lançamentos_cartao_filtro_fatura_visual_true['VALOR'].sum()}')
-      DESCONCILIAR, PAGAR = st.columns(2)
-      with DESCONCILIAR:
-        if st.button('DESCONCILIAR'):
+      # Step 5: Filter rows where FATURA_MES matches the selected one
+      lançamentos_cartao_filtro_fatura = tabela_lancamentos_cartao_filtrada[
+          tabela_lancamentos_cartao_filtrada['FATURA_MES'] == fatura_period
+      ]
+      # Step 6: Display filtered results
+      lançamentos_cartao_filtro_fatura['FATURA_MES'] = lançamentos_cartao_filtro_fatura['FATURA_MES'].dt.strftime('%b/%Y')
+      lançamentos_cartao_filtro_fatura_visual = lançamentos_cartao_filtro_fatura[['DATA','CARTÃO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE', 'FATURA_MES']]
+      lançamentos_cartao_filtro_fatura_visual = lançamentos_cartao_filtro_fatura.rename(columns={'FATURA_MES': 'FATURA CARTÃO'})
+      lançamentos_cartao_filtro_fatura_visual_false = lançamentos_cartao_filtro_fatura[lançamentos_cartao_filtro_fatura['CONCILIADO']=="FALSE"]
+      lançamentos_cartao_filtro_fatura_visual_true = lançamentos_cartao_filtro_fatura[lançamentos_cartao_filtro_fatura['CONCILIADO']=="TRUE"]
+      naoconc, conc = st.columns(2)
+      with naoconc:
+        lançamentos_cartao_filtro_fatura_visual_false = lançamentos_cartao_filtro_fatura_visual_false[['DATA', 'LANÇAMENTO','VALOR', 'DESCRIÇÃO']]
+        lançamentos_cartao_filtro_fatura_visual_false.insert(3,'SELECIONAR',False)
+        editar_lançamentos_cartao_filtro_fatura_visual_false = st.data_editor(lançamentos_cartao_filtro_fatura_visual_false, 
+                                                                              column_config={"SELECIONAR": st.column_config.CheckboxColumn('SELECT')},hide_index=False, height=500)
+        st.markdown(f'TOTAL: {lançamentos_cartao_filtro_fatura_visual_false['VALOR'].sum()}')
+        conciliar = st.form_submit_button("CONCILIAR")
+        if conciliar:
+          selected_rows = editar_lançamentos_cartao_filtro_fatura_visual_false[editar_lançamentos_cartao_filtro_fatura_visual_false["SELECIONAR"]]
+          selected_indexes = selected_rows.index.tolist()
           for id in selected_indexes:
-            lancamento_cartao.update_acell(f'I{int(id)}', False)
-          st.rerun() 
-      with PAGAR:
-        with st.popover("PAGAR FATURA"):
-          with st.form(key="form_pagar_fatura", border=False):
+            lancamento_cartao.update_acell(f'I{int(id)}', True)
+          st.rerun()
+          
+        
+      with conc:
+        lançamentos_cartao_filtro_fatura_visual_true = lançamentos_cartao_filtro_fatura_visual_true[['DATA', 'LANÇAMENTO','VALOR', 'DESCRIÇÃO']]
+        lançamentos_cartao_filtro_fatura_visual_true.insert(3,'SELECIONAR',False)
+        editar_lançamentos_cartao_filtro_fatura_visual_true = st.data_editor(lançamentos_cartao_filtro_fatura_visual_true, 
+                                                                              column_config={"SELECIONAR": st.column_config.CheckboxColumn('SELECT')},hide_index=False, height=500, key="editdataframe")
+        selected_rows = editar_lançamentos_cartao_filtro_fatura_visual_true[editar_lançamentos_cartao_filtro_fatura_visual_true["SELECIONAR"]]
+        st.markdown(f'TOTAL: {lançamentos_cartao_filtro_fatura_visual_true['VALOR'].sum()}')
+        DESCONCILIAR, PAGAR = st.columns(2)
+        with DESCONCILIAR:
+          desconciliar = st.form_submit_button('DESCONCILIAR')
+          if desconciliar:
+            selected_indexes = selected_rows.index.tolist()
+            for id in selected_indexes:
+              lancamento_cartao.update_acell(f'I{int(id)}', False)
+            st.rerun() 
+        with PAGAR:
+          with st.popover("PAGAR FATURA"):
             fatura_data = datetime.strptime(fatura_str, '%b/%Y').replace(day=1)
             fatura_data_str = fatura_data.strftime('%Y-%m-%d')
             data = st.date_input('DATA', date.today())
@@ -293,16 +294,26 @@ else:
 
 st.divider()
 
-cards_cont_cadastradas = workbook.get_worksheet(4)
-tabela_cards_cont = cards_cont_cadastradas.get_all_values()
+try:
+  cards_cont_cadastradas = workbook.get_worksheet(4)
+  tabela_cards_cont = cards_cont_cadastradas.get_all_values()
+  conta_cont_cadastradas = workbook.get_worksheet(3)
+  tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+  tabela_evenproj_sheet = workbook.get_worksheet(5)
+  tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+except APIError:
+  st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+  time.sleep(tempo_espera)
+  st.rerun()
+
+
 tabela_cards_cont = pd.DataFrame(tabela_cards_cont[1:], columns=tabela_cards_cont[0])
 tabela_cards_cont = tabela_cards_cont.set_index('ID')
 tabela_cards_cont = tabela_cards_cont[tabela_cards_cont['ATIVO']=='TRUE']
 tabela_cards_cont = tabela_cards_cont[['CARTÃO','PROPRIETÁRIO','MOEDA','FECHAMENTO', 'VENCIMENTO']]
 tamanho_tabela_contas_cards = len(tabela_cards_cont)+2
 
-conta_cont_cadastradas = workbook.get_worksheet(3)
-tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+
 tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
 tabela_contas_cont = tabela_contas_cont.set_index('ID')
 tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
@@ -310,8 +321,7 @@ tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORI
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 
 #PROJETOS#
-tabela_evenproj_sheet = workbook.get_worksheet(5)
-tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+
 tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
 tabela_evenproj = tabela_evenproj.set_index('ID')
 tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
@@ -422,8 +432,11 @@ def Alt_lançamentos_CC():
           with subcol2:
             data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
             data2 = st.date_input('DATA', value=pd.to_datetime(data_raw).date())
-          idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
-          idxbanco = cards.index(idxbanco)
+          try:  
+            idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
+            idxbanco = cards.index(idxbanco)
+          except:
+            idxbanco = None
           banco2 = st.selectbox('SELECIONE O BANCO', cards, index=idxbanco, placeholder="Selecione")
           try:
             idxdespesas = tabela_lancamentos_cartao.loc[id_selected, 'LANÇAMENTO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'CATEGORIA']
