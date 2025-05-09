@@ -42,10 +42,15 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 tempo_espera = 5
 try:
   lançamentos, workbook = lerdados(sheeitid, sheetname)
+  sheet = workbook.get_worksheet(0)
+
 except APIError:
   st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
   time.sleep(tempo_espera)
   st.rerun()
+
+lançamentos = sheet.get_all_values()
+lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
 
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
@@ -251,16 +256,33 @@ if togglecontas_contábeis:
         atrib = str(atrib)
         atrib = atrib.upper()
       with but:
-        submit = st.form_submit_button(label="EDITAR")
+        submit = st.popover(label="EDITAR")
+        with submit:
+          lancamentos_filtro = lançamentos[(lançamentos['LANÇAMENTO'] == cont) & (lançamentos['CATEGORIA'] == categor)]
+          lista_id = lancamentos_filtro['ID'].tolist()
+          st.write(lancamentos_filtro)
+          st.write(f"Há {lancamentos_filtro.shape[0]} lançamentos localizados, deseja alterar?")
+          st.write(lista_id)
+          editar = st.form_submit_button('EDITAR')
+          if editar:
+            conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
+            conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
+            conta_cont_cadastradas.update(values=[[atrib]],range_name=f'E{id_selecionada3}')
+            print("alterações efetuadas com sucesso na tabela de contas contábeis")
+            print(lista_id)
+            for x in lista_id:
+              sheet.update(values=[[cont]],range_name=f'E{x}')
+              sheet.update(values=[[categor]],range_name=f'F{x}')
+              sheet.update( values=[[atrib]], range_name=f'J{x}')
+              print(x)
       with but2:
-        delete = st.form_submit_button(label="DELETAR")
-    if submit:
-      conta_cont_cadastradas.update_acell(f'B{int(id_selecionada3)}', cont)
-      conta_cont_cadastradas.update_acell(f'C{int(id_selecionada3)}', categor)
-      conta_cont_cadastradas.update_acell(f'E{int(id_selecionada3)}', atrib)
-      st.rerun()
-    if delete:
-      st.rerun()
+        st.write("")
+        #delete = st.form_submit_button(label="DELETAR")
+    #if submit:
+
+      #st.rerun()
+    #if delete:
+      #st.rerun()
 
 ########################################################################
 
