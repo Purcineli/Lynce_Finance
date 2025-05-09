@@ -245,7 +245,7 @@ if togglecontas_contábeis:
           atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
         else:
           analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
-          idxanalises = lançamentos.loc[id_selecionada3, 'ANALISE']
+          idxanalises = tabela_contas_cont.loc[id_selecionada3, 'ATRIBUIÇÃO']
           idxanalises = analiseslist.index(idxanalises)
           atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=idxanalises)    
         atrib = str(atrib)
