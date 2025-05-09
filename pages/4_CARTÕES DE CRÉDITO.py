@@ -4,6 +4,8 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 from datetime import date, timedelta, datetime
 from dateutil.relativedelta import relativedelta
+from gspread.exceptions import APIError
+import time
 
 import plotly.express as px
 import numpy as np
@@ -42,11 +44,17 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 #import locale
 #locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+tempo_espera = 5
 
-lançamentos, workbook = lerdados(sheeitid, sheetname)
 
-sheet = workbook.get_worksheet(0)
-lançamentos = sheet.get_all_values()
+try:
+  lançamentos, workbook = lerdados(sheeitid, sheetname)
+  sheet = workbook.get_worksheet(0)
+  lançamentos = sheet.get_all_values()
+except APIError:
+  st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+  time.sleep(tempo_espera)
+  st.rerun()
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
 tamanho_tabela_lançamentos = lançamentos.shape[0] + 2
 #CONTAS BANCÁRIAS#
@@ -298,7 +306,7 @@ tabela_contas_cont = conta_cont_cadastradas.get_all_values()
 tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
 tabela_contas_cont = tabela_contas_cont.set_index('ID')
 tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
-tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA']]
+tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA', 'ATRIBUIÇÃO']]
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 
 #PROJETOS#
@@ -362,9 +370,13 @@ def Alt_lançamentos_CC():
                 timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
                 row = f"=ROW(B{tamanho_tabela + x})"
                 if analise:
-                  analise = "ANALÍTICA"
+                    analise_valor = "ANALÍTICA"
                 else:
-                  analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+                    analise_valor = tabela_contas_cont_ativa.loc[
+                        (tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0]) &
+                        (tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),
+                        'ATRIBUIÇÃO'
+                    ].values[0]               
                 
                 linha = [
                     row,                               # A - Row 
@@ -376,7 +388,7 @@ def Alt_lançamentos_CC():
                     valor_parcela,                     # G - Valor
                     descricao_formatada,               # H - Descrição
                     status,                            # I - Conciliado
-                    analise,                           # J - Alínea
+                    analise_valor,                     # J - Alínea
                     data_fatura,                       # K - Data base
                     proj,                              # L - Projeto
                     moeda,                             # M - Moeda

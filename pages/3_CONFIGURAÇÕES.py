@@ -3,7 +3,8 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 import streamlit as st
 from datetime import date, timedelta
-
+from gspread.exceptions import APIError
+import time
 import plotly.express as px
 import numpy as np
 import math
@@ -38,8 +39,15 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   return dados_records,workbook
 
+tempo_espera = 5
+try:
+  lançamentos, workbook = lerdados(sheeitid, sheetname)
+except APIError:
+  st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+  time.sleep(tempo_espera)
+  st.rerun()
 
-lançamentos, workbook = lerdados(sheeitid, sheetname)
+
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
   togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS')

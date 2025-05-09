@@ -7,6 +7,8 @@ import plotly.express as px
 import numpy as np
 import json
 from LYNCE import verificar_login
+from gspread.exceptions import APIError
+import time
 
 st.set_page_config(layout="wide")
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -39,13 +41,27 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
 #informe o id e name da arquivo google sheets
 
+tempo_espera = 5
 
-lançamentos = lerdados(sheeitid, sheetname)  # Ler a tabela de lançamentos do Google Sheets
+
+try:
+  lançamentos = lerdados(sheeitid, sheetname)
+except APIError:
+  st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+  time.sleep(tempo_espera)
+  st.rerun()
+
+
+  # Ler a tabela de lançamentos do Google Sheets
 lançamentos = lançamentos.set_index('ID')  # Definir a coluna 'ID' como índice do DataFrame
 if len(lançamentos)==0:
   st.write("Sem lançamentos")
 else:
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()  # Transformar nomes dos bancos para maiúsculas
+  try:
+    lançamentos['VALOR'] = lançamentos['VALOR'].astype(str).str.replace(',', '.', regex=False)
+  except:
+    pass
   lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
   lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)  # Converter 'VALOR' de texto para float

@@ -3,7 +3,8 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 import streamlit as st
 from datetime import date, timedelta, datetime
-
+from gspread.exceptions import APIError
+import time
 import plotly.express as px
 import numpy as np
 import math
@@ -41,8 +42,18 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   return dados_records,workbook
 
 
-lançamentos, workbook = lerdados(sheeitid, sheetname)
-sheet = workbook.get_worksheet(0)
+tempo_espera = 5
+
+
+try:
+  lançamentos, workbook = lerdados(sheeitid, sheetname)
+  sheet = workbook.get_worksheet(0)
+  lançamentos = sheet.get_all_values()
+except APIError:
+  st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+  time.sleep(tempo_espera)
+  st.rerun()
+
 hoje = pd.to_datetime(date.today()) 
 
 lançamentos = sheet.get_all_values()
@@ -91,7 +102,6 @@ tamanho_tabela = lançamentos.shape[0] + 2
 #maxid = int(maxid)
 tamanho_tabela = tamanho_tabela
 #st.write(maxid)
-st.write(tamanho_tabela)
 if tamanho_tabela==2:
    st.write("SEM LANÇAMENTOS")
    maxid = tamanho_tabela
