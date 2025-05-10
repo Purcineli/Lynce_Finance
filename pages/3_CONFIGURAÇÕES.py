@@ -2,7 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
 import streamlit as st
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from gspread.exceptions import APIError
 import time
 import plotly.express as px
@@ -15,6 +15,8 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
+
+hoje = pd.to_datetime(date.today()) 
 # Agora é seguro acessar os valores da sessão
 st.write(f"Bem-vindo, {st.session_state.name}!")
 sheeitid = st.session_state.id
@@ -55,13 +57,13 @@ lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
-  togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS')
+  togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS',value=False)
 with toggle12:
-  togglecontas_contábeis = st.toggle('CONTAS CONTÁBEIS')
+  togglecontas_contábeis = st.toggle('CONTAS CONTÁBEIS',value=False)
 with toggle13:
-  togglecontas_proj = st.toggle('PROJETOS/EVENTOS')
+  togglecontas_proj = st.toggle('PROJETOS/EVENTOS',value=False)
 with toggle14:
-  togglecontas_card = st.toggle('CARTÕES DE CRÉDITO')
+  togglecontas_card = st.toggle('CARTÕES DE CRÉDITO',value=False)
 ###################CONTAS BANCÁRIAS####################
 if togglecontas_bancarias:
   conta_banco_cadastradas = workbook.get_worksheet(2)
@@ -255,26 +257,37 @@ if togglecontas_contábeis:
           atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=idxanalises)    
         atrib = str(atrib)
         atrib = atrib.upper()
+        st.session_state['IDSEL'] = id_selecionada3
       with but:
-        submit = st.popover(label="EDITAR")
-        with submit:
-          lancamentos_filtro = lançamentos[(lançamentos['LANÇAMENTO'] == cont) & (lançamentos['CATEGORIA'] == categor)]
-          lista_id = lancamentos_filtro['ID'].tolist()
-          st.write(lancamentos_filtro)
-          st.write(f"Há {lancamentos_filtro.shape[0]} lançamentos localizados, deseja alterar?")
-          st.write(lista_id)
-          editar = st.form_submit_button('EDITAR')
-          if editar:
-            conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
-            conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
-            conta_cont_cadastradas.update(values=[[atrib]],range_name=f'E{id_selecionada3}')
-            print("alterações efetuadas com sucesso na tabela de contas contábeis")
-            print(lista_id)
-            for x in lista_id:
-              sheet.update(values=[[cont]],range_name=f'E{x}')
-              sheet.update(values=[[categor]],range_name=f'F{x}')
-              sheet.update( values=[[atrib]], range_name=f'J{x}')
-              print(x)
+        #submit = st.popover(label="EDITAR")
+        #with submit:
+        print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+        lancamentos_filtro = lançamentos[(lançamentos['LANÇAMENTO'] == cont) & (lançamentos['CATEGORIA'] == categor)]
+        st.write(lancamentos_filtro)
+        if 'lista_id' not in st.session_state:  # só salva se houver algo
+          st.session_state['lista_id'] = ''
+        lista_id = lancamentos_filtro['ID'].tolist()
+        if lista_id:  # só salva se houver algo
+          st.session_state['lista_id'] = lista_id
+        st.write(f"Há {lancamentos_filtro.shape[0]} lançamentos localizados, deseja alterar?")
+        editar = st.form_submit_button('EDITAR')
+        print(f'2{st.session_state['lista_id']}')
+        print(f'ID: {st.session_state['IDSEL']}')
+        print(id_selecionada3)
+        if editar:
+          print(f'3{st.session_state['lista_id']}')
+          for x in st.session_state['lista_id']:
+            sheet.update(values=[[cont]],range_name=f'E{x}')
+            sheet.update(values=[[categor]],range_name=f'F{x}')
+            sheet.update( values=[[atrib]], range_name=f'J{x}')
+          print(f'4{st.session_state['lista_id']}')
+          conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
+          conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
+          conta_cont_cadastradas.update(values=[[atrib]],range_name=f'E{id_selecionada3}')
+          print("alterações efetuadas com sucesso na tabela de contas contábeis")
+          st.success("Alterações Efetuadas")
+          st.session_state['lista_id'] = ''
+
       with but2:
         st.write("")
         #delete = st.form_submit_button(label="DELETAR")

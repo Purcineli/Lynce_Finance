@@ -230,28 +230,42 @@ def Alt_lançamentos():
            st.write("INSERIR NOVO LANÇAMENTO"),
         else:
           with subcol1:
-            id_selected = st.number_input('Digite o ID', min_value=0, max_value=tamanho_tabela-1, step=1, format="%d", value=tamanho_tabela-1)
+            id_selected = st.number_input('Digite o ID', min_value=2, max_value=tamanho_tabela-1, step=1, format="%d", value=None)
           with subcol2:
-            data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
+            if id_selected == None:
+              data2 = st.date_input('DATA',value=None)
+            else:
+              data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(key="form_editar", border=False):
             contas.append('TRANSFERÊNCIA / TRANSFERÊNCIA')
-            try:
-              idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
-              idxbanco = bancos.index(idxbanco)
-            except:
+            if id_selected == None:
               idxbanco = None
-            banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
-            try:
-              idxdespesas = lançamentos.loc[str(id_selected), 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
-              idxdespesas = contas.index(idxdespesas)
-            except ValueError:
               idxdespesas = None
+            else:
+              try:
+                idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
+                idxbanco = bancos.index(idxbanco)
+              except:
+                idxbanco = None
+              try:
+                idxdespesas = lançamentos.loc[str(id_selected), 'LANÇAMENTO'] + " / " + lançamentos.loc[str(id_selected), 'CATEGORIA']
+                idxdespesas = contas.index(idxdespesas)
+              except:
+                idxdespesas = None
+            banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
             despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-            number2 = st.number_input("VALOR", format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
-            descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
-            proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-            status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[str(id_selected), 'CONCILIADO'])
-            analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
+            if id_selected == None:
+              number2 = st.number_input("VALOR", format="%0.2f", value=None)
+              descricao2 = st.text_input('DESCRIÇÃO', value=None)
+              proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
+              status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=None)
+              analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
+            else:
+              number2 = st.number_input("VALOR", format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
+              descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
+              proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
+              status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[str(id_selected), 'CONCILIADO'])
+              analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
             subcol3, subcol4 = st.columns(2)
             with subcol3:   
               Submit_edit = st.form_submit_button(label="EDITAR")
