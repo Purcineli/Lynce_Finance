@@ -187,7 +187,11 @@ def Alt_lançamentos():
             data = st.date_input('DATA', date.today())
             banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
             despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
-            number = st.number_input("INSIRA O VALOR", format="%0.2f")
+            valor, estorno = st.columns(2, vertical_alignment="bottom")
+            with valor:
+               number = st.number_input("INSIRA O VALOR", format="%0.2f")
+            with estorno:
+               estornolan = st.checkbox("ESTORNO", key="lançamento de estorno")
             descricao = st.text_input('DESCRIÇÃO')
             descricao = str(descricao)
             descricao = descricao.upper()
@@ -208,13 +212,21 @@ def Alt_lançamentos():
               sheet.update_acell(f'D{tamanho_tabela}', banco.split(" / ")[1])
               sheet.update_acell(f'E{tamanho_tabela}', despesa.split(" / ")[0])
               sheet.update_acell(f'F{tamanho_tabela}', despesa.split(" / ")[1])
-              sheet.update_acell(f'G{tamanho_tabela}', number)
+              if analise:
+                analise = "ANALÍTICA"
+                sheet.update_acell(f'G{tamanho_tabela}', number)
+              else:
+                analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+                if analise == "DESPESAS":
+                  sheet.update_acell(f'G{tamanho_tabela}', -number)
+                  if estornolan:
+                    sheet.update_acell(f'G{tamanho_tabela}', number)
+                else:
+                  sheet.update_acell(f'G{tamanho_tabela}', number)
+                  if estornolan:
+                    sheet.update_acell(f'G{tamanho_tabela}', -number)
               sheet.update_acell(f'H{tamanho_tabela}', descricao)
               sheet.update_acell(f'I{tamanho_tabela}', status)
-              if analise:
-                 analise = "ANALÍTICA"
-              else:
-                 analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
               sheet.update_acell(f'J{tamanho_tabela}', analise)
               sheet.update_acell(f'K{tamanho_tabela}', proj)
               moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
@@ -255,13 +267,28 @@ def Alt_lançamentos():
             banco2 = st.selectbox('SELECIONE O BANCO', bancos, index=idxbanco, placeholder="Selecione")
             despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
             if id_selected == None:
-              number2 = st.number_input("VALOR", format="%0.2f", value=None)
+              valor2, estorno2 = st.columns(2, vertical_alignment="bottom")
+              with valor2:
+                number2 = st.number_input("VALOR", format="%0.2f", value=None)
+              with estorno2:
+                estornolan2 = st.checkbox("ESTORNO", key="lançamento de estorno2", value=False)
               descricao2 = st.text_input('DESCRIÇÃO', value=None)
               proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
               status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=None)
               analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
             else:
-              number2 = st.number_input("VALOR", format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
+              checkanalise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa2.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa2.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+              valor2, estorno2 = st.columns(2, vertical_alignment="bottom")
+              with valor2:
+                number2 = st.number_input("VALOR", format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
+                numbercalc = lançamentos.loc[str(id_selected), 'VALOR']
+              with estorno2:
+                if checkanalise == "DESPESAS" and numbercalc > 0:
+                  estornolan2 = st.checkbox("ESTORNO", key="lançamento de estorno2", value=True)
+                elif checkanalise == "RECEITAS" and numbercalc < 0:
+                  estornolan2 = st.checkbox("ESTORNO", key="lançamento de estorno2", value=True)
+                else:
+                  estornolan2 = st.checkbox("ESTORNO", key="lançamento de estorno2", value=False)
               descricao2 = st.text_input('DESCRIÇÃO', value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
               proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
               status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=lançamentos.loc[str(id_selected), 'CONCILIADO'])
@@ -283,7 +310,16 @@ def Alt_lançamentos():
                 sheet.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
                 sheet.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
                 sheet.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
-                sheet.update_acell(f'G{id_selected}', number2)
+                if estornolan2:
+                  if checkanalise == "DESPESAS":
+                    sheet.update_acell(f'G{id_selected}', number2)
+                  else:
+                    sheet.update_acell(f'G{id_selected}', -number2)
+                else:
+                  if checkanalise == "DESPESAS":
+                    sheet.update_acell(f'G{id_selected}', -number2)
+                  else:
+                    sheet.update_acell(f'G{id_selected}', number2)
                 descricao2 = str(descricao2)
                 descricao2 = descricao2.upper()
                 sheet.update_acell(f'H{id_selected}', descricao2)
