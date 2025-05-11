@@ -45,7 +45,7 @@ tempo_espera = 5
 try:
   lançamentos, workbook = lerdados(sheeitid, sheetname)
   sheet = workbook.get_worksheet(0)
-
+  sheet_cartao = workbook.get_worksheet(1)
 except APIError:
   st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
   time.sleep(tempo_espera)
@@ -53,7 +53,10 @@ except APIError:
 
 lançamentos = sheet.get_all_values()
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
-
+lançamentos = lançamentos[['ID','LANÇAMENTO','CATEGORIA']]
+lançamentos_cartao = sheet_cartao.get_all_values()
+lançamentos_cartao = pd.DataFrame(lançamentos_cartao[1:], columns=lançamentos_cartao[0])
+lançamentos_cartao = lançamentos_cartao[['ID','LANÇAMENTO','CATEGORIA']]
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
@@ -93,7 +96,7 @@ if togglecontas_bancarias:
         if st.button('ATIVAR'):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada}', True)
           st.rerun()
-    with st.form(key="Inserir nova conta"):
+    with st.form(clear_on_submit=True,key="Inserir nova conta"):
       st.write('NOVA CONTA BANCÁRIA')
       nome,prop,but =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
       with nome:
@@ -130,7 +133,7 @@ if togglecontas_bancarias:
           conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
           st.rerun()
 
-    with st.form(key='Editar conta'):
+    with st.form(clear_on_submit=True, key='Editar conta'):
       st.write('EDITAR CONTA BANCÁRIA') 
       nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
       with nome:
@@ -188,7 +191,7 @@ if togglecontas_contábeis:
         if st.button('ATIVAR CONTA CONTABIL'):
           conta_cont_cadastradas.update_acell(f'D{id_selecionada_cont}', True)
           st.rerun()
-    with st.form(key="Inserir nova conta contabil"):
+    with st.form(clear_on_submit=True,key="Inserir nova conta contabil"):
       st.write('NOVA CONTA CONTÁBIL')
       nome1,cat, atr,but =st.columns((0.3,0.3,0.25,0.15), vertical_alignment='bottom')
       with nome1:
@@ -229,9 +232,9 @@ if togglecontas_contábeis:
           conta_cont_cadastradas.update_acell(f'D{id_selecionada3}', False)
           st.rerun()
 
-    with st.form(key='Editar conta contabil'):
+    with st.form(clear_on_submit=True, key='Editar conta contabil'):
       st.write('EDITAR CONTA CONTÁBIL') 
-      conta,cate,atr,but,but2 =st.columns((0.25,0.28,0.2,0.14,0.16), vertical_alignment='bottom')
+      conta,cate,atr =st.columns(3, vertical_alignment='bottom')
       with conta:
         if len(tabela_contas_cont_ativa)<1:
           cont = st.text_input("CONTA",value=None, key="1")
@@ -258,38 +261,70 @@ if togglecontas_contábeis:
         atrib = str(atrib)
         atrib = atrib.upper()
         st.session_state['IDSEL'] = id_selecionada3
-      with but:
+      
         #submit = st.popover(label="EDITAR")
         #with submit:
-        print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
-        lancamentos_filtro = lançamentos[(lançamentos['LANÇAMENTO'] == cont) & (lançamentos['CATEGORIA'] == categor)]
-        st.write(lancamentos_filtro)
-        if 'lista_id' not in st.session_state:  # só salva se houver algo
-          st.session_state['lista_id'] = ''
-        lista_id = lancamentos_filtro['ID'].tolist()
-        if lista_id:  # só salva se houver algo
-          st.session_state['lista_id'] = lista_id
-        st.write(f"Há {lancamentos_filtro.shape[0]} lançamentos localizados, deseja alterar?")
-        editar = st.form_submit_button('EDITAR')
-        print(f'2{st.session_state['lista_id']}')
-        print(f'ID: {st.session_state['IDSEL']}')
-        print(id_selecionada3)
-        if editar:
-          print(f'3{st.session_state['lista_id']}')
-          for x in st.session_state['lista_id']:
-            sheet.update(values=[[cont]],range_name=f'E{x}')
-            sheet.update(values=[[categor]],range_name=f'F{x}')
-            sheet.update( values=[[atrib]], range_name=f'J{x}')
-          print(f'4{st.session_state['lista_id']}')
-          conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
-          conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
-          conta_cont_cadastradas.update(values=[[atrib]],range_name=f'E{id_selecionada3}')
-          print("alterações efetuadas com sucesso na tabela de contas contábeis")
-          st.success("Alterações Efetuadas")
-          st.session_state['lista_id'] = ''
+      print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+      lancamentos_filtro = lançamentos[(lançamentos['LANÇAMENTO'] == cont) & (lançamentos['CATEGORIA'] == categor)]
+      lancamentos_filtro_cartao = lançamentos_cartao[(lançamentos_cartao['LANÇAMENTO'] == cont) & (lançamentos_cartao['CATEGORIA'] == categor)]
+      if 'lista_id' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id'] = []
+      if 'lista_id2' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id2'] = []
+      if 'lista_id_cart1' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_cart1'] = []
+      if 'lista_id_cart2' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_cart2'] = []
+      lista_id = lancamentos_filtro['ID'].tolist()
+      lista_id_cart = lancamentos_filtro_cartao['ID'].tolist()
+      if lista_id:  # só salva se houver algo
+        st.session_state['lista_id'] = lista_id
+      else:
+        st.session_state['lista_id2'] = st.session_state['lista_id']
+        st.session_state['lista_id'] = lista_id
+      if lista_id_cart:  # só salva se houver algo
+        st.session_state['lista_id_cart1'] = lista_id_cart
+      else:
+        st.session_state['lista_id_cart2'] = st.session_state['lista_id_cart1']
+        st.session_state['lista_id_cart1'] = lista_id_cart
+      
+      totallançamentos = lancamentos_filtro.shape[0] + lancamentos_filtro_cartao.shape[0]
 
-      with but2:
-        st.write("")
+
+      st.write(f"Há {totallançamentos} lançamento(s) localizado(s), deseja alterar?")
+      editar = st.form_submit_button('EDITAR')
+      #print(f'1{st.session_state['lista_id']}')
+      #print(f'ID: {st.session_state['IDSEL']}')
+      #print(id_selecionada3)
+      #print(f'2{st.session_state['lista_id2']}')
+      if editar:
+        #print(f'3{st.session_state['lista_id']}')
+        if not st.session_state['lista_id']:
+          lista = st.session_state['lista_id2']
+        else:
+          lista = st.session_state['lista_id']
+        for x in lista:
+          sheet.update(values=[[cont]],range_name=f'E{x}')
+          sheet.update(values=[[categor]],range_name=f'F{x}')
+          sheet.update(values=[[atrib]], range_name=f'J{x}')
+
+        if not st.session_state['lista_id_cart1']:
+          lista = st.session_state['lista_id_cart2']
+        else:
+          lista = st.session_state['lista_id_cart1']
+        for x in lista:
+          sheet_cartao.update(values=[[cont]],range_name=f'E{x}')
+          sheet_cartao.update(values=[[categor]],range_name=f'F{x}')
+          sheet_cartao.update( values=[[atrib]], range_name=f'J{x}')
+        #print(f'4{st.session_state['lista_id']}')
+        conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
+        conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
+        conta_cont_cadastradas.update(values=[[atrib]],range_name=f'E{id_selecionada3}')
+        #print("alterações efetuadas com sucesso na tabela de contas contábeis")
+        st.success("Alterações Efetuadas")
+        st.session_state['lista_id'] = []
+
+      
         #delete = st.form_submit_button(label="DELETAR")
     #if submit:
 
@@ -328,7 +363,7 @@ if togglecontas_proj:
         if st.button('ATIVAR', key="123"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada3}', True)
           st.rerun()
-    with st.form(key="Inserir novo projeto / evento"):
+    with st.form(clear_on_submit=True, key="Inserir novo projeto / evento"):
       st.write('NOVA PROJETO / EVENTO')
       new_name = st.text_input('NOME')
       new_name = str(new_name)
@@ -357,7 +392,7 @@ if togglecontas_proj:
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada5}', False)
           st.rerun()
 
-    with st.form(key='Editar nome'):
+    with st.form(clear_on_submit=True, key='Editar nome'):
       st.write('EDITAR PROJETO') 
       if pd.isna(tabela_evenproj_ativa.index.max()):
         nome = st.text_input("NOME", value=None, key="7")
@@ -403,7 +438,7 @@ if togglecontas_card:
         if st.button('ATIVAR', key="ativa cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada4}', True)
           st.rerun()
-    with st.form(key="Inserir cartão"):
+    with st.form(clear_on_submit=True, key="Inserir cartão"):
       st.write('NOVO CARTÃO DE CRÉDITO')
       nome1,prop2,but3 =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
       with nome1:
@@ -440,7 +475,7 @@ if togglecontas_card:
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
           st.rerun()
 
-    with st.form(key='Editar cartao'):
+    with st.form(clear_on_submit=True,key='Editar cartao'):
       st.write('EDITAR CARTÃO') 
       if len(tabela_cartoes_ativa)<1:
         new_nome_card = st.text_input("NOME", value=None, key="17")

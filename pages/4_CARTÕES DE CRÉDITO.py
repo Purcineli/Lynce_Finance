@@ -149,7 +149,7 @@ tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
 
 tamanho_tabela = tabela_lancamentos_cartao.shape[0] + 2
 if st.toggle('Conciliar fatura'):
-  with st.form(key="form_ediar_con", border=False):
+  with st.form(clear_on_submit=True, key="form_ediar_con", border=False):
     if tamanho_tabela==2:
       st.write("Inserir lançamentos")
     else:
@@ -344,7 +344,7 @@ projetos = tabela_evenproj_ativa['NOME'].tolist()
 def Alt_lançamentos_CC():
     with inserir:
         st.write("Inserir novo registro")
-        with st.form(key="form_inserir", border=False):
+        with st.form(clear_on_submit=True, key="form_inserir", border=False):
             data = st.date_input('DATA', date.today())
             cart = st.selectbox('SELECIONE O CARTÃO', cards, index=None, placeholder="Selecione")
             despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
