@@ -39,6 +39,11 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   return dados_records,workbook
 
+@st.cache_data
+def get_contas_bancarias(_workbook, sheet_index):
+    conta_banco_cadastradas = _workbook.get_worksheet(sheet_index)
+    tabela_contas_banco = conta_banco_cadastradas.get_all_values()
+    return tabela_contas_banco
 
 #import locale
 #locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
@@ -56,8 +61,7 @@ except APIError:
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
 tamanho_tabela_lançamentos = lançamentos.shape[0] + 2
 #CONTAS BANCÁRIAS#
-conta_banco_cadastradas = workbook.get_worksheet(2)
-tabela_contas_banco = conta_banco_cadastradas.get_all_values()
+tabela_contas_banco = get_contas_bancarias(workbook, 2)
 tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
 tabela_contas_banco = tabela_contas_banco.set_index('ID')
 tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
@@ -110,8 +114,14 @@ tabela_filtrada['FATURA_MES'] = tabela_filtrada['FATURA'].dt.to_period('M')
 tabela_filtrada['CARTÃO'] = tabela_filtrada['CARTÃO'] + "  /  " + tabela_filtrada['PROPRIETÁRIO']
 lista_faturas = list(tabela_lancamentos_cartao['FATURA'].dropna().unique())
 
-cadastro_cartao = workbook.get_worksheet(4)
-tabela_cadastro_cartao = cadastro_cartao.get_all_values()
+@st.cache_data(ttl=300)
+def get_cartoes_bancarias(_workbook, sheet_index):
+    cadastro_cartao = workbook.get_worksheet(sheet_index)
+    tabela_cadastro_cartao = cadastro_cartao.get_all_values()
+    return tabela_cadastro_cartao
+
+tabela_cadastro_cartao = get_contas_bancarias(workbook, 4)
+
 tabela_cadastro_cartao = pd.DataFrame(tabela_cadastro_cartao[1:], columns=tabela_cadastro_cartao[0])
 tabela_cadastro_cartao = tabela_cadastro_cartao.set_index('ID')
 
@@ -191,9 +201,6 @@ if st.toggle('Conciliar fatura'):
 
     df_false = lancamentos_filtrados[lancamentos_filtrados['CONCILIADO'] == "FALSE"].copy()
     df_true = lancamentos_filtrados[lancamentos_filtrados['CONCILIADO'] == "TRUE"].copy()
-
-    print("Hello")
-    print(f"1 - NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     naoconc, conc = st.columns(2)
     with naoconc:
       df_false_display = df_false[['DATA', 'LANÇAMENTO', 'VALOR', 'DESCRIÇÃO']].copy()
@@ -215,6 +222,8 @@ if st.toggle('Conciliar fatura'):
           print(selected_indexes)
           for idx in selected_indexes:
               lancamento_cartao.update_acell(f'I{int(idx)}', True)
+          time.sleep(1)
+          st.rerun()
     with conc:
       df_true_display = df_true[['DATA', 'LANÇAMENTO', 'VALOR', 'DESCRIÇÃO']].copy()
       df_true_display.insert(3, 'SELECIONAR', False)
@@ -235,6 +244,7 @@ if st.toggle('Conciliar fatura'):
               selected_indexes = selected_rows.index.tolist()
               for idx in selected_indexes:
                   lancamento_cartao.update_acell(f'I{int(idx)}', False)
+              time.sleep(1)
               st.rerun()
 
       with PAGAR:
@@ -247,47 +257,49 @@ if st.toggle('Conciliar fatura'):
               pagar_fatura = st.form_submit_button("PAGAR FATURA")
 
               if pagar_fatura:
-                  now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-                  row_cartao = [
-                      f"=ROW(B{tamanho_tabela})",
-                      data.strftime('%d/%m/%Y'),
-                      lista_cartoes_selecionado,
-                      lista_owners_selecionado,
-                      "FATURA",
-                      "CARTÃO DE CRÉDITO",
-                      number,
-                      f"PAGAMENTO FATURA CARTÃO REF. {fatura_str}",
-                      True,
-                      "ANALÍTICA",
-                      fatura_data_str,
-                      "",
-                      "BRL",
-                      st.session_state.name,
-                      now
-                  ]
+                now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                row_cartao = [
+                    f"=ROW(B{tamanho_tabela})",
+                    data.strftime('%d/%m/%Y'),
+                    lista_cartoes_selecionado,
+                    lista_owners_selecionado,
+                    "FATURA",
+                    "CARTÃO DE CRÉDITO",
+                    number,
+                    f"PAGAMENTO FATURA CARTÃO REF. {fatura_str}",
+                    True,
+                    "ANALÍTICA",
+                    fatura_data_str,
+                    "",
+                    "BRL",
+                    st.session_state.name,
+                    now
+                ]
 
-                  row_banco = [
-                      f"=ROW(B{tamanho_tabela_lançamentos})",
-                      data.strftime('%d/%m/%Y'),
-                      banco.split(" / ")[0],
-                      banco.split(" / ")[1],
-                      "FATURA",
-                      "CARTÃO DE CRÉDITO",
-                      -number,
-                      f"PAGAMENTO FATURA CARTÃO REF. {fatura_str}",
-                      True,
-                      "ANALÍTICA",
-                      "",
-                      "BRL",
-                      st.session_state.name,
-                      now
-                  ]
+                row_banco = [
+                    f"=ROW(B{tamanho_tabela_lançamentos})",
+                    data.strftime('%d/%m/%Y'),
+                    banco.split(" / ")[0],
+                    banco.split(" / ")[1],
+                    "FATURA",
+                    "CARTÃO DE CRÉDITO",
+                    -number,
+                    f"PAGAMENTO FATURA CARTÃO REF. {fatura_str}",
+                    True,
+                    "ANALÍTICA",
+                    "",
+                    "BRL",
+                    st.session_state.name,
+                    now
+                ]
 
-                  if tamanho_tabela > 2:
-                      lancamento_cartao.add_rows(1)
-                  lancamento_cartao.update(f'A{tamanho_tabela}:O{tamanho_tabela}', [row_cartao], raw=False)
-                  sheet.add_rows(1)
-                  sheet.update(f'A{tamanho_tabela_lançamentos}:O{tamanho_tabela_lançamentos}', [row_banco], raw=False)
+                if tamanho_tabela > 2:
+                    lancamento_cartao.add_rows(1)
+                lancamento_cartao.update(f'A{tamanho_tabela}:O{tamanho_tabela}', [row_cartao], raw=False)
+                sheet.add_rows(1)
+                sheet.update(f'A{tamanho_tabela_lançamentos}:O{tamanho_tabela_lançamentos}', [row_banco], raw=False)
+                time.sleep(1)
+                st.rerun()
 
 
 
@@ -477,51 +489,51 @@ def Alt_lançamentos_CC():
               data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
               data2 = st.date_input('DATA', value=pd.to_datetime(data_raw).date())
               
-              idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
-              idxbanco = cards.index(idxbanco)
+            idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
+            idxbanco = cards.index(idxbanco)
+          
             
-              
-              banco2 = st.selectbox('SELECIONE O BANCO', cards, index=idxbanco, placeholder="Selecione")
-              try:
-                idxdespesas = tabela_lancamentos_cartao.loc[id_selected, 'LANÇAMENTO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'CATEGORIA']
-                idxdespesas = contas.index(idxdespesas)
-              except ValueError:
-                idxdespesas = None
-              despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-              number2 = st.number_input("VALOR", format="%0.2f", value=tabela_lancamentos_cartao.loc[id_selected, 'VALOR'])
-              descricao2 = st.text_input('DESCRIÇÃO', value=tabela_lancamentos_cartao.loc[id_selected, 'DESCRIÇÃO'])
+            banco2 = st.selectbox('SELECIONE O BANCO', cards, index=idxbanco, placeholder="Selecione")
+            try:
+              idxdespesas = tabela_lancamentos_cartao.loc[id_selected, 'LANÇAMENTO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'CATEGORIA']
+              idxdespesas = contas.index(idxdespesas)
+            except ValueError:
+              idxdespesas = None
+            despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
+            number2 = st.number_input("VALOR", format="%0.2f", value=tabela_lancamentos_cartao.loc[id_selected, 'VALOR'])
+            descricao2 = st.text_input('DESCRIÇÃO', value=tabela_lancamentos_cartao.loc[id_selected, 'DESCRIÇÃO'])
 
-              proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-              status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=tabela_lancamentos_cartao.loc[id_selected, 'CONCILIADO'])
-              analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
-              subcol3, subcol4 = st.columns(2)
-              with subcol3:   
-                Submit_edit = st.button(label="EDITAR")
-              with subcol4:
-                Submit_delete = st.button(label="DELETAR")
+            proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
+            status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=tabela_lancamentos_cartao.loc[id_selected, 'CONCILIADO'])
+            analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
+            subcol3, subcol4 = st.columns(2)
+            with subcol3:   
+              Submit_edit = st.button(label="EDITAR")
+            with subcol4:
+              Submit_delete = st.button(label="DELETAR")
 
-              if Submit_delete:
-                  lancamento_cartao.delete_rows(id_selected)
-                  st.success("Registro deletado com sucesso!")
-                  st.rerun()
+            if Submit_delete:
+                lancamento_cartao.delete_rows(id_selected)
+                st.success("Registro deletado com sucesso!")
+                st.rerun()
 
-              if Submit_edit:
-                  lancamento_cartao.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
-                  lancamento_cartao.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
-                  lancamento_cartao.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
-                  lancamento_cartao.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
-                  lancamento_cartao.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
-                  lancamento_cartao.update_acell(f'G{id_selected}',number2)
-                  lancamento_cartao.update_acell(f'H{id_selected}', descricao2)
-                  lancamento_cartao.update_acell(f'I{id_selected}', status2)
-                  if analise2:
-                    lancamento_cartao.update_acell(f'J{id_selected}', "ANALÍTICA")
-                  lancamento_cartao.update_acell(f'K{id_selected}', data2.strftime('%d/%m/%Y'))
-                  lancamento_cartao.update_acell(f'L{id_selected}', proj2)
-                  lancamento_cartao.update_acell(f'M{id_selected}', st.session_state.name)
-                  lancamento_cartao.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-                  st.success("Registro editado com sucesso!")
-                  st.rerun()
+            if Submit_edit:
+                lancamento_cartao.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
+                lancamento_cartao.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
+                lancamento_cartao.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
+                lancamento_cartao.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
+                lancamento_cartao.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
+                lancamento_cartao.update_acell(f'G{id_selected}',number2)
+                lancamento_cartao.update_acell(f'H{id_selected}', descricao2)
+                lancamento_cartao.update_acell(f'I{id_selected}', status2)
+                if analise2:
+                  lancamento_cartao.update_acell(f'J{id_selected}', "ANALÍTICA")
+                lancamento_cartao.update_acell(f'K{id_selected}', data2.strftime('%d/%m/%Y'))
+                lancamento_cartao.update_acell(f'L{id_selected}', proj2)
+                lancamento_cartao.update_acell(f'M{id_selected}', st.session_state.name)
+                lancamento_cartao.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+                st.success("Registro editado com sucesso!")
+                st.rerun()
 
 
 Alt_lançamentos_CC()
