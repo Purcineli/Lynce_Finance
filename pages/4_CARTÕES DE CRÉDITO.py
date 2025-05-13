@@ -330,18 +330,42 @@ else:
 
 st.divider()
 
-try:
-  cards_cont_cadastradas = workbook.get_worksheet(4)
-  tabela_cards_cont = cards_cont_cadastradas.get_all_values()
-  conta_cont_cadastradas = workbook.get_worksheet(3)
-  tabela_contas_cont = conta_cont_cadastradas.get_all_values()
-  tabela_evenproj_sheet = workbook.get_worksheet(5)
-  tabela_evenproj = tabela_evenproj_sheet.get_all_values()
-except APIError:
-  st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
-  time.sleep(tempo_espera)
-  st.rerun()
+#try:
+  #cards_cont_cadastradas = workbook.get_worksheet(4)
+  #tabela_cards_cont = cards_cont_cadastradas.get_all_values()
+  #conta_cont_cadastradas = workbook.get_worksheet(3)
+  #tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+  #tabela_evenproj_sheet = workbook.get_worksheet(5)
+  #tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+#except APIError:
+  #st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+  #time.sleep(tempo_espera)
+  #st.rerun()
 
+
+@st.cache_data(ttl=6000)
+def ler_dados_complementares(_workbook, sheet_index):
+    try:
+        cards_cont_cadastradas = workbook.get_worksheet(sheet_index4)
+        tabela_cards_cont = cards_cont_cadastradas.get_all_values()
+
+        conta_cont_cadastradas = workbook.get_worksheet(sheet_index)
+        tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+
+        tabela_evenproj_sheet = workbook.get_worksheet(sheet_index)
+        tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+
+
+        return tabela_cards_cont, tabela_contas_cont, tabela_evenproj
+
+    except APIError:
+        st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+        time.sleep(tempo_espera)
+        st.rerun()
+
+tabela_cards_cont = get_contas_bancarias(workbook, 4)
+tabela_contas_cont = get_contas_bancarias(workbook, 3)
+tabela_evenproj = get_contas_bancarias(workbook, 5)
 
 tabela_cards_cont = pd.DataFrame(tabela_cards_cont[1:], columns=tabela_cards_cont[0])
 tabela_cards_cont = tabela_cards_cont.set_index('ID')
