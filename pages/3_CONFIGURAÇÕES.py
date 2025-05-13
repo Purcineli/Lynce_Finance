@@ -304,9 +304,21 @@ if togglecontas_contábeis:
         else:
           lista = st.session_state['lista_id']
         for x in lista:
-          sheet.update(values=[[cont]],range_name=f'E{x}')
-          sheet.update(values=[[categor]],range_name=f'F{x}')
-          sheet.update(values=[[atrib]], range_name=f'J{x}')
+            try:
+                # Attempt to update the values in the specified ranges
+                sheet.update(values=[[cont]], range_name=f'E{x}')
+                sheet.update(values=[[categor]], range_name=f'F{x}')
+                sheet.update(values=[[atrib]], range_name=f'J{x}')
+            
+            except APIError as e:
+                # Check if the error is related to quota being exceeded
+                if e.response.status_code == 429:
+                    print("Quota exceeded, waiting 60 seconds...")
+                    time.sleep(60)  # Wait for 60 seconds before retrying
+                    # Retry the current iteration after waiting
+                    sheet.update(values=[[cont]], range_name=f'E{x}')
+                    sheet.update(values=[[categor]], range_name=f'F{x}')
+                    sheet.update(values=[[atrib]], range_name=f'J{x}')
 
         if not st.session_state['lista_id_cart1']:
           lista = st.session_state['lista_id_cart2']
@@ -316,6 +328,7 @@ if togglecontas_contábeis:
           sheet_cartao.update(values=[[cont]],range_name=f'E{x}')
           sheet_cartao.update(values=[[categor]],range_name=f'F{x}')
           sheet_cartao.update( values=[[atrib]], range_name=f'J{x}')
+          time.sleep(0.2)
         #print(f'4{st.session_state['lista_id']}')
         conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
         conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
