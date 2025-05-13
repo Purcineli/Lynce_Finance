@@ -330,18 +330,6 @@ else:
 
 st.divider()
 
-#try:
-  #cards_cont_cadastradas = workbook.get_worksheet(4)
-  #tabela_cards_cont = cards_cont_cadastradas.get_all_values()
-  #conta_cont_cadastradas = workbook.get_worksheet(3)
-  #tabela_contas_cont = conta_cont_cadastradas.get_all_values()
-  #tabela_evenproj_sheet = workbook.get_worksheet(5)
-  #tabela_evenproj = tabela_evenproj_sheet.get_all_values()
-#except APIError:
-  #st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
-  #time.sleep(tempo_espera)
-  #st.rerun()
-
 
 @st.cache_data(ttl=6000)
 def ler_dados_complementares(_workbook, sheet_index):
