@@ -59,7 +59,7 @@ if len(lançamentos)==0:
 else:
   lançamentos['BANCO'] = lançamentos['BANCO'].str.upper()  # Transformar nomes dos bancos para maiúsculas
   try:
-    lançamentos['VALOR'] = lançamentos['VALOR'].astype(str).str.replace(',', '.', regex=False)
+    lançamentos['VALOR'] = lançamentos['VALOR'].astype(str).str.replace('.', '', regex=False)
   except:
     pass
   lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
