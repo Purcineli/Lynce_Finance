@@ -39,7 +39,7 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   return dados_records,workbook
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def get_contas_bancarias(_workbook, sheet_index):
     conta_banco_cadastradas = _workbook.get_worksheet(sheet_index)
     tabela_contas_banco = conta_banco_cadastradas.get_all_values()
@@ -331,29 +331,49 @@ else:
 st.divider()
 
 
-@st.cache_data(ttl=6000)
-def ler_dados_complementares(_workbook, sheet_index):
+@st.cache_data(ttl=300)
+def ler_dados_cartao(_workbook, sheet_index):
     try:
         cards_cont_cadastradas = workbook.get_worksheet(sheet_index)
         tabela_cards_cont = cards_cont_cadastradas.get_all_values()
-
-        conta_cont_cadastradas = workbook.get_worksheet(sheet_index)
-        tabela_contas_cont = conta_cont_cadastradas.get_all_values()
-
-        tabela_evenproj_sheet = workbook.get_worksheet(sheet_index)
-        tabela_evenproj = tabela_evenproj_sheet.get_all_values()
-
-
-        return tabela_cards_cont, tabela_contas_cont, tabela_evenproj
+        return tabela_cards_cont
 
     except APIError:
         st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
         time.sleep(tempo_espera)
         st.rerun()
 
-tabela_cards_cont = get_contas_bancarias(workbook, 4)
-tabela_contas_cont = get_contas_bancarias(workbook, 3)
-tabela_evenproj = get_contas_bancarias(workbook, 5)
+@st.cache_data(ttl=300)
+def ler_dados_contas(_workbook, sheet_index):
+    try:
+        conta_cont_cadastradas = workbook.get_worksheet(sheet_index)
+        tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+
+
+        return tabela_contas_cont
+
+    except APIError:
+        st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+        time.sleep(tempo_espera)
+        st.rerun()
+
+@st.cache_data(ttl=300)
+def ler_dados_projetos(_workbook, sheet_index):
+    try:
+        tabela_evenproj_sheet = workbook.get_worksheet(sheet_index)
+        tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+
+
+        return tabela_evenproj
+
+    except APIError:
+        st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
+        time.sleep(tempo_espera)
+        st.rerun()
+
+tabela_cards_cont = ler_dados_cartao(workbook, 4)
+tabela_contas_cont = ler_dados_contas(workbook, 3)
+tabela_evenproj = ler_dados_projetos(workbook, 5)
 
 tabela_cards_cont = pd.DataFrame(tabela_cards_cont[1:], columns=tabela_cards_cont[0])
 tabela_cards_cont = tabela_cards_cont.set_index('ID')
