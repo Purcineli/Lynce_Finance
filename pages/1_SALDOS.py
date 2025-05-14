@@ -70,15 +70,15 @@ else:
 
   contas = list(lançamentos['BANCO'].dropna().unique())  # Lista de bancos únicos, ignorando valores nulos
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
+  
 
-
-  col01, col02, col03 = st.columns([0.1, 0.1, 0.8])  # Define layout de 3 colunas com larguras proporcionais
+  col01, col02, col03 = st.columns([0.3, 0.1, 0.6])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
     data_saldo = pd.to_datetime(st.date_input("Data Saldo", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
     df_saldos_user = lançamentos[lançamentos['DATA'] <= data_saldo]  # Filtra lançamentos com data menor ou igual à selecionada
     #st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2)}')
     st.markdown(f"SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-    
+
   st.divider()  # Linha divisória no app
 
   col011, col012 = st.columns([0.2, 0.8])  # Define nova linha com duas colunas

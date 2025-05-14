@@ -7,7 +7,6 @@ from gspread.exceptions import APIError
 import time
 import plotly.express as px
 import numpy as np
-import math
 from LYNCE import verificar_login
 st.set_page_config(layout="wide")
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -53,10 +52,13 @@ except APIError:
 
 lançamentos = sheet.get_all_values()
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
-lançamentos = lançamentos[['ID','LANÇAMENTO','CATEGORIA']]
+lançamentos = lançamentos[['ID', 'BANCO', 'PROPRIETÁRIO','LANÇAMENTO','CATEGORIA', 'PROJETO/EVENTO']]
 lançamentos_cartao = sheet_cartao.get_all_values()
 lançamentos_cartao = pd.DataFrame(lançamentos_cartao[1:], columns=lançamentos_cartao[0])
-lançamentos_cartao = lançamentos_cartao[['ID','LANÇAMENTO','CATEGORIA']]
+lançamentos_cartao = lançamentos_cartao[['ID','CARTÃO', 'PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','PROJETO/EVENTO']]
+
+
+
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
@@ -69,6 +71,7 @@ with toggle14:
   togglecontas_card = st.toggle('CARTÕES DE CRÉDITO',value=False)
 ###################CONTAS BANCÁRIAS####################
 if togglecontas_bancarias:
+  st.session_state['togglecontas_bancarias_status'] = False
   conta_banco_cadastradas = workbook.get_worksheet(2)
   tabela_contas_banco = conta_banco_cadastradas.get_all_values()
   tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
@@ -150,12 +153,74 @@ if togglecontas_bancarias:
           owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
           owner = str(owner)
           owner = owner.upper()
-      with but:
-        submit = st.form_submit_button(label="EDITAR")
+      st.session_state['IDSEL'] = id_selecionada2
+
+      print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+      lancamentos_filtro_BANK = lançamentos[(lançamentos['BANCO'] == bank) & (lançamentos['PROPRIETÁRIO'] == owner)]
+      if 'lista_id_BANK' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_BANK'] = []
+      if 'lista_id_BANK2' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_BANK2'] = []
+      lista_id_BANK = lancamentos_filtro_BANK['ID'].tolist()
+      if lista_id_BANK:  # só salva se houver algo
+        st.session_state['lista_id_BANK'] = lista_id_BANK
+      else:
+        st.session_state['lista_id_BANK2'] = st.session_state['lista_id_BANK']
+        st.session_state['lista_id_BANK'] = lista_id_BANK
+      
+      totallançamentos_BANK = lancamentos_filtro_BANK.shape[0]
+
+
+      st.write(f"Há {totallançamentos_BANK} lançamento(s) localizado(s), deseja alterar?")
+
+
+
+      
+      submit = st.form_submit_button(label="EDITAR")
     if submit:
-      conta_banco_cadastradas.update_acell(f'B{int(id_selecionada2)}', bank)
-      conta_banco_cadastradas.update_acell(f'C{int(id_selecionada2)}', owner)
-      st.rerun()
+      if not st.session_state['lista_id_BANK']:
+        lista_BANK = st.session_state['lista_id_BANK2']
+      else:
+        lista_BANK = st.session_state['lista_id_BANK']
+      oldBANK = tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"]
+      oldOWNER = tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"]
+
+      if bank == oldBANK and oldOWNER == owner:
+        pass
+      else:
+        for x in lista_BANK:
+            try:
+              if bank == oldBANK:
+                pass
+              else:
+                sheet.update(values=[[bank]], range_name=f'C{x}')
+              if owner == oldOWNER:
+                pass
+              else:
+                sheet.update(values=[[owner]], range_name=f'D{x}')
+            
+            except APIError as e:
+                # Check if the error is related to quota being exceeded
+                if e.response.status_code == 429:
+                  print("Quota exceeded, waiting 60 seconds...")
+                  time.sleep(60)  # Wait for 60 seconds before retrying
+                  # Retry the current iteration after waiting
+                  if bank == oldBANK:
+                    pass
+                  else:
+                    sheet.update(values=[[bank]], range_name=f'C{x}')
+                  if owner == oldOWNER:
+                    pass
+                  else:
+                    sheet.update(values=[[owner]], range_name=f'D{x}')
+        #print(f'4{st.session_state['lista_id']}')
+        conta_banco_cadastradas.update( values=[[bank]],range_name=f'B{id_selecionada2}')
+        conta_banco_cadastradas.update(values=[[owner]],range_name=f'C{id_selecionada2}')
+        
+        #print("alterações efetuadas com sucesso na tabela de contas contábeis")
+        st.success("Alterações Efetuadas")
+        st.session_state['lista_id_BANK'] = []
+        st.rerun()
 ########################################################################
 
 
@@ -464,10 +529,82 @@ if togglecontas_proj:
         nome = st.text_input("NOME",tabela_evenproj_ativa.loc[id_selecionada5, "NOME"])
       nome = str(nome)
       nome = nome.upper()
-      submit = st.form_submit_button(label="EDITAR")
-      if submit:
-        tabela_evenproj_sheet.update_acell(f'B{int(id_selecionada5)}', nome)
-        st.rerun()
+      st.session_state['IDSEL'] = id_selecionada5
+
+      print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+      lancamentos_filtro_PROJECT = lançamentos[(lançamentos['PROJETO/EVENTO'] == nome)]
+      lancamentos_filtro_cartao_PROJECT = lançamentos_cartao[(lançamentos_cartao['PROJETO/EVENTO'] == nome)]
+      if 'lista_id_PROJECT' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_PROJECT'] = []
+      if 'lista_id_PROJECT2' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_PROJECT2'] = []
+      if 'lista_id_cart_PROJECT1' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_cart_PROJECT1'] = []
+      if 'lista_id_cart_PROJECT2' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_cart_PROJECT2'] = []
+      lista_id_PROJECT = lancamentos_filtro_PROJECT['ID'].tolist()
+      lista_id_cart_PROJECT = lancamentos_filtro_cartao_PROJECT['ID'].tolist()
+      if lista_id_PROJECT:  # só salva se houver algo
+        st.session_state['lista_id_PROJECT'] = lista_id_PROJECT
+      else:
+        st.session_state['lista_id_PROJECT2'] = st.session_state['lista_id_PROJECT']
+        st.session_state['lista_id_PROJECT'] = lista_id_PROJECT
+      if lista_id_cart_PROJECT:  # só salva se houver algo
+        st.session_state['lista_id_cart_PROJECT1'] = lista_id_cart_PROJECT
+      else:
+        st.session_state['lista_id_cart_PROJECT2'] = st.session_state['lista_id_cart_PROJECT1']
+        st.session_state['lista_id_cart_PROJECT1'] = lista_id_cart_PROJECT
+      
+      totallançamentos_PROJECT = lancamentos_filtro_PROJECT.shape[0] + lancamentos_filtro_cartao_PROJECT.shape[0]
+
+
+      st.write(f"Há {totallançamentos_PROJECT} lançamento(s) localizado(s), deseja alterar?")
+      editar_PROJECT = st.form_submit_button('EDITAR')
+      #print(f'1{st.session_state['lista_id']}')
+      #print(f'ID: {st.session_state['IDSEL']}')
+      #print(id_selecionada3)
+      #print(f'2{st.session_state['lista_id2']}')
+      if editar_PROJECT:
+        #print(f'3{st.session_state['lista_id']}')
+        if not st.session_state['lista_id_PROJECT']:
+          lista_PROJECT = st.session_state['lista_id_PROJECT2']
+        else:
+          lista_PROJECT = st.session_state['lista_id_PROJECT']
+        oldproject = tabela_evenproj_ativa.loc[id_selecionada5, "NOME"]
+        if oldproject == nome:
+          pass
+        else:
+          for x in lista_PROJECT:
+              try:
+                sheet.update(values=[[nome]], range_name=f'K{x}')
+              except APIError as e:
+                  # Check if the error is related to quota being exceeded
+                if e.response.status_code == 429:
+                  print("Quota exceeded, waiting 60 seconds...")
+                  time.sleep(60)  # Wait for 60 seconds before retrying
+                  # Retry the current iteration after waitin
+                  sheet.update(values=[[nome]], range_name=f'K{x}')
+
+          if not st.session_state['lista_id_cart_PROJECT1']:
+            lista_PROJECT_CARD = st.session_state['lista_id_cart_PROJECT2']
+          else:
+            lista_PROJECT_CARD = st.session_state['lista_id_cart_PROJECT1']
+          for x in lista_PROJECT_CARD:
+              try:
+                sheet_cartao.update(values=[[nome]], range_name=f'L{x}')
+              except APIError as e:
+                # Check if the error is related to quota being exceeded
+                if e.response.status_code == 429:
+                  print("Quota exceeded, waiting 60 seconds...")
+                  time.sleep(60)  # Wait for 60 seconds before retrying
+                  # Retry the current iteration after waiting
+                  sheet_cartao.update(values=[[nome]], range_name=f'L{x}')
+          #print(f'4{st.session_state['lista_id']}')
+          tabela_evenproj_sheet.update( values=[[nome]],range_name=f'B{id_selecionada5}')
+          #print("alterações efetuadas com sucesso na tabela de contas contábeis")
+          st.success("Alterações Efetuadas")
+          st.session_state['lista_id'] = []
+          st.rerun()
 ########################################################################
 
 ###################CARTÕES DE CRÉDITOS####################
@@ -553,8 +690,72 @@ if togglecontas_card:
         new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"], key="20")
       new_nome_owner = str(new_nome_owner)
       new_nome_owner = new_nome_owner.upper()
+
+      st.session_state['IDSEL'] = id_selecionada6
+
+      print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+      lancamentos_filtro_CARD = lançamentos_cartao[(lançamentos_cartao['CARTÃO'] == new_nome_card) & (lançamentos_cartao['PROPRIETÁRIO'] == new_nome_owner)]
+      if 'lista_id_CARD' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_CARD'] = []
+      if 'lista_id_CARD2' not in st.session_state:  # só salva se houver algo
+        st.session_state['lista_id_CARD2'] = []
+      lista_id_CARD = lancamentos_filtro_CARD['ID'].tolist()
+      if lista_id_CARD:  # só salva se houver algo
+        st.session_state['lista_id_CARD'] = lista_id_CARD
+      else:
+        st.session_state['lista_id_CARD2'] = st.session_state['lista_id_CARD']
+        st.session_state['lista_id_CARD'] = lista_id_CARD
+      
+      totallançamentos_CARD = lancamentos_filtro_CARD.shape[0]
+
+
+      st.write(f"Há {totallançamentos_CARD} lançamento(s) localizado(s), deseja alterar?")
+
+
+
+      
       submit = st.form_submit_button(label="EDITAR")
-      if submit:
-        tabela_cartoes_sheet.update_acell(f'B{int(id_selecionada6)}', new_nome_card)
-        tabela_cartoes_sheet.update_acell(f'C{int(id_selecionada6)}', new_nome_owner)
+    if submit:
+      if not st.session_state['lista_id_CARD']:
+        lista_CARD = st.session_state['lista_id_CARD2']
+      else:
+        lista_CARD = st.session_state['lista_id_CARD']
+      oldCARD = tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"]
+      oldOWNER = tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"]
+
+      if new_nome_card == oldCARD and new_nome_owner == oldOWNER:
+        pass
+      else:
+        for x in lista_CARD:
+            try:
+              if new_nome_card == oldCARD:
+                pass
+              else:
+                sheet.update(values=[[new_nome_card]], range_name=f'C{x}')
+              if new_nome_owner == oldOWNER:
+                pass
+              else:
+                sheet.update(values=[[new_nome_owner]], range_name=f'D{x}')
+            
+            except APIError as e:
+                # Check if the error is related to quota being exceeded
+                if e.response.status_code == 429:
+                  print("Quota exceeded, waiting 60 seconds...")
+                  time.sleep(60)  # Wait for 60 seconds before retrying
+                  # Retry the current iteration after waiting
+                  if new_nome_card == oldCARD:
+                    pass
+                  else:
+                    sheet.update(values=[[new_nome_card]], range_name=f'C{x}')
+                  if new_nome_owner == oldOWNER:
+                    pass
+                  else:
+                    sheet.update(values=[[new_nome_owner]], range_name=f'D{x}')
+        #print(f'4{st.session_state['lista_id']}')
+        tabela_cartoes_sheet.update( values=[[new_nome_card]],range_name=f'B{id_selecionada2}')
+        tabela_cartoes_sheet.update(values=[[new_nome_owner]],range_name=f'C{id_selecionada2}')
+        
+        #print("alterações efetuadas com sucesso na tabela de contas contábeis")
+        st.success("Alterações Efetuadas")
+        st.session_state['lista_id_CARD'] = []
         st.rerun()

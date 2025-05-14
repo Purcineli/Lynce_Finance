@@ -75,7 +75,14 @@ tabela_lancamentos_cartao = tabela_lancamentos_cartao.set_index('ID')
 tabela_lancamentos_cartao.index = tabela_lancamentos_cartao.index.astype(int)
 tabela_lancamentos_cartao = tabela_lancamentos_cartao[tabela_lancamentos_cartao["CONCILIADO"]=="TRUE"]
 tabela_lancamentos_cartao = tabela_lancamentos_cartao[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA']]
-#CONTAS BANCÁRIAS#
+#PROJETO#
+tabela_evenproj_sheet = workbook.get_worksheet(5)
+tabela_evenproj = tabela_evenproj_sheet.get_all_values()
+tabela_evenproj = pd.DataFrame(tabela_evenproj[1:], columns=tabela_evenproj[0])
+tabela_evenproj = tabela_evenproj.set_index('ID')
+tabela_evenproj_ativa = tabela_evenproj[tabela_evenproj['ATIVO']=='TRUE']
+
+
 
 lançamentos = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=0)
 lançamentos = lançamentos.reset_index()
@@ -85,25 +92,29 @@ lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','V
 
 
 st.divider()
+lista_project = tabela_evenproj_ativa['NOME'].unique().tolist()
+project_report = st.checkbox('PROJETO/EVENTO')
 
-col01, col02 = st.columns(2)
-with col01:
-  data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30))
-  data_inicio = pd.to_datetime(data_inicio)
-with col02:
-  data_final = st.date_input("Data Final", date.today())
-  data_final = pd.to_datetime(data_final)
-
+if not project_report:
+  col01, col02 = st.columns(2)
+  with col01:
+    data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30), format="DD/MM/YYYY")
+    data_inicio = pd.to_datetime(data_inicio)
+  with col02:
+    data_final = st.date_input("Data Final", date.today(),format="DD/MM/YYYY")
+    data_final = pd.to_datetime(data_final)
+else:
+  PROJECT_CHOSEN = st.selectbox('ESCOLHA O PROJETO', options=lista_project)
 tamanho_tabela = len(lançamentos)
 if tamanho_tabela==1:
-   st.write("SEM LANÇAMENTOS")
+  st.write("SEM LANÇAMENTOS")
 else:
   tamanho_tabela = len(lançamentos)
-  lançamentos['VALOR'] = (
-    lançamentos['VALOR']
-    .str.replace('.', '', regex=False)        # Remove separador de milhar
-    .str.replace(',', '.', regex=False)       # Converte vírgula decimal para ponto
-)
+  try:
+    lançamentos['VALOR'] = lançamentos['VALOR'].astype(str).str.replace('.', '', regex=False)
+  except:
+    pass
+  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
   lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   
@@ -113,22 +124,29 @@ else:
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
   lançamentos_conciliados = lançamentos.iloc[::-1]
 
-  lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
+  if not project_report:
+    lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
   #st.dataframe(lançamentos_conciliados[colunas_selecionadas])
-
+  else:
+    lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
+  
   lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
+  lançamentos_conciliados_receitas_agrupado = lançamentos_conciliados_receitas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False)
+
 
   lançamentos_conciliados_despesas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="DESPESAS"]
   lançamentos_conciliados_despesas['VALOR'] = abs(lançamentos_conciliados_despesas['VALOR'])
+  lançamentos_conciliados_despesas_agrupado = lançamentos_conciliados_despesas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False)
 
+  
 
   fig1 = px.pie(lançamentos_conciliados_receitas, names='CATEGORIA', values='VALOR',color_discrete_sequence=px.colors.sequential.Plasma)
   fig2 = px.pie(lançamentos_conciliados_despesas, names='CATEGORIA', values='VALOR',color_discrete_sequence=px.colors.sequential.RdBu)
   fig2.update_traces(textposition='inside', textinfo='percent')
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
-  fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.Plasma)
-  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.RdBu)
+  fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO', color_discrete_sequence=px.colors.sequential.Plasma, category_orders={'LANÇAMENTO': lançamentos_conciliados_receitas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False).index.tolist()})
+  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.RdBu, category_orders={'LANÇAMENTO': lançamentos_conciliados_despesas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False).index.tolist()})
   fig2.update_traces(textposition='inside', textinfo='percent')
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
   col1, col2 = st.columns(2)
@@ -136,7 +154,9 @@ else:
     st.markdown(lançamentos_conciliados_receitas['VALOR'].sum())
     st.plotly_chart(fig1, key ='1')
     st.plotly_chart(fig3, key ='2')
+    st.dataframe(lançamentos_conciliados_receitas_agrupado)
   with col2:
     st.markdown(lançamentos_conciliados_despesas['VALOR'].sum())
     st.plotly_chart(fig2, key ='3')
     st.plotly_chart(fig4, key ='4')
+    st.dataframe(lançamentos_conciliados_despesas_agrupado)

@@ -88,10 +88,10 @@ st.divider()
 
 col01, col02 = st.columns(2)
 with col01:
-  data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30))
+  data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30),format="DD/MM/YYYY")
   data_inicio = pd.to_datetime(data_inicio)
 with col02:
-  data_final = st.date_input("Data Final", date.today())
+  data_final = st.date_input("Data Final", date.today(), format="DD/MM/YYYY")
   data_final = pd.to_datetime(data_final)
 
 
@@ -184,8 +184,8 @@ projetos = tabela_evenproj_ativa['NOME'].tolist()
 def Alt_lançamentos():
     with inserir:
         st.write("Inserir novo registro")
-        with st.form(key="form_inserir", border=False):
-            data = st.date_input('DATA', date.today())
+        with st.form(clear_on_submit=True,key="form_inserir", border=False):
+            data = st.date_input('DATA', date.today(), format="DD/MM/YYYY")
             banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
             despesa = st.selectbox('SELECIONE O LANÇAMENTO', contas, index=None, placeholder="Selecione")
             descricao = st.text_input('DESCRIÇÃO')
@@ -233,8 +233,8 @@ def Alt_lançamentos():
           with subcol1:
             id_selected = st.number_input('Digite o ID', min_value=0, max_value=tamanho_tabela-1, step=1, format="%d", value=tamanho_tabela-1)
           with subcol2:
-            data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'])
-          with st.form(key="form_editar", border=False):
+            data2 = st.date_input('DATA',value=lançamentos.loc[str(id_selected), 'DATA'], format="DD/MM/YYYY")
+          with st.form(clear_on_submit=True,key="form_editar", border=False):
             contas.append('TRANSFERÊNCIA / TRANSFERÊNCIA')
             try:
               idxbanco = lançamentos.loc[str(id_selected), 'BANCO'] + " / " + lançamentos.loc[str(id_selected), 'PROPRIETÁRIO']
@@ -292,8 +292,8 @@ transf, pagarfatura = st.columns(2, vertical_alignment='top')
 def inserir_lançamento():
     with transf:
         st.write("Inserir nova transferência entre contas")
-        with st.form(key="form_inserir_transf", border=False):
-            data_transf = st.date_input('DATA', date.today())
+        with st.form(clear_on_submit=True, key="form_inserir_transf", border=False):
+            data_transf = st.date_input('DATA', date.today(),format="DD/MM/YYYY")
             banco_origem = st.selectbox('SELECIONE O BANCO DE ORIGEM', bancos, index=None, placeholder="Selecione", key="banco_origem")
             banco_destino = st.selectbox('SELECIONE O BANCO DE DESTINO', bancos, index=None, placeholder="Selecione", key="banco_destino")
             valor = st.number_input("INSIRA O VALOR", format="%0.2f", key="valor_transf")
