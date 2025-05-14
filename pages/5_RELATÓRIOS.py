@@ -131,6 +131,7 @@ else:
     lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
   
   lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
+ 
   lançamentos_conciliados_receitas_agrupado = lançamentos_conciliados_receitas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False)
 
 
@@ -151,12 +152,13 @@ else:
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
   col1, col2 = st.columns(2)
   with col1:
-    st.markdown(lançamentos_conciliados_receitas['VALOR'].sum())
+    st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
     st.plotly_chart(fig1, key ='1')
     st.plotly_chart(fig3, key ='2')
-    st.dataframe(lançamentos_conciliados_receitas_agrupado)
+
+    st.dataframe(lançamentos_conciliados_receitas_agrupado, height=300)
   with col2:
-    st.markdown(lançamentos_conciliados_despesas['VALOR'].sum())
+    st.header(f"DESPESAS: R$ {lançamentos_conciliados_despesas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="red")
     st.plotly_chart(fig2, key ='3')
     st.plotly_chart(fig4, key ='4')
-    st.dataframe(lançamentos_conciliados_despesas_agrupado)
+    st.dataframe(lançamentos_conciliados_despesas_agrupado, height=300)
