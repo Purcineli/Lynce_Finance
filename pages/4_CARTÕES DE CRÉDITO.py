@@ -185,7 +185,7 @@ if st.toggle('Conciliar fatura'):
             fatura_str = st.selectbox("SELECIONE A FATURA", faturas_cartao.columns, index=indexfatura)
         except:
             fatura_str = st.selectbox("SELECIONE A FATURA", faturas_cartao.columns, index=0)
-  with st.form(key="forms"):
+  with st.form(clear_on_submit=True, key="forms"):
     st.session_state['fatura_str_l'] = fatura_str
     st.session_state['pesquisarbutton'] = True
     fatura_dt = pd.to_datetime(fatura_str, format='%b/%Y')
@@ -251,7 +251,7 @@ if st.toggle('Conciliar fatura'):
           with st.popover("PAGAR FATURA"):
               fatura_data = datetime.strptime(fatura_str, '%b/%Y').replace(day=1)
               fatura_data_str = fatura_data.strftime('%Y-%m-%d')
-              data = st.date_input('DATA', date.today())
+              data = st.date_input('DATA', date.today(),format="DD/MM/YYYY")
               banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
               number = abs(st.number_input("INSIRA O VALOR", format="%0.2f", value=df_true['VALOR'].sum()))
               pagar_fatura = st.form_submit_button("PAGAR FATURA")
@@ -334,7 +334,7 @@ st.divider()
 @st.cache_data(ttl=6000)
 def ler_dados_complementares(_workbook, sheet_index):
     try:
-        cards_cont_cadastradas = workbook.get_worksheet(sheet_index4)
+        cards_cont_cadastradas = workbook.get_worksheet(sheet_index)
         tabela_cards_cont = cards_cont_cadastradas.get_all_values()
 
         conta_cont_cadastradas = workbook.get_worksheet(sheet_index)
@@ -393,7 +393,7 @@ def Alt_lançamentos_CC():
     with inserir:
         st.write("Inserir novo registro")
         with st.form(clear_on_submit=True, key="form_inserir", border=False):
-            data = st.date_input('DATA', date.today())
+            data = st.date_input('DATA', date.today(), format="DD/MM/YYYY")
             cart = st.selectbox('SELECIONE O CARTÃO', cards, index=None, placeholder="Selecione")
             despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
             valor, estorno = st.columns(2, vertical_alignment="bottom")
@@ -411,7 +411,7 @@ def Alt_lançamentos_CC():
             with dt:
               parcelas = st.number_input('Número de parcelas',1,36)
             with fat:
-              data2 = st.date_input('FATURA', date.today())
+              data2 = st.date_input('FATURA', date.today(),format="DD/MM/YYYY")
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
@@ -499,7 +499,7 @@ def Alt_lançamentos_CC():
           else:
             with subcol2:
               data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
-              data2 = st.date_input('DATA', value=pd.to_datetime(data_raw).date())
+              data2 = st.date_input('DATA', value=pd.to_datetime(data_raw).date(),format="DD/MM/YYYY")
               
             idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
             idxbanco = cards.index(idxbanco)
