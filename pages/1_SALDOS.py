@@ -2,7 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
 import streamlit as st
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import plotly.express as px
 import numpy as np
 import json
@@ -48,6 +48,7 @@ tempo_espera = 5
 
 try:
   lançamentos, workbook = lerdados(sheeitid, sheetname)
+  sheet = workbook.get_worksheet(0)
 except APIError:
   st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
   time.sleep(tempo_espera)
@@ -62,6 +63,14 @@ tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORI
 tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
 tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL'] + " / " + tabela_contas_cont_ativa["CATEGORIA"]
 contas_contabeis = tabela_contas_cont_ativa['CONT_CAT'].tolist()
+
+conta_banco_cadastradas = workbook.get_worksheet(2)
+tabela_contas_banco = conta_banco_cadastradas.get_all_values()
+tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
+tabela_contas_banco = tabela_contas_banco.set_index('ID')
+tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
+tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
 
   # Ler a tabela de lançamentos do Google Sheets
 lançamentos = lançamentos.set_index('ID')  # Definir a coluna 'ID' como índice do DataFrame
@@ -78,7 +87,7 @@ else:
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)  # Converter 'VALOR' de texto para float
   lançamentos = lançamentos[lançamentos['CONCILIADO'] == True]  # Filtrar apenas registros conciliados
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')  # Converter 'DATA' para datetime (dia/mês/ano)
-
+  tamanho_tabela = lançamentos.shape[0] + 2
   contas = list(lançamentos['BANCO'].dropna().unique())  # Lista de bancos únicos, ignorando valores nulos
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
@@ -159,28 +168,43 @@ else:
       df_saldos_user_filtrado['VALOR'] = df_saldos_user_filtrado['VALOR'].apply(lambda x: f"{x:.2f}")
       selected_rows_original = df_saldos_user_filtrado["VALOR"]
       if ajustar:
-        with st.form(key="editar_form"):
+        with st.form(key="editar_form", border=False):
           editar_df = st.data_editor(df_saldos_user_filtrado)
-          contacont = st.selectbox('Selecione o tipo de lançamento', options=contas_contabeis)
-          check = st.form_submit_button('check')
+          data = st.date_input('DATA', date.today(), format="DD/MM/YYYY")
+          contacont = st.selectbox('Selecione o tipo de lançamento', options=contas_contabeis, index = None)
+          check = st.form_submit_button('LANÇAR')
           if check:
-            
             selected_rows = editar_df["VALOR"]
             listofaccount = []
             selected_indexes = selected_rows.index.tolist()
+            print(selected_indexes)
             for i in selected_indexes:
               if df_saldos_user_filtrado.loc[i,'VALOR'] != editar_df.loc[i,'VALOR']:
-                print(editar_df.columns)
-                print(editar_df.loc[i,'BANCO'])
-                print(editar_df.loc[i,'PROPRIETÁRIO'])
-                print(editar_df.loc[i,'VALOR'])
                 listofaccount.append(i)
-            
+            print(listofaccount)   
+            for index, i in enumerate(listofaccount):
+              sheet.add_rows(1)
+              sheet.update_acell(f'A{tamanho_tabela+index}', f"=ROW(B{tamanho_tabela+index})")
+              sheet.update_acell(f'B{tamanho_tabela+index}', data.strftime('%d/%m/%Y'))
+              sheet.update_acell(f'C{tamanho_tabela+index}', editar_df.loc[i,'BANCO'])
+              sheet.update_acell(f'D{tamanho_tabela+index}', editar_df.loc[i,'PROPRIETÁRIO'])
+              sheet.update_acell(f'E{tamanho_tabela+index}', contacont.split(" / ")[0])
+              sheet.update_acell(f'F{tamanho_tabela+index}', contacont.split(" / ")[1])
+              valor1 = float(str(editar_df.loc[i, 'VALOR']).replace(',', '.'))
+              valor2 = float(str(df_saldos_user_filtrado.loc[i, 'VALOR']).replace(',', '.'))
+              resultado = valor1 - valor2
+              sheet.update_acell(f'G{tamanho_tabela+index}', resultado)
+              sheet.update_acell(f'H{tamanho_tabela+index}', contacont.split(" / ")[0])
+              sheet.update_acell(f'I{tamanho_tabela+index}', "TRUE")
+              analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == contacont.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == contacont.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+              sheet.update_acell(f'J{tamanho_tabela+index}', analise)
+              moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == editar_df.loc[i,'BANCO'])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == editar_df.loc[i,'PROPRIETÁRIO']),'MOEDA'].values[0]
+              sheet.update_acell(f'L{tamanho_tabela+index}', moeda)
+              sheet.update_acell(f'M{tamanho_tabela+index}', st.session_state.name)
+              sheet.update_acell(f'N{tamanho_tabela+index}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+              st.success(f"Registro {index+1} inserido com sucesso!")
+            st.rerun()                
 
-            print(selected_rows_original)
-            print(selected_rows)
-            print(selected_indexes)
-            print(listofaccount)
 
       else:
         st.write(df_saldos_user_filtrado)  # Exibe tabela filtrada

@@ -229,10 +229,6 @@ def Alt_lançamentos():
                     sheet.update_acell(f'G{tamanho_tabela}', -number)
               sheet.update_acell(f'H{tamanho_tabela}', descricao)
               sheet.update_acell(f'I{tamanho_tabela}', status)
-              if analise:
-                 analise = "ANALÍTICA"
-              else:
-                 analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
               sheet.update_acell(f'J{tamanho_tabela}', analise)
               sheet.update_acell(f'K{tamanho_tabela}', proj)
               moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == banco.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == banco.split(" / ")[1]),'MOEDA'].values[0]
