@@ -448,7 +448,7 @@ if togglecontas_contábeis:
           #print(f'4{st.session_state['lista_id']}')
           conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
           conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
-          conta_cont_cadastradas.update(values=[[atrib]],range_name=f'E{id_selecionada3}')
+          conta_cont_cadastradas.update(values=[[atrib]],range_name=f'D{id_selecionada3}')
           #print("alterações efetuadas com sucesso na tabela de contas contábeis")
           st.success("Alterações Efetuadas")
           st.session_state['lista_id'] = []
