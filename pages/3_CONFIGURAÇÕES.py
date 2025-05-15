@@ -452,6 +452,7 @@ if togglecontas_contábeis:
           #print("alterações efetuadas com sucesso na tabela de contas contábeis")
           st.success("Alterações Efetuadas")
           st.session_state['lista_id'] = []
+          st.rerun()
 
       
         #delete = st.form_submit_button(label="DELETAR")
