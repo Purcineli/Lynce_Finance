@@ -37,7 +37,9 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   workbook = client.open_by_key(sheet_id_login_password)
   url = f"https://docs.google.com/spreadsheets/d/{sheet_id_login_password}/gviz/tq?tqx=out:csv&sheet={sheet_name_login_password}"
   dados_records = pd.read_csv(url, decimal='.')
-  return dados_records
+  return dados_records, workbook
+
+
 
 #informe o id e name da arquivo google sheets
 
@@ -45,12 +47,21 @@ tempo_espera = 5
 
 
 try:
-  lançamentos = lerdados(sheeitid, sheetname)
+  lançamentos, workbook = lerdados(sheeitid, sheetname)
 except APIError:
   st.warning(f"Limite excedido. Tentando novamente em {tempo_espera} segundos...")
   time.sleep(tempo_espera)
   st.rerun()
 
+conta_cont_cadastradas = workbook.get_worksheet(3)
+tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
+tabela_contas_cont = tabela_contas_cont.set_index('ID')
+tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
+tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
+tamanho_tabela_contas_cont = len(tabela_contas_cont)+2
+tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL'] + " / " + tabela_contas_cont_ativa["CATEGORIA"]
+contas_contabeis = tabela_contas_cont_ativa['CONT_CAT'].tolist()
 
   # Ler a tabela de lançamentos do Google Sheets
 lançamentos = lançamentos.set_index('ID')  # Definir a coluna 'ID' como índice do DataFrame
@@ -95,6 +106,7 @@ else:
   df_saldos_user_filtrado = df_saldos_user[df_saldos_user['PROPRIETÁRIO'] == users_selecionado]  # Aplica filtro pelo usuário selecionado
 
 
+
   # Calcular o acumulado
   lançamentos2 = lançamentos[['DATA','PROPRIETÁRIO', 'VALOR']]
   lançamentos2['ACUMULADO'] = lançamentos2.groupby('PROPRIETÁRIO')['VALOR'].cumsum()
@@ -137,11 +149,41 @@ else:
   col11, col12, col13 = st.columns(3)  # Layout de três colunas para exibir tabelas e gráficos
 
   with col11:
-    st.write("Saldos bancários")  # Título da tabela
+    a,b = st.columns(2, vertical_alignment='center')
+    with a:
+      st.write("SALDOS BANCÁRIOS")  # Título da tabela
     if filtro1:
       saldototalperprop = df_saldos_user_filtrado['VALOR'].sum().round(2)
+      with b:
+        ajustar = st.checkbox('AJUSTAR SALDO')
       df_saldos_user_filtrado['VALOR'] = df_saldos_user_filtrado['VALOR'].apply(lambda x: f"{x:.2f}")
-      st.write(df_saldos_user_filtrado)  # Exibe tabela filtrada
+      selected_rows_original = df_saldos_user_filtrado["VALOR"]
+      if ajustar:
+        with st.form(key="editar_form"):
+          editar_df = st.data_editor(df_saldos_user_filtrado)
+          contacont = st.selectbox('Selecione o tipo de lançamento', options=contas_contabeis)
+          check = st.form_submit_button('check')
+          if check:
+            
+            selected_rows = editar_df["VALOR"]
+            listofaccount = []
+            selected_indexes = selected_rows.index.tolist()
+            for i in selected_indexes:
+              if df_saldos_user_filtrado.loc[i,'VALOR'] != editar_df.loc[i,'VALOR']:
+                print(editar_df.columns)
+                print(editar_df.loc[i,'BANCO'])
+                print(editar_df.loc[i,'PROPRIETÁRIO'])
+                print(editar_df.loc[i,'VALOR'])
+                listofaccount.append(i)
+            
+
+            print(selected_rows_original)
+            print(selected_rows)
+            print(selected_indexes)
+            print(listofaccount)
+
+      else:
+        st.write(df_saldos_user_filtrado)  # Exibe tabela filtrada
       st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
       
     else:
