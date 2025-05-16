@@ -124,7 +124,9 @@ else:
   lançamentos['ACUMULADO'] = lançamentos['ACUMULADO'].round(2)
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'])
   lançamentos_filtrado = lançamentos[lançamentos['PROPRIETÁRIO'] == users_selecionado] 
-
+  
+  bancoscomsaldo = df_saldos_user_filtrado['BANCO'].dropna().unique()
+  lançamentos_filtrado2 = lançamentos_filtrado[lançamentos_filtrado['BANCO'].isin(bancoscomsaldo)]
   resultado_mensal = (
       lançamentos2
       .set_index('DATA')
@@ -142,17 +144,29 @@ else:
       .last()
       .reset_index()
   )
+  resultado_mensal3 = (
+      lançamentos_filtrado2
+      .set_index('DATA')
+      .groupby(['BANCO', 'PROPRIETÁRIO'])['ACUMULADO']
+      .resample('ME')
+      .last()
+      .reset_index()
+  )
 
 
   if filtro1:
     fig1 = px.pie(df_saldos_user_filtrado, names='BANCO', values='VALOR')  # Gráfico de pizza com saldos filtrados
     fig2 = px.bar(df_saldos_user_filtrado, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com saldos filtrados
-    fig3 = px.line(resultado_mensal2, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
+    fig4 = px.line(resultado_mensal2, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig4.update_xaxes(tickformat="%m/%Y")
   else:
-    fig1 = px.pie(df_saldos_user, names='BANCO', values='VALOR')  # Gráfico de pizza com todos os dados
+    fig1 = px.pie(df_saldos_user, names='PROPRIETÁRIO', values='VALOR')  # Gráfico de pizza com todos os dados
     fig2 = px.bar(df_saldos_user, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com todos os dados
     fig3 = px.line(resultado_mensal, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
 
   col11, col12, col13 = st.columns(3)  # Layout de três colunas para exibir tabelas e gráficos
@@ -194,7 +208,7 @@ else:
               valor2 = float(str(df_saldos_user_filtrado.loc[i, 'VALOR']).replace(',', '.'))
               resultado = valor1 - valor2
               sheet.update_acell(f'G{tamanho_tabela+index}', resultado)
-              sheet.update_acell(f'H{tamanho_tabela+index}', contacont.split(" / ")[0])
+              sheet.update_acell(f'H{tamanho_tabela+index}', "AJUSTE DE SALDO: " + contacont.split(" / ")[0])
               sheet.update_acell(f'I{tamanho_tabela+index}', "TRUE")
               analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == contacont.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == contacont.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
               sheet.update_acell(f'J{tamanho_tabela+index}', analise)
@@ -209,6 +223,7 @@ else:
       else:
         st.write(df_saldos_user_filtrado)  # Exibe tabela filtrada
       st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+
       
     else:
       df_saldos_user_total = df_saldos_user.groupby(['PROPRIETÁRIO']).agg({'VALOR': 'sum'}).round(2)  # Exibe tabela completa
@@ -216,11 +231,16 @@ else:
       df_saldos_user_total['VALOR'] = df_saldos_user_total['VALOR'].apply(lambda x: f"{x:.2f}")
       df_saldos_user_total = df_saldos_user_total.reset_index()
       st.write(df_saldos_user_total)
-      st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2)}')
+      st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."))
+
   with col12:
     st.plotly_chart(fig1)  # Exibe gráfico de pizza
   with col13:
     st.plotly_chart(fig2)  # Exibe gráfico de barras
 
   st.divider()  # Linha divisória no app
-  st.plotly_chart(fig3)
+  todasascontas = st.checkbox("MOSTRAR TODAS AS CONTAS")
+  if todasascontas:
+    st.plotly_chart(fig4)
+  else:
+    st.plotly_chart(fig3)
