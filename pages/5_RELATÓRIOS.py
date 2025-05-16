@@ -133,8 +133,6 @@ else:
   lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
  
   lançamentos_conciliados_receitas_agrupado = lançamentos_conciliados_receitas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False)
-
-
   lançamentos_conciliados_despesas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="DESPESAS"]
   lançamentos_conciliados_despesas['VALOR'] = abs(lançamentos_conciliados_despesas['VALOR'])
   lançamentos_conciliados_despesas_agrupado = lançamentos_conciliados_despesas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False)
@@ -147,7 +145,7 @@ else:
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
 
   fig3 = px.bar(lançamentos_conciliados_receitas, x='LANÇAMENTO', y='VALOR', color='PROPRIETÁRIO', color_discrete_sequence=px.colors.sequential.Plasma, category_orders={'LANÇAMENTO': lançamentos_conciliados_receitas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False).index.tolist()},hover_data=['DATA','DESCRIÇÃO'])
-  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.RdBu, category_orders={'LANÇAMENTO': lançamentos_conciliados_despesas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False).index.tolist()},hover_data=['DATA','DESCRIÇÃO'])
+  fig4 = px.bar(lançamentos_conciliados_despesas, x='LANÇAMENTO', y='VALOR' ,color='PROPRIETÁRIO',color_discrete_sequence=px.colors.sequential.Reds, category_orders={'LANÇAMENTO': lançamentos_conciliados_despesas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False).index.tolist()},hover_data=['DATA','DESCRIÇÃO'])
   fig2.update_traces(textposition='inside', textinfo='percent')
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
   col1, col2 = st.columns(2)
