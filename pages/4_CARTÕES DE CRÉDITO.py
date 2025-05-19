@@ -431,7 +431,8 @@ def Alt_lançamentos_CC():
             with dt:
               parcelas = st.number_input('Número de parcelas',1,36)
             with fat:
-              data2 = st.date_input('FATURA', date.today(),format="MM/YYYY")
+              data2 = st.date_input('FATURA', date.today(),format="DD/MM/YYYY")
+              
             submit = st.form_submit_button(label="INSERIR")
 
         if submit:
