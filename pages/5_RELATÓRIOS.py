@@ -153,7 +153,6 @@ else:
     st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
     st.plotly_chart(fig1, key ='1')
     st.plotly_chart(fig3, key ='2')
-
     st.dataframe(lançamentos_conciliados_receitas_agrupado, height=300)
   with col2:
     st.header(f"DESPESAS: R$ {lançamentos_conciliados_despesas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="red")
