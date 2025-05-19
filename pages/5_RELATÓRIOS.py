@@ -98,7 +98,7 @@ project_report = st.checkbox('PROJETO/EVENTO')
 if not project_report:
   col01, col02 = st.columns(2)
   with col01:
-    data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30), format="DD/MM/YYYY")
+    data_inicio = st.date_input("Data Inicial", date.today().replace(day=1), format="DD/MM/YYYY")
     data_inicio = pd.to_datetime(data_inicio)
   with col02:
     data_final = st.date_input("Data Final", date.today(),format="DD/MM/YYYY")
