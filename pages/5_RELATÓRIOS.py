@@ -122,6 +122,9 @@ else:
   lista_prop_selecionado = st.multiselect("Selecione", listas_owners, listas_owners)
 
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
+  lançamentos['ANO'] = lançamentos['DATA'].dt.year
+  lançamentos['ANO_MES'] = lançamentos['DATA'].dt.to_period('M').astype(str)
+
   lançamentos_conciliados = lançamentos.iloc[::-1]
 
   if not project_report:
@@ -129,7 +132,9 @@ else:
   #st.dataframe(lançamentos_conciliados[colunas_selecionadas])
   else:
     lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
-  
+
+
+  lançamentos_conciliados['DATA'] = lançamentos_conciliados['DATA'].dt.strftime('%d/%m/%Y')
   lançamentos_conciliados_receitas = lançamentos_conciliados[lançamentos_conciliados['ANALISE']=="RECEITAS"]
  
   lançamentos_conciliados_receitas_agrupado = lançamentos_conciliados_receitas.groupby('LANÇAMENTO')['VALOR'].sum().sort_values(ascending=False)
@@ -153,9 +158,30 @@ else:
     st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
     st.plotly_chart(fig1, key ='1')
     st.plotly_chart(fig3, key ='2')
-    st.dataframe(lançamentos_conciliados_receitas_agrupado, height=300)
+    lançamentos_conciliados_receitas = lançamentos_conciliados_receitas.set_index('DATA')
+    st.dataframe(lançamentos_conciliados_receitas[['LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO']], height=300)
   with col2:
     st.header(f"DESPESAS: R$ {lançamentos_conciliados_despesas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="red")
     st.plotly_chart(fig2, key ='3')
     st.plotly_chart(fig4, key ='4')
-    st.dataframe(lançamentos_conciliados_despesas_agrupado, height=300)
+    lançamentos_conciliados_despesas = lançamentos_conciliados_despesas.set_index('DATA')
+    st.dataframe(lançamentos_conciliados_despesas[['LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO']], height=300)
+
+st.divider()
+
+listaanos = lançamentos['ANO'].unique().tolist()
+ano_escolhido =st.selectbox("Selecione o ano", options=listaanos, index=0)
+
+lançamentos_receitas = lançamentos[lançamentos['ANALISE']=="RECEITAS"]
+lançamentos_conciliados_para_pivot_receitas = lançamentos_receitas[(lançamentos['ANO']==ano_escolhido)]
+lançamentos_conciliados_para_pivot_receitas = lançamentos_conciliados_para_pivot_receitas.pivot_table(index=['CATEGORIA','LANÇAMENTO'],columns='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
+lançamentos_conciliados_para_pivot_receitas['Total'] = lançamentos_conciliados_para_pivot_receitas.sum(axis=1)
+total_coluna_receitas = lançamentos_conciliados_para_pivot_receitas.sum(axis=0)
+st.dataframe(lançamentos_conciliados_para_pivot_receitas)
+
+lançamentos_despesas = lançamentos[lançamentos['ANALISE']=="DESPESAS"]
+lançamentos_conciliados_para_pivot_despesas = lançamentos_despesas[(lançamentos['ANO']==ano_escolhido)]
+lançamentos_conciliados_para_pivot_despesas = lançamentos_conciliados_para_pivot_despesas.pivot_table(index=['CATEGORIA','LANÇAMENTO'],columns='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
+lançamentos_conciliados_para_pivot_despesas['Total'] = lançamentos_conciliados_para_pivot_despesas.sum(axis=1)
+total_coluna_despesas = lançamentos_conciliados_para_pivot_despesas.sum(axis=0)
+st.dataframe(lançamentos_conciliados_para_pivot_despesas)
