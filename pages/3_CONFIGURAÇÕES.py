@@ -294,7 +294,7 @@ if togglecontas_contábeis:
           id_selecionada3 = int(st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five"))
     with col02:
         if st.button('INATIVAR CONTA CONTÁBIL'):
-          conta_cont_cadastradas.update_acell(f'D{id_selecionada3}', False)
+          conta_cont_cadastradas.update_acell(f'E{id_selecionada3}', False)
           st.rerun()
 
     with st.form(clear_on_submit=True, key='Editar conta contabil'):
@@ -388,6 +388,7 @@ if togglecontas_contábeis:
                   pass
                 else:
                   sheet.update(values=[[atrib]], range_name=f'J{x}')
+                time.sleep(0.5)
               
               except APIError as e:
                   # Check if the error is related to quota being exceeded
@@ -407,6 +408,7 @@ if togglecontas_contábeis:
                       pass
                     else:
                       sheet.update(values=[[atrib]], range_name=f'J{x}')
+                    time.sleep(0.5)
 
           if not st.session_state['lista_id_cart1']:
             lista = st.session_state['lista_id_cart2']
@@ -426,7 +428,7 @@ if togglecontas_contábeis:
                   pass
                 else:
                   sheet_cartao.update(values=[[atrib]], range_name=f'J{x}')
-              
+                time.sleep(0.5)
               except APIError as e:
                   # Check if the error is related to quota being exceeded
                   if e.response.status_code == 429:
@@ -445,6 +447,7 @@ if togglecontas_contábeis:
                       pass
                     else:
                       sheet_cartao.update(values=[[atrib]], range_name=f'J{x}')
+                    time.sleep(0.5) 
           #print(f'4{st.session_state['lista_id']}')
           conta_cont_cadastradas.update( values=[[cont]],range_name=f'B{id_selecionada3}')
           conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')

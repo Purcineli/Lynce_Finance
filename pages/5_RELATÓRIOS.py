@@ -172,16 +172,31 @@ st.divider()
 listaanos = lançamentos['ANO'].unique().tolist()
 ano_escolhido =st.selectbox("Selecione o ano", options=listaanos, index=0)
 
+
+lançamentos2 = lançamentos.copy()
+lançamentos2['VALOR'] = lançamentos2['VALOR'].abs()
+lançamentos2 = lançamentos2[lançamentos2['ANALISE']!="ANALITICA"]
+graph = px.line(lançamentos2, x="DATA", y="VALOR", color='ANALISE')
+#st.plotly_chart(graph)
+
 lançamentos_receitas = lançamentos[lançamentos['ANALISE']=="RECEITAS"]
+lançamentos_conciliados_para_pivot_receitas_GRAPH = lançamentos_receitas.pivot_table(index='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
 lançamentos_conciliados_para_pivot_receitas = lançamentos_receitas[(lançamentos['ANO']==ano_escolhido)]
 lançamentos_conciliados_para_pivot_receitas = lançamentos_conciliados_para_pivot_receitas.pivot_table(index=['CATEGORIA','LANÇAMENTO'],columns='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
 lançamentos_conciliados_para_pivot_receitas['Total'] = lançamentos_conciliados_para_pivot_receitas.sum(axis=1)
 total_coluna_receitas = lançamentos_conciliados_para_pivot_receitas.sum(axis=0)
-st.dataframe(lançamentos_conciliados_para_pivot_receitas)
+
+#st.dataframe(lançamentos_conciliados_para_pivot_receitas_GRAPH)
+
 
 lançamentos_despesas = lançamentos[lançamentos['ANALISE']=="DESPESAS"]
+lançamentos_conciliados_para_pivot_despesas_GRAPH = lançamentos_despesas.pivot_table(index='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
 lançamentos_conciliados_para_pivot_despesas = lançamentos_despesas[(lançamentos['ANO']==ano_escolhido)]
 lançamentos_conciliados_para_pivot_despesas = lançamentos_conciliados_para_pivot_despesas.pivot_table(index=['CATEGORIA','LANÇAMENTO'],columns='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
 lançamentos_conciliados_para_pivot_despesas['Total'] = lançamentos_conciliados_para_pivot_despesas.sum(axis=1)
 total_coluna_despesas = lançamentos_conciliados_para_pivot_despesas.sum(axis=0)
-st.dataframe(lançamentos_conciliados_para_pivot_despesas)
+#st.dataframe(lançamentos_conciliados_para_pivot_despesas)
+
+
+#GRAPH_RECEITAS = px.line(lançamentos_conciliados_para_pivot_receitas_GRAPH, x=lançamentos_conciliados_para_pivot_receitas_GRAPH.index, y='VALOR', title="Receitas Mensais")
+#st.plotly_chart(GRAPH_RECEITAS, key ='GRAPH RECEITAS')

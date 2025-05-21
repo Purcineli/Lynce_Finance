@@ -239,8 +239,11 @@ else:
     st.plotly_chart(fig2)  # Exibe gráfico de barras
 
   st.divider()  # Linha divisória no app
-  todasascontas = st.checkbox("MOSTRAR TODAS AS CONTAS")
-  if todasascontas:
-    st.plotly_chart(fig4)
+  if filtro1:
+    todasascontas = st.checkbox("MOSTRAR TODAS AS CONTAS")
+    if todasascontas:
+      st.plotly_chart(fig4)
+    else:
+      st.plotly_chart(fig3)
   else:
     st.plotly_chart(fig3)

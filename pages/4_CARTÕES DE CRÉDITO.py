@@ -138,10 +138,9 @@ faturas_cartao = faturas_cartao.replace(0, pd.NA)
 faturas_cartao = faturas_cartao.dropna(axis=0, how='all')
 faturas_cartao = faturas_cartao.dropna(axis=1, how='all')
 st.write(faturas_cartao)
-
-
-
-st.markdown(f'VALOR TOTAL À PAGAR: {-faturas_cartao.values.sum()}')
+VALORTOTAL = f"{faturas_cartao.values.sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+st.markdown(f'VALOR TOTAL À PAGAR R$: {VALORTOTAL}')
+#st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
 listas_cartoes = list(tabela_lancamentos_cartao['CARTÃO'].dropna().unique())
 listas_owners = list(tabela_lancamentos_cartao['PROPRIETÁRIO'].dropna().unique())
 colun1, colun2 = st.columns(2)
