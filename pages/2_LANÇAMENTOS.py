@@ -130,8 +130,8 @@ else:
   #  .str.replace('.', '', regex=False)        # Remove separador de milhar
   #  .str.replace(',', '.', regex=False)       # Converte vírgula decimal para ponto
 #)
-
-  #lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
+  lançamentos['VALOR'] = lançamentos['VALOR'].astype(str).str.replace('.', '', regex=False)
+  lançamentos['VALOR'] = lançamentos['VALOR'].str.replace(',', '.', regex=False)
   lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   lançamentos = lançamentos[lançamentos['BANCO'].notna()]
