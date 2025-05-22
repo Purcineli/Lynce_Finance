@@ -22,11 +22,13 @@ sheetname = st.session_state.arquivo
 
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
-  scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+  scopes = [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/drive'
+]
   service_account_info = st.secrets["gcp_service_account"]
   creds = Credentials.from_service_account_info(service_account_info, scopes=scopes)
-  #creds = Credentials.from_service_account_file(r"C:\Users\alepu\OneDrive\Área de Trabalho\Python_projects\CONTROLE_FINANCEIRO\credentials.json", scopes=scopes)
-  #D:\Python_projects\CONTROLE_FINANCEIRO
   client = gspread.authorize(creds)
 
 
@@ -38,6 +40,7 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
   dados_records = pd.read_csv(url, decimal='.', index_col=False)
 
   return dados_records,workbook
+
 
 
 #sheeitid = '1mR63AgJd3tW4slEywlcylKCtEzAgcT2icHwOhUr6mdk'
@@ -198,5 +201,19 @@ total_coluna_despesas = lançamentos_conciliados_para_pivot_despesas.sum(axis=0)
 #st.dataframe(lançamentos_conciliados_para_pivot_despesas)
 
 
+
+try:
+    # Exportar como Excel (XLSX)
+    excel_bytes = workbook.export(format='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+    # Botão único: exporta e baixa
+    st.download_button(
+        label="📥 Exportar e Baixar Planilha",
+        data=excel_bytes,
+        file_name="planilha.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+except Exception as e:
+    st.error(f"Erro ao exportar a planilha: {e}")
 #GRAPH_RECEITAS = px.line(lançamentos_conciliados_para_pivot_receitas_GRAPH, x=lançamentos_conciliados_para_pivot_receitas_GRAPH.index, y='VALOR', title="Receitas Mensais")
 #st.plotly_chart(GRAPH_RECEITAS, key ='GRAPH RECEITAS')
