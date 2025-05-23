@@ -92,20 +92,22 @@ else:
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
 
-  col01, col02, col03 = st.columns([0.3, 0.6, 0.1])  # Define layout de 3 colunas com larguras proporcionais
+  col01, col02, col03 = st.columns([0.15, 0.75, 0.1])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
     data_saldo = pd.to_datetime(st.date_input("Data Saldo", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
     df_saldos_user = lançamentos[lançamentos['DATA'] <= data_saldo]  # Filtra lançamentos com data menor ou igual à selecionada
-    df_saldo_user1 = df_saldos_user['VALOR'].sum()
+    df_saldo_user1 = df_saldos_user['VALOR'].sum().round(2)
+    df_saldo_user1 = df_saldo_user1
+    valor_formatado = f"{df_saldo_user1:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     #st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2)}')
-    st.markdown(f"SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-  with col02:
-    hoje = pd.to_datetime(date.today())
-    ultimo_dia_mes_anterior = (hoje.replace(day=1) - pd.Timedelta(days=1)).date()
+    #st.markdown(f"SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+    DATAESCOLHIDA = pd.to_datetime(data_saldo)
+    ultimo_dia_mes_anterior = (DATAESCOLHIDA.replace(day=1) - pd.Timedelta(days=1)).date()
     ultimo_dia_mes_anterior = pd.to_datetime(ultimo_dia_mes_anterior)
     df_saldos_user2 = lançamentos[lançamentos['DATA'] <= ultimo_dia_mes_anterior]
     df_saldo_user3 = df_saldos_user2['VALOR'].sum()
-    st.metric(label="Saldo total", value=df_saldos_user2['VALOR'].sum().round(2), delta=float(df_saldo_user1)-float(df_saldo_user3))
+    saldoanterior = round(float(df_saldo_user1)-float(df_saldo_user3),2)
+    st.metric(label="Saldo Atual:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
   st.divider()  # Linha divisória no app
 
   col011, col012 = st.columns([0.2, 0.8])  # Define nova linha com duas colunas
