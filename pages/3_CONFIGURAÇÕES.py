@@ -374,6 +374,8 @@ if togglecontas_contábeis:
         if cont == oldcont and oldcateg == categor and oldatrib == atrib:
           pass
         else:
+          progesso_barra = 0
+          progress_bar = st.progress(progesso_barra, text="Editando informações")
           for x in lista:
               try:
                 if cont == oldcont:
@@ -389,7 +391,8 @@ if togglecontas_contábeis:
                 else:
                   sheet.update(values=[[atrib]], range_name=f'J{x}')
                 time.sleep(0.5)
-              
+                progesso_barra = progesso_barra + int(100/len(lista))
+                progress_bar.progress(progesso_barra, text="Editando informações")
               except APIError as e:
                   # Check if the error is related to quota being exceeded
                   if e.response.status_code == 429:
