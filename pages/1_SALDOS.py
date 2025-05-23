@@ -119,16 +119,30 @@ else:
   # Calcular o acumulado
   lançamentos2 = lançamentos[['DATA','PROPRIETÁRIO', 'VALOR']]
   lançamentos2['ACUMULADO'] = lançamentos2.groupby('PROPRIETÁRIO')['VALOR'].cumsum()
+  lançamentos2['ACUMULADO'] = lançamentos2['ACUMULADO'].round(2)
   lançamentos['ACUMULADO'] = lançamentos.groupby(['BANCO', 'PROPRIETÁRIO'])['VALOR'].cumsum()
   lançamentos = lançamentos[['DATA','BANCO','PROPRIETÁRIO','ACUMULADO']]
   lançamentos['ACUMULADO'] = lançamentos['ACUMULADO'].round(2)
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'])
   lançamentos_filtrado = lançamentos[lançamentos['PROPRIETÁRIO'] == users_selecionado] 
-  
+  df_saldos_user_total = df_saldos_user.groupby(['PROPRIETÁRIO']).agg({'VALOR': 'sum'}).round(2)  # Exibe tabela completa
+  df_saldos_user_total = df_saldos_user_total.sort_values(by='VALOR', ascending=False)
+  df_saldos_user_total['VALOR'] = df_saldos_user_total['VALOR'].apply(lambda x: f"{x:.2f}")
+  df_saldos_user_total = df_saldos_user_total.reset_index()
+  userscomsaldo = df_saldos_user_total['PROPRIETÁRIO'].dropna().unique()
+  lançamentos_filtrado12 = lançamentos2[lançamentos2['PROPRIETÁRIO'].isin(userscomsaldo)]
   bancoscomsaldo = df_saldos_user_filtrado['BANCO'].dropna().unique()
   lançamentos_filtrado2 = lançamentos_filtrado[lançamentos_filtrado['BANCO'].isin(bancoscomsaldo)]
   resultado_mensal = (
       lançamentos2
+      .set_index('DATA')
+      .groupby('PROPRIETÁRIO')['ACUMULADO']
+      .resample('ME')
+      .last()
+      .reset_index()
+  )
+  resultado_mensal4 = (
+      lançamentos_filtrado12
       .set_index('DATA')
       .groupby('PROPRIETÁRIO')['ACUMULADO']
       .resample('ME')
@@ -156,6 +170,7 @@ else:
 
   if filtro1:
     fig1 = px.pie(df_saldos_user_filtrado, names='BANCO', values='VALOR')  # Gráfico de pizza com saldos filtrados
+    fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user_filtrado, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com saldos filtrados
     fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3.update_traces(connectgaps=True)
@@ -164,8 +179,9 @@ else:
     fig4.update_xaxes(tickformat="%m/%Y")
   else:
     fig1 = px.pie(df_saldos_user, names='PROPRIETÁRIO', values='VALOR')  # Gráfico de pizza com todos os dados
+    fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com todos os dados
-    fig3 = px.line(resultado_mensal, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3 = px.line(resultado_mensal4, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
 
@@ -188,49 +204,53 @@ else:
           contacont = st.selectbox('Selecione o tipo de lançamento', options=contas_contabeis, index = None)
           check = st.form_submit_button('LANÇAR')
           if check:
-            selected_rows = editar_df["VALOR"]
-            listofaccount = []
-            selected_indexes = selected_rows.index.tolist()
-            print(selected_indexes)
-            for i in selected_indexes:
-              if df_saldos_user_filtrado.loc[i,'VALOR'] != editar_df.loc[i,'VALOR']:
-                listofaccount.append(i)
-            print(listofaccount)   
-            for index, i in enumerate(listofaccount):
-              sheet.add_rows(1)
-              sheet.update_acell(f'A{tamanho_tabela+index}', f"=ROW(B{tamanho_tabela+index})")
-              sheet.update_acell(f'B{tamanho_tabela+index}', data.strftime('%d/%m/%Y'))
-              sheet.update_acell(f'C{tamanho_tabela+index}', editar_df.loc[i,'BANCO'])
-              sheet.update_acell(f'D{tamanho_tabela+index}', editar_df.loc[i,'PROPRIETÁRIO'])
-              sheet.update_acell(f'E{tamanho_tabela+index}', contacont.split(" / ")[0])
-              sheet.update_acell(f'F{tamanho_tabela+index}', contacont.split(" / ")[1])
-              valor1 = float(str(editar_df.loc[i, 'VALOR']).replace(',', '.'))
-              valor2 = float(str(df_saldos_user_filtrado.loc[i, 'VALOR']).replace(',', '.'))
-              resultado = valor1 - valor2
-              sheet.update_acell(f'G{tamanho_tabela+index}', resultado)
-              sheet.update_acell(f'H{tamanho_tabela+index}', "AJUSTE DE SALDO: " + contacont.split(" / ")[0])
-              sheet.update_acell(f'I{tamanho_tabela+index}', "TRUE")
-              analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == contacont.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == contacont.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
-              sheet.update_acell(f'J{tamanho_tabela+index}', analise)
-              moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == editar_df.loc[i,'BANCO'])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == editar_df.loc[i,'PROPRIETÁRIO']),'MOEDA'].values[0]
-              sheet.update_acell(f'L{tamanho_tabela+index}', moeda)
-              sheet.update_acell(f'M{tamanho_tabela+index}', st.session_state.name)
-              sheet.update_acell(f'N{tamanho_tabela+index}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-              st.success(f"Registro {index+1} inserido com sucesso!")
-            st.rerun()                
+            if contacont is None:
+              st.warning("Selecione um tipo de lançamento")
+            else:
+              selected_rows = editar_df["VALOR"]
+              listofaccount = []
+              selected_indexes = selected_rows.index.tolist()
+              print(selected_indexes)
+              for i in selected_indexes:
+                if df_saldos_user_filtrado.loc[i,'VALOR'] != editar_df.loc[i,'VALOR']:
+                  listofaccount.append(i)
+              print(listofaccount)   
+              progesso_barra = 0
+              progress_bar = st.progress(progesso_barra, text="Inserindo informações")
+              for index, i in enumerate(listofaccount):
+                sheet.add_rows(1)
+                sheet.update_acell(f'A{tamanho_tabela+index}', f"=ROW(B{tamanho_tabela+index})")
+                sheet.update_acell(f'B{tamanho_tabela+index}', data.strftime('%d/%m/%Y'))
+                sheet.update_acell(f'C{tamanho_tabela+index}', editar_df.loc[i,'BANCO'])
+                sheet.update_acell(f'D{tamanho_tabela+index}', editar_df.loc[i,'PROPRIETÁRIO'])
+                sheet.update_acell(f'E{tamanho_tabela+index}', contacont.split(" / ")[0])
+                sheet.update_acell(f'F{tamanho_tabela+index}', contacont.split(" / ")[1])
+                valor1 = float(str(editar_df.loc[i, 'VALOR']).replace(',', '.'))
+                valor2 = float(str(df_saldos_user_filtrado.loc[i, 'VALOR']).replace(',', '.'))
+                resultado = valor1 - valor2
+                sheet.update_acell(f'G{tamanho_tabela+index}', resultado)
+                sheet.update_acell(f'H{tamanho_tabela+index}', "AJUSTE DE SALDO: " + contacont.split(" / ")[0])
+                sheet.update_acell(f'I{tamanho_tabela+index}', "TRUE")
+                analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == contacont.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == contacont.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+                sheet.update_acell(f'J{tamanho_tabela+index}', analise)
+                moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == editar_df.loc[i,'BANCO'])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == editar_df.loc[i,'PROPRIETÁRIO']),'MOEDA'].values[0]
+                sheet.update_acell(f'L{tamanho_tabela+index}', moeda)
+                sheet.update_acell(f'M{tamanho_tabela+index}', st.session_state.name)
+                sheet.update_acell(f'N{tamanho_tabela+index}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+                progesso_barra = progesso_barra + int(100/len(listofaccount))
+                progress_bar.progress(progesso_barra, text="Inserindo informações")
+                #st.success(f"Registro {index+1} inserido com sucesso!")
+              st.rerun()                
 
 
       else:
-        st.write(df_saldos_user_filtrado)  # Exibe tabela filtrada
+        st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
       st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
       
     else:
-      df_saldos_user_total = df_saldos_user.groupby(['PROPRIETÁRIO']).agg({'VALOR': 'sum'}).round(2)  # Exibe tabela completa
-      df_saldos_user_total = df_saldos_user_total.sort_values(by='VALOR', ascending=False)
-      df_saldos_user_total['VALOR'] = df_saldos_user_total['VALOR'].apply(lambda x: f"{x:.2f}")
-      df_saldos_user_total = df_saldos_user_total.reset_index()
-      st.write(df_saldos_user_total)
+
+      st.dataframe(df_saldos_user_total, hide_index=True)
       st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."))
 
   with col12:
