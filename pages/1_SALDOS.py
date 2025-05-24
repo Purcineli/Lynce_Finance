@@ -92,7 +92,7 @@ else:
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
 
-  col01, col02, col03 = st.columns([0.2, 0.7, 0.1])  # Define layout de 3 colunas com larguras proporcionais
+  col01, col02, col03 = st.columns([0.2, 0.2, 0.6])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
     data_saldo = pd.to_datetime(st.date_input("Data Saldo", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
     df_saldos_user = lançamentos[lançamentos['DATA'] <= data_saldo]  # Filtra lançamentos com data menor ou igual à selecionada
@@ -107,6 +107,8 @@ else:
     df_saldos_user2 = lançamentos[lançamentos['DATA'] <= ultimo_dia_mes_anterior]
     df_saldo_user3 = df_saldos_user2['VALOR'].sum()
     saldoanterior = round(float(df_saldo_user1)-float(df_saldo_user3),2)
+    saldoanterior = f"{saldoanterior:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+  with col02:
     st.metric(label="Saldo Atual:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
   st.divider()  # Linha divisória no app
 
