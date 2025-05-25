@@ -54,6 +54,25 @@ except APIError:
   time.sleep(tempo_espera)
   st.rerun()
 
+sheet = workbook.get_worksheet(0)
+lançamentos2 = sheet.get_all_values()
+lançamentos_CONTAS = pd.DataFrame(lançamentos2[1:], columns=lançamentos2[0])
+lançamentos_CONTAS = lançamentos_CONTAS.set_index('ID')
+lançamentos_CONTAS = lançamentos_CONTAS[lançamentos_CONTAS["CONCILIADO"]=="TRUE"]
+lançamentos_CONTAS = lançamentos_CONTAS[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
+lancamento_cartao = workbook.get_worksheet(1)
+tabela_lancamentos_cartao = lancamento_cartao.get_all_values()
+tabela_lancamentos_cartao = pd.DataFrame(tabela_lancamentos_cartao[1:], columns=tabela_lancamentos_cartao[0])
+tabela_lancamentos_cartao = tabela_lancamentos_cartao.set_index('ID')
+tabela_lancamentos_cartao.index = tabela_lancamentos_cartao.index.astype(int)
+tabela_lancamentos_cartao = tabela_lancamentos_cartao[tabela_lancamentos_cartao["CONCILIADO"]=="TRUE"]
+tabela_lancamentos_cartao = tabela_lancamentos_cartao[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
+
+lançamentos_RECDES = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=0)
+
+lançamentos_RECDES = lançamentos_RECDES.reset_index()
+lançamentos_RECDES = lançamentos_RECDES[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
+
 conta_cont_cadastradas = workbook.get_worksheet(3)
 tabela_contas_cont = conta_cont_cadastradas.get_all_values()
 tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
@@ -92,7 +111,7 @@ else:
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
 
-  col01, col02, col03 = st.columns([0.2, 0.2, 0.6])  # Define layout de 3 colunas com larguras proporcionais
+  col01, col02, col03, col04 = st.columns([0.2, 0.2, 0.2, 0.4])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
     data_saldo = pd.to_datetime(st.date_input("Data Saldo", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
     df_saldos_user = lançamentos[lançamentos['DATA'] <= data_saldo]  # Filtra lançamentos com data menor ou igual à selecionada
@@ -110,8 +129,30 @@ else:
     saldoanterior = f"{saldoanterior:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
   with col02:
     st.metric(label="Saldo Atual:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+  with col03:
+    lançamentos_RECDES['DATA'] = pd.to_datetime(lançamentos_RECDES['DATA'], dayfirst=True, errors='coerce')
+    try:
+      lançamentos_RECDES['VALOR'] = lançamentos_RECDES['VALOR'].astype(str).str.replace('.', '', regex=False)
+    except:
+      pass
+    lançamentos_RECDES['VALOR'] = lançamentos_RECDES['VALOR'].str.replace(',', '.', regex=False)
+    lançamentos_RECDES['VALOR'] = pd.to_numeric(lançamentos_RECDES['VALOR'], errors='coerce')
+    lançamentos_RECDES['VALOR'] = lançamentos_RECDES['VALOR'].astype(float)
+    primeiro_dia_do_mes = DATAESCOLHIDA.replace(day=1).date()
+    primeiro_dia_do_mes = pd.to_datetime(primeiro_dia_do_mes)
+    
+    lançamentos_RECDES = lançamentos_RECDES[(lançamentos_RECDES['DATA']>=primeiro_dia_do_mes)&(lançamentos_RECDES['DATA']<=DATAESCOLHIDA)]
+    lançamentos_RECDES_RECEITAS = lançamentos_RECDES[lançamentos_RECDES['ANALISE']=="RECEITAS"]
+    lançamentos_RECDES_DESPESAS = lançamentos_RECDES[lançamentos_RECDES['ANALISE']=="DESPESAS"]
+    soma_receitas = lançamentos_RECDES_RECEITAS['VALOR'].sum()
+    soma_despesas = lançamentos_RECDES_DESPESAS['VALOR'].sum()
+    st.write("DATAESCOLHIDA:", DATAESCOLHIDA)
+    st.write(primeiro_dia_do_mes)
+    st.write(data_saldo)
+    st.write(soma_receitas)
+    st.write(soma_despesas)
   st.divider()  # Linha divisória no app
-
+  st.write(lançamentos_RECDES_DESPESAS)
   col011, col012 = st.columns([0.2, 0.8])  # Define nova linha com duas colunas
   with col011:
     filtro1 = st.toggle("Filtar por usuário")  # Botão liga/desliga para aplicar filtro por usuário
