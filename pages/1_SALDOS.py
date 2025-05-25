@@ -151,6 +151,7 @@ else:
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
 
+
   col01, col02, col03, col04 = st.columns([0.2, 0.2, 0.2, 0.4])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
     if language_of_page == "PORTUGUÊS":
@@ -174,7 +175,14 @@ else:
     saldoanterior = round(float(df_saldo_user1)-float(df_saldo_user3),2)
     saldoanterior = f"{saldoanterior:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
   with col02:
-    st.metric(label="Saldo Atual:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+    if language_of_page == "PORTUGUÊS":
+      st.metric(label="Saldo Atual:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+    elif language_of_page =="ENGLISH":
+      st.metric(label="Current Balance:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+    elif language_of_page == "РУССКИЙ":
+      st.metric(label="Текущий балансl:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+
+    
   with col03:
     lançamentos_RECDES['DATA'] = pd.to_datetime(lançamentos_RECDES['DATA'], dayfirst=True, errors='coerce')
     try:
@@ -196,12 +204,31 @@ else:
     diferencarecdes = soma_receitas - abs(soma_despesas)
     diferencarecdes = f"{diferencarecdes:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     soma_receitas = f"{soma_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    st.metric(label="RECEITAS:", value=f'R$ {soma_receitas}', delta=diferencarecdes, border=True)
+    if language_of_page == "PORTUGUÊS":
+      st.metric(label="RECEITAS:", value=f'R$ {soma_receitas}', delta=diferencarecdes, border=True)
+    elif language_of_page =="ENGLISH":
+      st.metric(label="REVENUES:", value=f'R$ {soma_receitas}', delta=diferencarecdes, border=True)
+    elif language_of_page == "РУССКИЙ":
+      st.metric(label="ДОХОДЫ:", value=f'R$ {soma_receitas}', delta=diferencarecdes, border=True)
+
+    
   st.divider()  # Linha divisória no app
   col011, col012 = st.columns([0.2, 0.8])  # Define nova linha com duas colunas
   with col011:
-    filtro1 = st.toggle("Filtar por usuário")  # Botão liga/desliga para aplicar filtro por usuário
-    users_selecionado = st.selectbox("Selecione um proprietário", users)  # Seleção do proprietário (usuário)
+    if language_of_page == "PORTUGUÊS":
+      filtro1 = st.toggle("Filtrar por proprietário")  # Botão liga/desliga para aplicar filtro por usuário
+    elif language_of_page =="ENGLISH":
+      filtro1 = st.toggle("Filter by owner")  # Botão liga/desliga para aplicar filtro por usuário
+    elif language_of_page == "РУССКИЙ":
+      filtro1 = st.toggle("Фильтр по владельцу")  # Botão liga/desliga para aplicar filtro por usuário
+
+    if language_of_page == "PORTUGUÊS":
+      users_selecionado = st.selectbox("Selecione um proprietário", users)  # Seleção do proprietário (usuário)
+    elif language_of_page =="ENGLISH":
+      users_selecionado = st.selectbox("Select an owner", users)  # Seleção do proprietário (usuário)
+    elif language_of_page == "РУССКИЙ":
+      users_selecionado = st.selectbox("Выберите владельца", users)  # Seleção do proprietário (usuário)
+    
 
 
 
@@ -287,22 +314,50 @@ else:
   with col11:
     a,b = st.columns(2, vertical_alignment='center')
     with a:
-      st.write("SALDOS BANCÁRIOS")  # Título da tabela
+      if language_of_page == "PORTUGUÊS":
+        st.write("SALDOS BANCÁRIOS")  # Título da tabela
+      elif language_of_page =="ENGLISH":
+        st.write("BANK BALANCES")  # Título da tabela
+      elif language_of_page == "РУССКИЙ":
+        st.write("БАНКОВСКИЕ ОСТАТКИ")  # Título da tabela
+      
     if filtro1:
       saldototalperprop = df_saldos_user_filtrado['VALOR'].sum().round(2)
       with b:
-        ajustar = st.checkbox('AJUSTAR SALDO')
+        if language_of_page == "PORTUGUÊS":
+          ajustar = st.checkbox('AJUSTAR SALDO')
+        elif language_of_page =="ENGLISH":
+          ajustar = st.checkbox('ADJUST BALANCE')
+        elif language_of_page == "РУССКИЙ":
+          ajustar = st.checkbox('ОТРЕГУЛИРУЙТЕ БАЛАНС')
+        
       df_saldos_user_filtrado['VALOR'] = df_saldos_user_filtrado['VALOR'].apply(lambda x: f"{x:.2f}")
       selected_rows_original = df_saldos_user_filtrado["VALOR"]
       if ajustar:
         with st.form(key="editar_form", border=False):
           editar_df = st.data_editor(df_saldos_user_filtrado)
-          data = st.date_input('DATA', date.today(), format="DD/MM/YYYY")
-          contacont = st.selectbox('Selecione o tipo de lançamento', options=contas_contabeis, index = None)
-          check = st.form_submit_button('LANÇAR')
+          if language_of_page == "PORTUGUÊS":
+            data = st.date_input('DATA', date.today(), format="DD/MM/YYYY")
+            contacont = st.selectbox('Selecione o tipo de lançamento', options=contas_contabeis, index = None)
+            check = st.form_submit_button('INSERIR')
+          elif language_of_page =="ENGLISH":
+            data = st.date_input('DATE', date.today(), format="DD/MM/YYYY")
+            contacont = st.selectbox('Select type of record', options=contas_contabeis, index = None)
+            check = st.form_submit_button('INSERT')
+          elif language_of_page == "РУССКИЙ":
+            data = st.date_input('ДАТА', date.today(), format="DD/MM/YYYY")
+            contacont = st.selectbox('Выберите тип выпуска', options=contas_contabeis, index = None)
+            check = st.form_submit_button('ВСТАВЛЯТЬ')
+
           if check:
             if contacont is None:
-              st.warning("Selecione um tipo de lançamento")
+              if language_of_page == "PORTUGUÊS":
+                st.warning("Selecione um tipo de lançamento")
+              elif language_of_page =="ENGLISH":
+                st.warning("Select type of record")
+              elif language_of_page == "РУССКИЙ":
+                st.warning("Выберите тип релиза")
+              
             else:
               selected_rows = editar_df["VALOR"]
               listofaccount = []
@@ -313,7 +368,13 @@ else:
                   listofaccount.append(i)
               print(listofaccount)   
               progesso_barra = 0
-              progress_bar = st.progress(progesso_barra, text="Inserindo informações")
+              if language_of_page == "PORTUGUÊS":
+                progress_bar = st.progress(progesso_barra, text="Inserindo informações")
+              elif language_of_page =="ENGLISH":
+                progress_bar = st.progress(progesso_barra, text="Entering information")
+              elif language_of_page == "РУССКИЙ":
+                progress_bar = st.progress(progesso_barra, text="Ввод информации")
+              
               for index, i in enumerate(listofaccount):
                 sheet.add_rows(1)
                 sheet.update_acell(f'A{tamanho_tabela+index}', f"=ROW(B{tamanho_tabela+index})")
@@ -335,20 +396,40 @@ else:
                 sheet.update_acell(f'M{tamanho_tabela+index}', st.session_state.name)
                 sheet.update_acell(f'N{tamanho_tabela+index}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
                 progesso_barra = progesso_barra + int(100/len(listofaccount))
-                progress_bar.progress(progesso_barra, text="Inserindo informações")
+                if language_of_page == "PORTUGUÊS":
+                  progress_bar.progress(progesso_barra, text="Inserindo informações")
+                elif language_of_page =="ENGLISH":
+                  progress_bar.progress(progesso_barra, text="Entering information")
+                elif language_of_page == "РУССКИЙ":
+                  progress_bar.progress(progesso_barra, text="Ввод информации")
+                
                 #st.success(f"Registro {index+1} inserido com sucesso!")
               st.rerun()                
 
 
       else:
         st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
-      st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+      if language_of_page == "PORTUGUÊS":
+        st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+      elif language_of_page =="ENGLISH":
+        st.markdown(f"TOTAL BALANCE: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+      elif language_of_page == "РУССКИЙ":
+        st.markdown(f"ОБЩИЙ БАЛАНС: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
       
     else:
+      if language_of_page == "PORTUGUÊS":
+        st.dataframe(df_saldos_user_total, hide_index=True)
+        st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."))
+      elif language_of_page =="ENGLISH":
+        df_saldos_user_total = df_saldos_user_total.rename(columns={'PROPRIETÁRIO': 'OWNER', 'VALOR': 'VALUE'})
+        st.dataframe(df_saldos_user_total, hide_index=True)
+        st.markdown(f'TOTAL BALANCE: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."))
+      elif language_of_page == "РУССКИЙ":
+        df_saldos_user_total = df_saldos_user_total.rename(columns={'PROPRIETÁRIO': 'ВЛАДЕЛЕЦ', 'VALOR': 'ЦЕНИТЬ'})
+        st.dataframe(df_saldos_user_total, hide_index=True)
+        st.markdown(f'ОБЩИЙ БАЛАНС: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."))
 
-      st.dataframe(df_saldos_user_total, hide_index=True)
-      st.markdown(f'SALDO TOTAL: R$ {df_saldos_user['VALOR'].sum().round(2):,.2f}'.replace(",", "X").replace(".", ",").replace("X", "."))
 
   with col12:
     st.plotly_chart(fig1)  # Exibe gráfico de pizza
@@ -357,7 +438,13 @@ else:
 
   st.divider()  # Linha divisória no app
   if filtro1:
-    todasascontas = st.checkbox("MOSTRAR TODAS AS CONTAS")
+    if language_of_page == "PORTUGUÊS":
+      todasascontas = st.checkbox("MOSTRAR TODAS AS CONTAS")
+    elif language_of_page =="ENGLISH":
+      todasascontas = st.checkbox("SHOW ALL ACCOUNTS")
+    elif language_of_page == "РУССКИЙ":
+      todasascontas = st.checkbox("ПОКАЗАТЬ ВСЕ АККАУНТЫ")
+
     if todasascontas:
       st.plotly_chart(fig4)
     else:
