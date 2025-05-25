@@ -140,19 +140,18 @@ else:
     lançamentos_RECDES['VALOR'] = lançamentos_RECDES['VALOR'].astype(float)
     primeiro_dia_do_mes = DATAESCOLHIDA.replace(day=1).date()
     primeiro_dia_do_mes = pd.to_datetime(primeiro_dia_do_mes)
+    ultimo_dia_do_mes = DATAESCOLHIDA + pd.offsets.MonthEnd(0)
     
-    lançamentos_RECDES = lançamentos_RECDES[(lançamentos_RECDES['DATA']>=primeiro_dia_do_mes)&(lançamentos_RECDES['DATA']<=DATAESCOLHIDA)]
+    lançamentos_RECDES = lançamentos_RECDES[(lançamentos_RECDES['DATA']>=primeiro_dia_do_mes)&(lançamentos_RECDES['DATA']<=ultimo_dia_do_mes)]
     lançamentos_RECDES_RECEITAS = lançamentos_RECDES[lançamentos_RECDES['ANALISE']=="RECEITAS"]
     lançamentos_RECDES_DESPESAS = lançamentos_RECDES[lançamentos_RECDES['ANALISE']=="DESPESAS"]
     soma_receitas = lançamentos_RECDES_RECEITAS['VALOR'].sum()
     soma_despesas = lançamentos_RECDES_DESPESAS['VALOR'].sum()
-    st.write("DATAESCOLHIDA:", DATAESCOLHIDA)
-    st.write(primeiro_dia_do_mes)
-    st.write(data_saldo)
-    st.write(soma_receitas)
-    st.write(soma_despesas)
+    diferencarecdes = soma_receitas - abs(soma_despesas)
+    diferencarecdes = f"{diferencarecdes:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    soma_receitas = f"{soma_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    st.metric(label="RECEITAS:", value=f'R$ {soma_receitas}', delta=diferencarecdes, border=True)
   st.divider()  # Linha divisória no app
-  st.write(lançamentos_RECDES_DESPESAS)
   col011, col012 = st.columns([0.2, 0.8])  # Define nova linha com duas colunas
   with col011:
     filtro1 = st.toggle("Filtar por usuário")  # Botão liga/desliga para aplicar filtro por usuário
