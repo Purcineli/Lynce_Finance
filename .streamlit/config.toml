@@ -6,4 +6,4 @@ primaryColor="#4b5dff"
 backgroundColor = '#0d1a2b'
 
 [client]
-showSidebarNavigation = true
+showSidebarNavigation = false
