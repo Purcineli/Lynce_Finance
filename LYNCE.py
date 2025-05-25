@@ -1,7 +1,7 @@
 import streamlit as st
 from dependencies import getloginandpasswords
-
-st.sidebar.page_link("LYNCE.py", label="Home", icon="🏠")
+st.set_page_config(layout="wide")
+st.sidebar.page_link("LYNCE.py", label="LYNCE FINANCEIRO")
 # Função para verificar o login (simples, sem hash de senha)
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()
@@ -35,9 +35,11 @@ def tela_login():
             nome = lgnpass['NOME'][user] + " " + lgnpass['SOBRENOME'][user]
             id_arquivo = lgnpass['ID ARQUIVO'][user]
             nome_arquivo = lgnpass['ARQUIVO'][user]
+            idioma = lgnpass['IDIOMA'][user]
             st.session_state.name = nome
             st.session_state.id = id_arquivo
             st.session_state.arquivo = nome_arquivo
+            st.session_state.useridioma = idioma
             st.switch_page('pages/1_SALDOS.py')  # Atualiza para a próxima página
         else:
             st.error("Usuário ou senha incorretos!")

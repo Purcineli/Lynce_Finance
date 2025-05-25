@@ -10,7 +10,7 @@ from LYNCE import verificar_login
 from gspread.exceptions import APIError
 import time
 
-st.set_page_config(layout="wide")
+
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #col1,col2,col3 = st.columns(3)
 #with col2:
@@ -20,11 +20,51 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-# Agora é seguro acessar os valores da sessão
-st.write(f"Bem-vindo, {st.session_state.name}!")
-sheeitid = st.session_state.id
-sheetname = st.session_state.arquivo
+idiomado_do_user = st.session_state.useridioma
 
+
+idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
+idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
+# Agora é seguro acessar os valores da sessão
+bemvido, x, language = st.columns([0.2,0.6,0.2])
+with language:
+  language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
+
+if language_of_page == "PORTUGUÊS":
+  st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS")
+  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS")
+  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="CONFIGURAÇÕES")
+  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CARTÕES DE CRÉDITO")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="RECEITAS X DESPESAS")
+  st.sidebar.page_link("pages/6_VERSÃO.py", label="VERSÃO")
+  st.sidebar.divider()
+elif language_of_page =="ENGLISH":
+  st.sidebar.page_link("pages/1_SALDOS.py", label="BANK BALANCE")
+  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="BANK ACCOUNTS RECORDS")
+  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="SETTINGS")
+  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CREDIT CARDS")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="INCOMES X EXPENSES")
+  st.sidebar.page_link("pages/6_VERSÃO.py", label="ABOUT")
+  st.sidebar.divider()
+elif language_of_page == "РУССКИЙ":
+  st.sidebar.page_link("pages/1_SALDOS.py", label="БАНК БАЛАНС")
+  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="ЗАПИСИ БАНКОВСКИХ СЧЕТОВ")
+  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="НАСТРОЙКИ")
+  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="КРЕДИТНЫЕ КАРТЫ")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="ДОХОДЫ X РАСХОДЫ")
+  st.sidebar.page_link("pages/6_VERSÃO.py", label="О")
+  st.sidebar.divider()
+
+with bemvido:
+  if language_of_page == "PORTUGUÊS":
+    st.write(f"Bem-vindo, {st.session_state.name}!")
+  elif language_of_page =="ENGLISH":
+    st.write(f"Welcome, {st.session_state.name}!")
+  elif language_of_page == "РУССКИЙ":
+    st.write(f"Добро пожаловать, {st.session_state.name}!")
+  
+  sheeitid = st.session_state.id
+  sheetname = st.session_state.arquivo
 
 #ler dados do google sheet
 def lerdados(sheet_id_login_password,sheet_name_login_password):
@@ -113,7 +153,13 @@ else:
 
   col01, col02, col03, col04 = st.columns([0.2, 0.2, 0.2, 0.4])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
-    data_saldo = pd.to_datetime(st.date_input("Data Saldo", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
+    if language_of_page == "PORTUGUÊS":
+      data_saldo = pd.to_datetime(st.date_input("Data Saldo", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
+    elif language_of_page =="ENGLISH":
+      data_saldo = pd.to_datetime(st.date_input("Balance Date", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
+    elif language_of_page == "РУССКИЙ":
+      data_saldo = pd.to_datetime(st.date_input("Дата баланса", date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
+    
     df_saldos_user = lançamentos[lançamentos['DATA'] <= data_saldo]  # Filtra lançamentos com data menor ou igual à selecionada
     df_saldo_user1 = df_saldos_user['VALOR'].sum().round(2)
     df_saldo_user1 = df_saldo_user1

@@ -8,7 +8,13 @@ import time
 import plotly.express as px
 import numpy as np
 from LYNCE import verificar_login
-st.set_page_config(layout="wide")
+st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS")
+st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS")
+st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="CONFIGURAÇÕES")
+st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CARTÕES DE CRÉDITO")
+st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="RECEITAS X DESPESAS")
+st.sidebar.page_link("pages/6_VERSÃO.py", label="VERSÃO")
+st.sidebar.divider()
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
