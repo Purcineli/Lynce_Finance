@@ -26,33 +26,34 @@ idiomado_do_user = st.session_state.useridioma
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
 # Agora é seguro acessar os valores da sessão
-bemvido, x, language = st.columns([0.2,0.6,0.2])
+bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
   language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
+  st.session_state.useridioma = language_of_page
 
 if language_of_page == "PORTUGUÊS":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="CONFIGURAÇÕES")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CARTÕES DE CRÉDITO")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="RECEITAS X DESPESAS")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="VERSÃO")
+  st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS", icon=":material/account_balance:")
+  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS", icon=":material/list:")
+  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="CONFIGURAÇÕES", icon=":material/settings:")
+  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CARTÕES DE CRÉDITO", icon=":material/credit_card:")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="RECEITAS X DESPESAS", icon=":material/finance:")
+  st.sidebar.page_link("pages/6_VERSÃO.py", label="VERSÃO", icon=":material/info:")
   st.sidebar.divider()
 elif language_of_page =="ENGLISH":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="BANK BALANCE")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="BANK ACCOUNTS RECORDS")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="SETTINGS")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CREDIT CARDS")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="INCOMES X EXPENSES")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="ABOUT")
+  st.sidebar.page_link("pages/1_SALDOS.py", label="BANK BALANCE", icon=":material/account_balance:")
+  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="BANK ACCOUNTS RECORDS", icon=":material/list:")
+  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="SETTINGS", icon=":material/settings:")
+  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CREDIT CARDS", icon=":material/credit_card:")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="INCOMES X EXPENSES", icon=":material/finance:")
+  st.sidebar.page_link("pages/6_VERSÃO.py", label="ABOUT", icon=":material/info:")
   st.sidebar.divider()
 elif language_of_page == "РУССКИЙ":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="БАНК БАЛАНС")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="ЗАПИСИ БАНКОВСКИХ СЧЕТОВ")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="НАСТРОЙКИ")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="КРЕДИТНЫЕ КАРТЫ")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="ДОХОДЫ X РАСХОДЫ")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="О")
+  st.sidebar.page_link("pages/1_SALDOS.py", label="БАНК БАЛАНС", icon=":material/account_balance:")
+  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="ЗАПИСИ БАНКОВСКИХ СЧЕТОВ", icon=":material/list:")
+  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="НАСТРОЙКИ", icon=":material/settings:")
+  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="КРЕДИТНЫЕ КАРТЫ", icon=":material/credit_card:")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="ДОХОДЫ X РАСХОДЫ", icon=":material/finance:")
+  st.sidebar.page_link("pages/6_VERSÃO.py", label="О", icon=":material/info:")
   st.sidebar.divider()
 
 with bemvido:
@@ -176,11 +177,11 @@ else:
     saldoanterior = f"{saldoanterior:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
   with col02:
     if language_of_page == "PORTUGUÊS":
-      st.metric(label="Saldo Atual:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+      st.metric(label="SALDO ATUAL:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
     elif language_of_page =="ENGLISH":
-      st.metric(label="Current Balance:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+      st.metric(label="CURRENT BALANCE:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
     elif language_of_page == "РУССКИЙ":
-      st.metric(label="Текущий балансl:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
+      st.metric(label="ТЕКУЩИЙ БАЛАНС:", value=f'R$ {valor_formatado}', delta=saldoanterior, border=True)
 
     
   with col03:
