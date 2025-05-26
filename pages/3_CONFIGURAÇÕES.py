@@ -8,6 +8,7 @@ import time
 import plotly.express as px
 import numpy as np
 from LYNCE import verificar_login
+from TRADUTOR import traaducaoapp
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
@@ -16,13 +17,13 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 
 hoje = pd.to_datetime(date.today()) 
-idiomado_do_user = st.session_state.useridioma
+language_of_page = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
 # Agora é seguro acessar os valores da sessão
-bemvido, x, language = st.columns([0.2,0.6,0.2], vertical_alignment='bottom')
+bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
   language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
 
@@ -62,6 +63,7 @@ with bemvido:
   sheeitid = st.session_state.id
   sheetname = st.session_state.arquivo
 
+textos = traaducaoapp(language_of_page)
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   scopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -103,13 +105,13 @@ lançamentos_cartao = lançamentos_cartao[['ID','CARTÃO', 'PROPRIETÁRIO','LAN�
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
-  togglecontas_bancarias = st.toggle('CONTAS BANCÁRIAS',value=False)
+  togglecontas_bancarias = st.toggle(textos['CONTAS_BANCARIASTEXT'],value=False)
 with toggle12:
-  togglecontas_contábeis = st.toggle('CONTAS CONTÁBEIS',value=False)
+  togglecontas_contábeis = st.toggle(textos['CONTAS_CONTABEISTEXT'],value=False)
 with toggle13:
-  togglecontas_proj = st.toggle('PROJETOS/EVENTOS',value=False)
+  togglecontas_proj = st.toggle(textos['PROJETOS/EVENTOSTEXT'],value=False)
 with toggle14:
-  togglecontas_card = st.toggle('CARTÕES DE CRÉDITO',value=False)
+  togglecontas_card = st.toggle(textos['CARTOES_DE_CREDITOTEXT']],value=False)
 ###################CONTAS BANCÁRIAS####################
 if togglecontas_bancarias:
   st.session_state['togglecontas_bancarias_status'] = False
