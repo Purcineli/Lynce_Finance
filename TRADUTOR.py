@@ -3,18 +3,17 @@ def traaducaoapp(language_of_page):
 
     if language_of_page == "PORTUGUÊS":
         textos = {
-            'INSERINDO_INFORMAÇÕESTEXT' : 'INSERINDO INFORMAÇÕES'
-            'BEM-VINDOTEXT' :'BEM-VINDO,'
-            'DATA_SALDOTEXT' :'DATA SALDO'
-            'SALDO_ATUALTEXT' :'SALDO ATUAL:'
-            'RECEITASTEXT' :'RECEITAS:'
-            'FILTRAR_PROPRIETÁRIOTEXT' :'FILTRAR POR PROPRIETÁRIO'
-            'SELECIONE UM PROPRIETÁRIOTEXT' :'SELECIONE UM PROPRIETÁRIO'
-            'SALDOS_BANCÁRIOSTEXT' :'SALDOS BANCÁRIOS'
-            'SALDO_TOTALTEXT' :'SALDO TOTAL:'
-            'SALDO ACUMULADO NO FIM DE CADA MÊSTEXT' :'SALDO ACUMULADO NO FIM DE CADA MÊS'
-            'AJUSTAR_SALDOTEXT' :'AJUSTAR SALDO'
-            'MOSTRAR TODAS AS CONTASTEXT' :'MOSTRAR TODAS AS CONTAS'
+            'INSERINDO_INFORMAÇÕESTEXT' : 'INSERINDO INFORMAÇÕES',
+            'DATA_SALDOTEXT' :'DATA SALDO',
+            'SALDO_ATUALTEXT' :'SALDO ATUAL:',
+            'RECEITASTEXT' :'RECEITAS:',
+            'FILTRAR_PROPRIETÁRIOTEXT' :'FILTRAR POR PROPRIETÁRIO',
+            'SELECIONE UM PROPRIETÁRIOTEXT' :'SELECIONE UM PROPRIETÁRIO',
+            'SALDOS_BANCÁRIOSTEXT' :'SALDOS BANCÁRIOS',
+            'SALDO_TOTALTEXT' :'SALDO TOTAL:',
+            'SALDO ACUMULADO NO FIM DE CADA MÊSTEXT' :'SALDO ACUMULADO NO FIM DE CADA MÊS',
+            'AJUSTAR_SALDOTEXT' :'AJUSTAR SALDO',
+            'MOSTRAR TODAS AS CONTASTEXT' :'MOSTRAR TODAS AS CONTAS',
             'Inserir_novo_registroTEXT': 'Inserir novo registro',
             'DATATEXT': 'DATA',
             'SELECIONE_O_BANCOTEXT': 'SELECIONE O BANCO',
@@ -43,18 +42,17 @@ def traaducaoapp(language_of_page):
 
     elif language_of_page == "ENGLISH":
         textos = {
-            'INSERINDO_INFORMAÇÕESTEXT' : 'INSERTING DATA'
-            'BEM-VINDOTEXT' :'WELCOME,'
-            'DATA_SALDOTEXT' :'DATE BALANCE'
-            'SALDO_ATUALTEXT' :'CURRENT BALANCE:'
-            'RECEITASTEXT' :'REVENUES:'
-            'FILTRAR_PROPRIETÁRIOTEXT' :'FILTER BY OWNER'
-            'SELECIONE UM PROPRIETÁRIOTEXT' :'SELECT AN OWNER'
-            'SALDOS_BANCÁRIOSTEXT' :'BANK BALANCES'
-            'SALDO_TOTALTEXT' :'TOTAL BALANCE:'
-            'SALDO ACUMULADO NO FIM DE CADA MÊSTEXT' :'CUMULATIVE BALANCE AT THE END OF EACH MONTH'
-            'AJUSTAR_SALDOTEXT' :'ADJUST BALANCE'
-            'MOSTRAR TODAS AS CONTASTEXT' :'SHOW ALL ACCOUNTS'
+            'INSERINDO_INFORMAÇÕESTEXT' : 'INSERTING DATA',
+            'DATA_SALDOTEXT' :'DATE BALANCE',
+            'SALDO_ATUALTEXT' :'CURRENT BALANCE:',
+            'RECEITASTEXT' :'REVENUES:',
+            'FILTRAR_PROPRIETÁRIOTEXT' :'FILTER BY OWNER',
+            'SELECIONE UM PROPRIETÁRIOTEXT' :'SELECT AN OWNER',
+            'SALDOS_BANCÁRIOSTEXT' :'BANK BALANCES',
+            'SALDO_TOTALTEXT' :'TOTAL BALANCE:',
+            'SALDO ACUMULADO NO FIM DE CADA MÊSTEXT' :'CUMULATIVE BALANCE AT THE END OF EACH MONTH',
+            'AJUSTAR_SALDOTEXT' :'ADJUST BALANCE',
+            'MOSTRAR TODAS AS CONTASTEXT' :'SHOW ALL ACCOUNTS',
             'Inserir_novo_registroTEXT': 'Insert new ENTRY',
             'DATATEXT': 'DATE',
             'SELECIONE_O_BANCOTEXT': 'SELECT BANK',
@@ -83,18 +81,17 @@ def traaducaoapp(language_of_page):
 
     elif language_of_page == "РУССКИЙ":
         textos = {
-            'INSERINDO_INFORMAÇÕESTEXT' : 'ВСТАВКА ИНФОРМАЦИИ'
-            'BEM-VINDOTEXT': 'ДОБРО ПОЖАЛОВАТЬ,'
-            'DATA_SALDOTEXT': 'ДАТА БАЛАНСА'
-            'SALDO_ATUALTEXT': 'ТЕКУЩИЙ БАЛАНС:'
-            'RECEITASTEXT': 'ДОХОДЫ:'
-            'FILTRAR_PROPRIETÁRIOTEXT': 'ФИЛЬТР ПО ВЛАДЕЛЬЦУ'
-            'SELECIONE UM PROPRIETÁRIOTEXT': 'ВЫБЕРИТЕ ВЛАДЕЛЬЦА'
-            'SALDOS_BANCÁRIOSTEXT': 'БАНКОВСКИЕ ОСТАТКИ'
-            'SALDO_TOTALTEXT': 'ОБЩИЙ БАЛАНС:'
-            'SALDO ACUMULADO NO FIM DE CADA MÊSTEXT': 'БАЛАНС, НАКОПЛЕННЫЙ В КОНЦЕ КАЖДОГО МЕСЯЦА'
-            'AJUSTAR_SALDOTEXT': 'ОТРЕГУЛИРУЙТЕ БАЛАНС'
-            'MOSTRAR TODAS AS CONTASTEXT': 'ПОКАЗАТЬ ВСЕ АККАУНТЫ'
+            'INSERINDO_INFORMAÇÕESTEXT' : 'ВСТАВКА ИНФОРМАЦИИ',
+            'DATA_SALDOTEXT': 'ДАТА БАЛАНСА',
+            'SALDO_ATUALTEXT': 'ТЕКУЩИЙ БАЛАНС:',
+            'RECEITASTEXT': 'ДОХОДЫ:',
+            'FILTRAR_PROPRIETÁRIOTEXT': 'ФИЛЬТР ПО ВЛАДЕЛЬЦУ',
+            'SELECIONE UM PROPRIETÁRIOTEXT': 'ВЫБЕРИТЕ ВЛАДЕЛЬЦА',
+            'SALDOS_BANCÁRIOSTEXT': 'БАНКОВСКИЕ ОСТАТКИ',
+            'SALDO_TOTALTEXT': 'ОБЩИЙ БАЛАНС:',
+            'SALDO ACUMULADO NO FIM DE CADA MÊSTEXT': 'БАЛАНС, НАКОПЛЕННЫЙ В КОНЦЕ КАЖДОГО МЕСЯЦА',
+            'AJUSTAR_SALDOTEXT': 'ОТРЕГУЛИРУЙТЕ БАЛАНС',
+            'MOSTRAR TODAS AS CONTASTEXT': 'ПОКАЗАТЬ ВСЕ АККАУНТЫ',
             'Inserir_novo_registroTEXT': "Вставить новую запись",
             'DATATEXT': 'ДАТА',
             'SELECIONE_O_BANCOTEXT': "ВЫБЕРИТЕ БАНК",
