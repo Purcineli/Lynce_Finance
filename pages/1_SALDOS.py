@@ -408,13 +408,17 @@ else:
 
 
       else:
-        st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
-      if language_of_page == "PORTUGUÊS":
-        st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-      elif language_of_page =="ENGLISH":
-        st.markdown(f"TOTAL BALANCE: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-      elif language_of_page == "РУССКИЙ":
-        st.markdown(f"ОБЩИЙ БАЛАНС: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        if language_of_page == "PORTUGUÊS":
+          st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
+          st.markdown(f"SALDO TOTAL: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        elif language_of_page =="ENGLISH":
+          df_saldos_user_filtrado = df_saldos_user_filtrado.rename(columns={'PROPRIETÁRIO': 'OWNER','BANCO': 'BANK', 'VALOR': 'VALUE'})
+          st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
+          st.markdown(f"TOTAL BALANCE: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        elif language_of_page == "РУССКИЙ":
+          df_saldos_user_filtrado = df_saldos_user_filtrado.rename(columns={'PROPRIETÁRIO': 'ВЛАДЕЛЕЦ','BANCO': 'БАНК', 'VALOR': 'ЦЕНИТЬ'})
+          st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
+          st.markdown(f"ОБЩИЙ БАЛАНС: R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
       
     else:
