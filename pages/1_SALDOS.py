@@ -279,7 +279,7 @@ else:
     fig1 = px.pie(df_saldos_user, names='PROPRIETÁRIO', values='VALOR')  # Gráfico de pizza com todos os dados
     fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com todos os dados
-    fig3 = px.line(resultado_mensal4, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3 = px.line(resultado_mensal4, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title=textos['SALDO ACUMULADO NO FIM DE CADA MÊSTEXT'], markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
 
