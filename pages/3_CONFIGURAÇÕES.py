@@ -101,7 +101,7 @@ lançamentos_cartao = pd.DataFrame(lançamentos_cartao[1:], columns=lançamentos
 lançamentos_cartao = lançamentos_cartao[['ID','CARTÃO', 'PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','PROJETO/EVENTO']]
 
 
-
+print(textos['CONTAS_BANCARIASTEXT'])
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
