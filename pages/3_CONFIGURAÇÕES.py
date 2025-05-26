@@ -64,6 +64,7 @@ with bemvido:
   sheetname = st.session_state.arquivo
 
 textos = traaducaoapp(language_of_page)
+
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   scopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -101,11 +102,11 @@ lançamentos_cartao = pd.DataFrame(lançamentos_cartao[1:], columns=lançamentos
 lançamentos_cartao = lançamentos_cartao[['ID','CARTÃO', 'PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','PROJETO/EVENTO']]
 
 
-print(textos['CONTAS_BANCARIASTEXT'])
+print(textos['CONTASBANCARIASTEXT'])
 
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
-  togglecontas_bancarias = st.toggle(textos['CONTAS_BANCARIASTEXT'],value=False)
+  togglecontas_bancarias = st.toggle(textos['CONTASBANCARIASTEXT'],value=False)
 with toggle12:
   togglecontas_contábeis = st.toggle(textos['CONTAS_CONTABEISTEXT'],value=False)
 with toggle13:
