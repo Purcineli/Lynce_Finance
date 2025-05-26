@@ -3,6 +3,10 @@ def traaducaoapp(language_of_page):
 
     if language_of_page == "PORTUGUÊS":
         textos = {
+            'CONTASBANCARIASTEXT':'CONTAS BANCÁRIAS',
+            'CONTASCONTABEISTEXT':'CONTAS CONTÁBEIS',
+            'PROJETOS/EVENTOSTEXT':'PROJETOS/EVENTOS',
+            'CARTOES_DE_CREDITOTEXT':'CARTÕES DE CRÉDITO',
             'INSERINDO_INFORMAÇÕESTEXT' : 'INSERINDO INFORMAÇÕES',
             'DATA_SALDOTEXT' :'DATA SALDO',
             'SALDO_ATUALTEXT' :'SALDO ATUAL:',
@@ -42,6 +46,10 @@ def traaducaoapp(language_of_page):
 
     elif language_of_page == "ENGLISH":
         textos = {
+            'CONTASBANCARIASTEXT':'BANK ACCOUNTS',
+            'CONTASCONTABEISTEXT':'ACCOUNTING ACCOUNTS',
+            'PROJETOS/EVENTOSTEXT':'PROJECTS/EVENTS',
+            'CARTOES_DE_CREDITOTEXT':'CREDIT CARDS',
             'INSERINDO_INFORMAÇÕESTEXT' : 'INSERTING DATA',
             'DATA_SALDOTEXT' :'DATE BALANCE',
             'SALDO_ATUALTEXT' :'CURRENT BALANCE:',
@@ -81,6 +89,10 @@ def traaducaoapp(language_of_page):
 
     elif language_of_page == "РУССКИЙ":
         textos = {
+            'CONTASBANCARIASTEXT':'БАНКОВСКИЕ СЧЕТА',
+            'CONTASCONTABEISTEXT':'БУХГАЛТЕРСКИЕ СЧЕТА',
+            'PROJETOS/EVENTOSTEXT':'ПРОЕКТЫ/СОБЫТИЯ',
+            'CARTOES_DE_CREDITOTEXT':'КРЕДИТНЫЕ КАРТЫ',
             'INSERINDO_INFORMAÇÕESTEXT' : 'ВСТАВКА ИНФОРМАЦИИ',
             'DATA_SALDOTEXT': 'ДАТА БАЛАНСА',
             'SALDO_ATUALTEXT': 'ТЕКУЩИЙ БАЛАНС:',
