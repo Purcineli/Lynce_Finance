@@ -108,7 +108,7 @@ toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
   togglecontas_bancarias = st.toggle(textos['CONTASBANCARIASTEXT'],value=False)
 with toggle12:
-  togglecontas_contábeis = st.toggle(textos['CONTAS_CONTABEISTEXT'],value=False)
+  togglecontas_contábeis = st.toggle(textos['CONTASCONTABEISTEXT'],value=False)
 with toggle13:
   togglecontas_proj = st.toggle(textos['PROJETOS/EVENTOSTEXT'],value=False)
 with toggle14:
