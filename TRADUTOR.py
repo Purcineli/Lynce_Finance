@@ -1,0 +1,88 @@
+def traaducaoapp(language_of_page):
+    textos = {}
+
+    if language_of_page == "PORTUGUÊS":
+        textos = {
+            'Inserir_novo_registroTEXT': 'Inserir novo registro',
+            'DATATEXT': 'DATA',
+            'SELECIONE_O_BANCOTEXT': 'SELECIONE O BANCO',
+            'SELECIONE_O_LANÇAMENTOTEXT': 'SELECIONE O LANÇAMENTO',
+            'INSIRA_O_VALORTEXT': 'INSIRA O VALOR',
+            'ESTORNOTEXT': 'ESTORNO',
+            'DESCRIÇÃOTEXT': 'DESCRIÇÃO',
+            'SELECIONE_O_PROJETOTEXT': 'SELECIONE O PROJETO',
+            'CONCILIADOTEXT': 'CONCILIADO',
+            'ANALÍTICATEXT': 'ANALÍTICA',
+            'INSERIRTEXT': 'INSERIR',
+            'Preencha_todos_os_camposTEXT': 'Preencha todos os campos',
+            'Registro_inserido_com_sucessoTEXT': 'Registro inserido com sucesso!',
+            'Editar_registroTEXT': 'Editar registro',
+            'INSERIR_NOVO_LANÇAMENTOTEXT': 'INSERIR NOVO LANÇAMENTO',
+            'Digite_o_IDTEXT': 'Digite o ID',
+            'EDITARTEXT': 'EDITAR',
+            'DELETARTEXT': 'DELETAR',
+            'Registro_deletado_com_sucessoTEXT': 'Registro deletado com sucesso!',
+            'Registro_editado_com_sucessoTEXT': 'Registro editado com sucesso!',
+            'Inserir_nova_transferência_entre_contasTEXT': 'Inserir nova transferência entre contas',
+            'SELECIONE_O_BANCO_DE_ORIGEMTEXT': 'SELECIONE O BANCO DE ORIGEM',
+            'SELECIONE_O_BANCO_DE_DESTINOTEXT': 'SELECIONE O BANCO DE DESTINO',
+            'Selecione_contas_diferentesTEXT': 'Selecione contas diferentes',
+        }
+
+    elif language_of_page == "ENGLISH":
+        textos = {
+            'Inserir_novo_registroTEXT': 'Insert new ENTRY',
+            'DATATEXT': 'DATE',
+            'SELECIONE_O_BANCOTEXT': 'SELECT BANK',
+            'SELECIONE_O_LANÇAMENTOTEXT': 'SELECT ENTRY',
+            'INSIRA_O_VALORTEXT': 'ENTER VALUE',
+            'ESTORNOTEXT': 'REVERSAL',
+            'DESCRIÇÃOTEXT': 'DESCRIPTION',
+            'SELECIONE_O_PROJETOTEXT': 'SELECT PROJECT',
+            'CONCILIADOTEXT': 'CONCILIATED',
+            'ANALÍTICATEXT': 'ANALYTICS',
+            'INSERIRTEXT': 'INSERT',
+            'Preencha_todos_os_camposTEXT': 'Fill in all fields',
+            'Registro_inserido_com_sucessoTEXT': 'Record inserted successfully!',
+            'Editar_registroTEXT': 'Edit record',
+            'INSERIR_NOVO_LANÇAMENTOTEXT': 'INSERT NEW ENTRY',
+            'Digite_o_IDTEXT': 'Enter ID',
+            'EDITARTEXT': 'EDIT',
+            'DELETARTEXT': 'DELETE',
+            'Registro_deletado_com_sucessoTEXT': 'Record deleted successfully!',
+            'Registro_editado_com_sucessoTEXT': 'Record edited successfully!',
+            'Inserir_nova_transferência_entre_contasTEXT': 'Insert new transfer between accounts',
+            'SELECIONE_O_BANCO_DE_ORIGEMTEXT': 'SELECT SOURCE BANK',
+            'SELECIONE_O_BANCO_DE_DESTINOTEXT': 'SELECT DESTINATION BANK',
+            'Selecione_contas_diferentesTEXT': 'Select different accounts',
+        }
+
+    elif language_of_page == "РУССКИЙ":
+        textos = {
+            'Inserir_novo_registroTEXT': "Вставить новую запись",
+            'DATATEXT': 'ДАТА',
+            'SELECIONE_O_BANCOTEXT': "ВЫБЕРИТЕ БАНК",
+            'SELECIONE_O_LANÇAMENTOTEXT': "ВЫБОР РЕЛИЗА",
+            'INSIRA_O_VALORTEXT': "ВВЕДИТЕ ЗНАЧЕНИЕ",
+            'ESTORNOTEXT': "ОБРАТНЫЙ ОТКАЗ",
+            'DESCRIÇÃOTEXT': 'ОПИСАНИЕ',
+            'SELECIONE_O_PROJETOTEXT': "ВЫБРАТЬ ПРОЕКТ",
+            'CONCILIADOTEXT': "ПРИМИРЕННЫЙ",
+            'ANALÍTICATEXT': "АНАЛИТИКА",
+            'INSERIRTEXT': 'ВСТАВЛЯТЬ',
+            'Preencha_todos_os_camposTEXT': "Заполните все поля",
+            'Registro_inserido_com_sucessoTEXT': "Запись успешно вставлена!",
+            'Editar_registroTEXT': "Редактировать запись",
+            'INSERIR_NOVO_LANÇAMENTOTEXT': "ВСТАВЬТЕ НОВЫЙ РЕЛИЗ",
+            'Digite_o_IDTEXT': "Введите идентификатор",
+            'EDITARTEXT': 'РЕДАКТИРОВАТЬ',
+            'DELETARTEXT': 'УДАЛИТЬ',
+            'Registro_deletado_com_sucessoTEXT': "Запись успешно удалена!",
+            'Registro_editado_com_sucessoTEXT': "Запись успешно отредактирована!",
+            'Inserir_nova_transferência_entre_contasTEXT': "Вставить новый перевод между счетами",
+            'SELECIONE_O_BANCO_DE_ORIGEMTEXT': "ВЫБЕРИТЕ БАНК-ИСТОЧНИК",
+            'SELECIONE_O_BANCO_DE_DESTINOTEXT': "ВЫБЕРИТЕ БАНК НАЗНАЧЕНИЯ",
+            'Selecione_contas_diferentesTEXT': "Выбрать разные аккаунты",
+        }
+
+    return textos

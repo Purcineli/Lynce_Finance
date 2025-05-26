@@ -9,6 +9,7 @@ import plotly.express as px
 import numpy as np
 import math
 from LYNCE import verificar_login
+from TRADUTOR import traaducaoapp
 
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -17,11 +18,11 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-idiomado_do_user = st.session_state.useridioma
+language_of_page = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
+idxidioma = idiomadasdisponiveis.index(language_of_page)
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
@@ -63,6 +64,7 @@ with bemvido:
   sheeitid = st.session_state.id
   sheetname = st.session_state.arquivo
 
+textos = traaducaoapp(language_of_page)
 
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
@@ -279,85 +281,7 @@ tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL
 contas = tabela_contas_cont_ativa['CONT_CAT'].tolist()
 
 
-if language_of_page == "PORTUGUÊS":
-  Inserir_novo_registroTEXT = 'Inserir novo registro'
-  DATATEXT = 'DATA'
-  SELECIONE_O_BANCOTEXT = 'SELECIONE O BANCO'
-  SELECIONE_O_LANÇAMENTOTEXT = 'SELECIONE O LANÇAMENTO'
-  INSIRA_O_VALORTEXT = 'INSIRA O VALOR'
-  ESTORNOTEXT='ESTORNO'
-  DESCRIÇÃOTEXT='DESCRIÇÃO'
-  SELECIONE_O_PROJETOTEXT = 'SELECIONE O PROJETO'
-  CONCILIADOTEXT = 'CONCILIADO'
-  ANALÍTICATEXT = 'ANALÍTICA'
-  INSERIRTEXT='INSERIR'
-  Preencha_todos_os_camposTEXT = 'Preencha todos os campos'
-  Registro_inserido_com_sucessoTEXT = 'Registro inserido com sucesso!'
-  Editar_registroTEXT = 'Editar registro'
-  INSERIR_NOVO_LANÇAMENTOTEXT = 'INSERIR NOVO LANÇAMENTO'
-  Digite_o_IDTEXT = 'Digite o ID'
-  EDITARTEXT = 'EDITAR'
-  DELETARTEXT = 'DELETAR'
-  Registro_deletado_com_sucessoTEXT = 'Registro deletado com sucesso!'
-  Registro_editado_com_sucessoTEXT = 'Registro editado com sucesso!'
-  Inserir_nova_transferência_entre_contasTEXT = 'Inserir nova transferência entre contas'
-  SELECIONE_O_BANCO_DE_ORIGEMTEXT = 'SELECIONE O BANCO DE ORIGEM'
-  SELECIONE_O_BANCO_DE_DESTINOTEXT = 'SELECIONE O BANCO DE DESTINO'
-  Selecione_contas_diferentesTEXT = 'Selecione contas diferentes'
-  Preencha_todos_os_camposTEXT = 'Preencha todos os campos'
-elif language_of_page =="ENGLISH":
-  Inserir_novo_registroTEXT= 'Insert new record'
-  DATATEXT= 'DATE'
-  SELECIONE_O_BANCOTEXT= 'SELECT BANK'
-  SELECIONE_O_LANÇAMENTOTEXT= 'SELECT ENTRY'
-  INSIRA_O_VALORTEXT= 'ENTER VALUE'
-  ESTORNOTEXT = 'REVERSAL'
-  DESCRIÇÃOTEXT = 'DESCRIPTION'
-  SELECIONE_O_PROJETOTEXT= 'SELECT PROJECT'
-  CONCILIADOTEXT= 'CONCILIATED'
-  ANALÍTICATEXT= 'ANALYTICS'
-  INSERIRTEXT = 'INSERT'
-  Preencha_todos_os_camposTEXT= 'Fill in all fields'
-  Registro_inserido_com_sucessoTEXT= 'Record inserted successfully!'
-  Editar_registroTEXT= 'Edit record'
-  INSERIR_NOVO_LANÇAMENTOTEXT= 'INSERT NEW ENTRY'
-  Digite_o_IDTEXT= 'Enter ID'
-  EDITARTEXT= 'EDIT'
-  DELETARTEXT= 'DELETE'
-  Registro_deletado_com_sucessoTEXT= 'Record deleted successfully!'
-  Registro_editado_com_sucessoTEXT= 'Record edited successfully!'
-  Inserir_nova_transferência_entre_contasTEXT= 'Insert new transfer between accounts'
-  SELECIONE_O_BANCO_DE_ORIGEMTEXT= 'SELECT SOURCE BANK'
-  SELECIONE_O_BANCO_DE_DESTINOTEXT= 'SELECT DESTINATION BANK'
-  Selecione_contas_diferentesTEXT= 'Select different accounts'
-  Preencha_todos_os_camposTEXT= 'Fill in all fields'
 
-elif language_of_page == "РУССКИЙ":
-  Inserir_novo_registroTEXT  = "Вставить новую запись"
-  DATATEXT  = 'ДАТА'
-  SELECIONE_O_BANCOTEXT  = "ВЫБЕРИТЕ БАНК"
-  SELECIONE_O_LANÇAMENTOTEXT  = "ВЫБОР РЕЛИЗА"
-  INSIRA_O_VALORTEXT  = "ВВЕДИТЕ ЗНАЧЕНИЕ"
-  ESTORNOTEXT = "ОБРАТНЫЙ ОТКАЗ"
-  DESCRIÇÃOTEXT = 'ОПИСАНИЕ'
-  SELECIONE_O_PROJETOTEXT  = "ВЫБРАТЬ ПРОЕКТ"
-  CONCILIADOTEXT  = "ПРИМИРЕННЫЙ"
-  ANALÍTICATEXT  = "АНАЛИТИКА"
-  INSERIRTEXT = 'ВСТАВЛЯТЬ'
-  Preencha_todos_os_camposTEXT  = "Заполните все поля"
-  Registro_inserido_com_sucessoTEXT  = "Запись успешно вставлена!"
-  Editar_registroTEXT  = "Редактировать запись"
-  INSERIR_NOVO_LANÇAMENTOTEXT  = "ВСТАВЬТЕ НОВЫЙ РЕЛИЗ"
-  Digite_o_IDTEXT  = "Введите идентификатор"
-  EDITARTEXT  = 'РЕДАКТИРОВАТЬ'
-  DELETARTEXT  = 'УДАЛИТЬ'
-  Registro_deletado_com_sucessoTEXT  = "Запись успешно удалена!"
-  Registro_editado_com_sucessoTEXT  = "Запись успешно отредактирована!"
-  Inserir_nova_transferência_entre_contasTEXT  = "Вставить новый перевод между счетами"
-  SELECIONE_O_BANCO_DE_ORIGEMTEXT  = "ВЫБЕРИТЕ БАНК-ИСТОЧНИК"
-  SELECIONE_O_BANCO_DE_DESTINOTEXT  = "ВЫБЕРИТЕ БАНК НАЗНАЧЕНИЯ"
-  Selecione_contas_diferentesTEXT  = "Выбрать разные аккаунты"
-  Preencha_todos_os_camposTEXT  = "Заполните все поля"
 
 
 
@@ -366,28 +290,28 @@ elif language_of_page == "РУССКИЙ":
 projetos = tabela_evenproj_ativa['NOME'].tolist()
 def Alt_lançamentos():
     with inserir:
-        st.write(Inserir_novo_registroTEXT)
+        st.write(textos['Inserir_novo_registroTEXT'])
         with st.form(clear_on_submit=True,key="form_inserir", border=False):
-            data = st.date_input(DATATEXT, date.today(), format="DD/MM/YYYY")
-            banco = st.selectbox(SELECIONE_O_BANCOTEXT, bancos, index=None, placeholder="Selecione")
-            despesa = st.selectbox(SELECIONE_O_LANÇAMENTOTEXT, contas, index=None, placeholder="Selecione")
+            data = st.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
+            banco = st.selectbox(textos['SELECIONE_O_BANCOTEXT'], bancos, index=None, placeholder="Selecione")
+            despesa = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=None, placeholder="Selecione")
             valor, estorno = st.columns(2, vertical_alignment="bottom")
             with valor:
-               number = st.number_input(INSIRA_O_VALORTEXT, format="%0.2f")
+               number = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f")
             with estorno:
-               estornolan = st.checkbox(ESTORNOTEXT, key="lançamento de estorno")
-            descricao = st.text_input(DESCRIÇÃOTEXT)
+               estornolan = st.checkbox(textos['ESTORNOTEXT'], key="lançamento de estorno")
+            descricao = st.text_input(textos['DESCRIÇÃOTEXT'])
             descricao = str(descricao)
             descricao = descricao.upper()
-            proj = st.selectbox(SELECIONE_O_PROJETOTEXT, projetos, index=None)
-            status = st.checkbox(CONCILIADOTEXT, key='conciliado_checkbox')
-            analise = st.checkbox(ANALÍTICATEXT, key='lançamento analitico')
-            submit = st.form_submit_button(label=INSERIRTEXT)
+            proj = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], projetos, index=None)
+            status = st.checkbox(textos['CONCILIADOTEXT'], key='conciliado_checkbox')
+            analise = st.checkbox(textos['ANALÍTICATEXT'], key='lançamento analitico')
+            submit = st.form_submit_button(label=textos['INSERIRTEXT'])
             
 
         if submit:
             if banco == None or despesa == None:
-              st.warning(Preencha_todos_os_camposTEXT)
+              st.warning(textos['Preencha_todos_os_camposTEXT'])
             else:
               if tamanho_tabela > 2:     
                 sheet.add_rows(1)
@@ -418,21 +342,21 @@ def Alt_lançamentos():
               sheet.update_acell(f'L{tamanho_tabela}', moeda)
               sheet.update_acell(f'M{tamanho_tabela}', st.session_state.name)
               sheet.update_acell(f'N{tamanho_tabela}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-              st.success(Registro_inserido_com_sucessoTEXT)
+              st.success(textos['Registro_inserido_com_sucessoTEXT'])
               st.rerun()
     with editar:
-        st.write(Editar_registroTEXT)
+        st.write(textos['Editar_registroTEXT'])
         subcol1,subcol2 = st.columns(2)
         if tamanho_tabela==2:
-           st.write(INSERIR_NOVO_LANÇAMENTOTEXT),
+           st.write(textos['INSERIR_NOVO_LANÇAMENTOTEXT']),
         else:
           with subcol1:
-            id_selected = st.number_input(Digite_o_IDTEXT, min_value=2, max_value=tamanho_tabela-1, step=1, format="%d", value=None)
+            id_selected = st.number_input(textos['Digite_o_IDTEXT'], min_value=2, max_value=tamanho_tabela-1, step=1, format="%d", value=None)
           with subcol2:
             if id_selected == None:
-              data2 = st.date_input(DATATEXT,value=None)
+              data2 = st.date_input(textos['DATATEXT'],value=None)
             else:
-              data2 = st.date_input(DATATEXT,value=lançamentos.loc[str(id_selected), 'DATA'])
+              data2 = st.date_input(textos['DATATEXT'],value=lançamentos.loc[str(id_selected), 'DATA'])
           with st.form(clear_on_submit=True, key="form_editar", border=False):
             contas.append('TRANSFERÊNCIA / TRANSFERÊNCIA')
             if id_selected == None:
@@ -449,44 +373,44 @@ def Alt_lançamentos():
                 idxdespesas = contas.index(idxdespesas)
               except:
                 idxdespesas = None
-            banco2 = st.selectbox(SELECIONE_O_BANCOTEXT, bancos, index=idxbanco, placeholder="Selecione")
-            despesa2 = st.selectbox(SELECIONE_O_LANÇAMENTOTEXT, contas, index=idxdespesas, placeholder="Selecione", )
+            banco2 = st.selectbox(textos['SELECIONE_O_BANCOTEXT'], bancos, index=idxbanco, placeholder="Selecione")
+            despesa2 = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=idxdespesas, placeholder="Selecione", )
             if id_selected == None:
               valor2, estorno2 = st.columns(2, vertical_alignment="bottom")
               with valor2:
-                number2 = st.number_input(INSIRA_O_VALORTEXT, format="%0.2f", value=None)
+                number2 = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", value=None)
               with estorno2:
-                estornolan2 = st.checkbox(ESTORNOTEXT, key="lançamento de estorno2", value=False)
-              descricao2 = st.text_input(DESCRIÇÃOTEXT, value=None)
-              proj2 = st.selectbox(SELECIONE_O_PROJETOTEXT, projetos, index=None)
-              status2 = st.checkbox(CONCILIADOTEXT, key='conciliado_checkbox_EDITOR', value=None)
-              analise2 = st.checkbox(ANALÍTICATEXT, key='lançamento analitico2')
+                estornolan2 = st.checkbox(textos['ESTORNOTEXT'], key="lançamento de estorno2", value=False)
+              descricao2 = st.text_input(textos['DESCRIÇÃOTEXT'], value=None)
+              proj2 = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], projetos, index=None)
+              status2 = st.checkbox(textos['CONCILIADOTEXT'], key='conciliado_checkbox_EDITOR', value=None)
+              analise2 = st.checkbox(textos['ANALÍTICATEXT'], key='lançamento analitico2')
             else:
               checkanalise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa2.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa2.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
               valor2, estorno2 = st.columns(2, vertical_alignment="bottom")
               with valor2:
-                number2 = st.number_input(INSIRA_O_VALORTEXT, format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
+                number2 = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", value=abs(lançamentos.loc[str(id_selected), 'VALOR']))
                 numbercalc = lançamentos.loc[str(id_selected), 'VALOR']
               with estorno2:
                 if checkanalise == "DESPESAS" and numbercalc > 0:
-                  estornolan2 = st.checkbox(ESTORNOTEXT, key="lançamento de estorno2", value=True)
+                  estornolan2 = st.checkbox(textos['ESTORNOTEXT'], key="lançamento de estorno2", value=True)
                 elif checkanalise == "RECEITAS" and numbercalc < 0:
-                  estornolan2 = st.checkbox(ESTORNOTEXT, key="lançamento de estorno2", value=True)
+                  estornolan2 = st.checkbox(textos['ESTORNOTEXT'], key="lançamento de estorno2", value=True)
                 else:
-                  estornolan2 = st.checkbox(ESTORNOTEXT, key="lançamento de estorno2", value=False)
-              descricao2 = st.text_input(DESCRIÇÃOTEXT, value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
-              proj2 = st.selectbox(SELECIONE_O_PROJETOTEXT, projetos, index=None)
-              status2 = st.checkbox(CONCILIADOTEXT, key='conciliado_checkbox_EDITOR', value=lançamentos.loc[str(id_selected), 'CONCILIADO'])
-              analise2 = st.checkbox(ANALÍTICATEXT, key='lançamento analitico2')
+                  estornolan2 = st.checkbox(textos['ESTORNOTEXT'], key="lançamento de estorno2", value=False)
+              descricao2 = st.text_input(textos['DESCRIÇÃOTEXT'], value=lançamentos.loc[str(id_selected), 'DESCRIÇÃO'])
+              proj2 = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], projetos, index=None)
+              status2 = st.checkbox(textos['CONCILIADOTEXT'], key='conciliado_checkbox_EDITOR', value=lançamentos.loc[str(id_selected), 'CONCILIADO'])
+              analise2 = st.checkbox(textos['ANALÍTICATEXT'], key='lançamento analitico2')
             subcol3, subcol4 = st.columns(2)
             with subcol3:   
-              Submit_edit = st.form_submit_button(label=EDITARTEXT)
+              Submit_edit = st.form_submit_button(label=textos['EDITARTEXT'])
             with subcol4:
-              Submit_delete = st.form_submit_button(label=DELETARTEXT)
+              Submit_delete = st.form_submit_button(label=textos['DELETARTEXT'])
 
             if Submit_delete:
                 sheet.delete_rows(id_selected)
-                st.success(Registro_deletado_com_sucessoTEXT)
+                st.success(textos['Registro_deletado_com_sucessoTEXT'])
                 st.rerun()
 
             if Submit_edit:
@@ -505,7 +429,7 @@ def Alt_lançamentos():
                 sheet.update_acell(f'K{id_selected}', proj2)
                 sheet.update_acell(f'M{id_selected}', st.session_state.name)
                 sheet.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-                st.success(Registro_editado_com_sucessoTEXT)
+                st.success(textos['Registro_editado_com_sucessoTEXT'])
                 st.rerun()  
 
 
@@ -516,19 +440,19 @@ transf, pagarfatura = st.columns(2, vertical_alignment='top')
 
 def inserir_lançamento():
     with transf:
-        st.write(Inserir_nova_transferência_entre_contasTEXT)
+        st.write(textos['Inserir_nova_transferência_entre_contasTEXT'])
         with st.form(clear_on_submit=True, key="form_inserir_transf", border=False):
-            data_transf = st.date_input(DATATEXT, date.today(),format="DD/MM/YYYY")
-            banco_origem = st.selectbox(SELECIONE_O_BANCO_DE_ORIGEMTEXT, bancos, index=None, placeholder="Selecione", key="banco_origem")
-            banco_destino = st.selectbox(SELECIONE_O_BANCO_DE_DESTINOTEXT, bancos, index=None, placeholder="Selecione", key="banco_destino")
-            valor = st.number_input(INSIRA_O_VALORTEXT, format="%0.2f", key="valor_transf")
-            inserir_transf = st.form_submit_button(label=INSERIRTEXT)
+            data_transf = st.date_input(textos['DATATEXT'], date.today(),format="DD/MM/YYYY")
+            banco_origem = st.selectbox(textos['SELECIONE_O_BANCO_DE_ORIGEMTEXT'], bancos, index=None, placeholder="Selecione", key="banco_origem")
+            banco_destino = st.selectbox(textos['SELECIONE_O_BANCO_DE_DESTINOTEXT'], bancos, index=None, placeholder="Selecione", key="banco_destino")
+            valor = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", key="valor_transf")
+            inserir_transf = st.form_submit_button(label=textos['INSERIRTEXT'])
 
             if inserir_transf:
                 if banco_origem == banco_destino:
-                    st.warning(Selecione_contas_diferentesTEXT)
+                    st.warning(textos['Selecione_contas_diferentesTEXT'])
                 elif banco_origem is None or banco_destino is None or valor == 0:
-                    st.warning(Preencha_todos_os_camposTEXT)
+                    st.warning(textos['Preencha_todos_os_camposTEXT'])
                 else:
                     # Linhas onde os dados serão inseridos
                     linha_origem = tamanho_tabela 
@@ -567,7 +491,7 @@ def inserir_lançamento():
                     cell_range = f"A{linha_origem}:N{linha_destino}"
                     sheet.update(cell_range, valores, raw=False)
 
-                    st.success(Registro_inserido_com_sucessoTEXT)
+                    st.success(textos['Registro_inserido_com_sucessoTEXT'])
                     st.rerun()
 
 inserir_lançamento()
