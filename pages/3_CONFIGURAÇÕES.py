@@ -21,7 +21,7 @@ language_of_page = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
+idxidioma = idiomadasdisponiveis.index(language_of_page)
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
@@ -111,7 +111,7 @@ with toggle12:
 with toggle13:
   togglecontas_proj = st.toggle(textos['PROJETOS/EVENTOSTEXT'],value=False)
 with toggle14:
-  togglecontas_card = st.toggle(textos['CARTOES_DE_CREDITOTEXT']],value=False)
+  togglecontas_card = st.toggle(textos['CARTOES_DE_CREDITOTEXT'],value=False)
 ###################CONTAS BANCÁRIAS####################
 if togglecontas_bancarias:
   st.session_state['togglecontas_bancarias_status'] = False
