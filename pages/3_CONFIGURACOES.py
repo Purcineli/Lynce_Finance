@@ -30,11 +30,11 @@ with language:
   textos = traaducaoapp(language_of_page)
   st.session_state.useridioma = language_of_page
   st.sidebar.page_link("pages/1_SALDOS.py", label=textos['SALDOS'], icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label=textos['LANÇAMENTOS'], icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label=textos['CONFIGURAÇÕES'], icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label=textos['CARTÕES DE CRÉDITO'], icon=":material/credit_card:")
+  st.sidebar.page_link("pages/2_LANCAMENTOS.py", label=textos['LANÇAMENTOS'], icon=":material/list:")
+  st.sidebar.page_link("pages/3_CONFIGURACEES.py", label=textos['CONFIGURAÇÕES'], icon=":material/settings:")
+  st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label=textos['VERSÃO'], icon=":material/info:")
+  st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
   st.sidebar.divider()
 
 

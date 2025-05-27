@@ -23,48 +23,30 @@ language_of_page = st.session_state.useridioma
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
+
+
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
   language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
+  textos = traaducaoapp(language_of_page)
+  st.session_state.useridioma = language_of_page
+  st.sidebar.page_link("pages/1_SALDOS.py", label=textos['SALDOS'], icon=":material/account_balance:")
+  st.sidebar.page_link("pages/2_LANCAMENTOS.py", label=textos['LANÇAMENTOS'], icon=":material/list:")
+  st.sidebar.page_link("pages/3_CONFIGURACEES.py", label=textos['CONFIGURAÇÕES'], icon=":material/settings:")
+  st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
+  st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
+  st.sidebar.divider()
 
-if language_of_page == "PORTUGUÊS":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS", icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS", icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="CONFIGURAÇÕES", icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CARTÕES DE CRÉDITO", icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="RECEITAS X DESPESAS", icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="VERSÃO", icon=":material/info:")
-  st.sidebar.divider()
-elif language_of_page =="ENGLISH":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="BANK BALANCE", icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="BANK ACCOUNTS RECORDS", icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="SETTINGS", icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CREDIT CARDS", icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="INCOMES X EXPENSES", icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="ABOUT", icon=":material/info:")
-  st.sidebar.divider()
-elif language_of_page == "РУССКИЙ":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="БАНК БАЛАНС", icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="ЗАПИСИ БАНКОВСКИХ СЧЕТОВ", icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="НАСТРОЙКИ", icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="КРЕДИТНЫЕ КАРТЫ", icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="ДОХОДЫ X РАСХОДЫ", icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="О", icon=":material/info:")
-  st.sidebar.divider()
 
 with bemvido:
-  if language_of_page == "PORTUGUÊS":
-    st.write(f"Bem-vindo, {st.session_state.name}!")
-  elif language_of_page =="ENGLISH":
-    st.write(f"Welcome, {st.session_state.name}!")
-  elif language_of_page == "РУССКИЙ":
-    st.write(f"Добро пожаловать, {st.session_state.name}!")
+  st.write(f"{textos['BEMVINDO']} {st.session_state.name}!")
   
   sheeitid = st.session_state.id
   sheetname = st.session_state.arquivo
 
-textos = traaducaoapp(language_of_page)
+
 
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
