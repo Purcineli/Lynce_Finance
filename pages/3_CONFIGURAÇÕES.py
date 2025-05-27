@@ -246,9 +246,9 @@ if togglecontas_bancarias:
                 pass
               else:
                 sheet.update(values=[[owner]], range_name=f'D{x}')
-              time.sleep(0.5)
-              progesso_barra_contasbancos = progesso_barra_contasbancos + int(100/len(lista_BANK))
-              progress_bar_contabancos.progress(progesso_barra_contasbancos, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
+            time.sleep(0.5)
+            progesso_barra_contasbancos = progesso_barra_contasbancos + int(100/len(lista_BANK))
+            progress_bar_contabancos.progress(progesso_barra_contasbancos, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
             except APIError as e:
                 # Check if the error is related to quota being exceeded
                 if e.response.status_code == 429:
