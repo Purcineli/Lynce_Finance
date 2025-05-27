@@ -331,8 +331,8 @@ if togglecontas_contábeis:
           conta_cont_cadastradas.update_acell(f'A{tamanho_tabela_contas_cont}', f'=ROW(B{tamanho_tabela_contas_cont})')
           conta_cont_cadastradas.update_acell(f'B{tamanho_tabela_contas_cont}', new_conta)
           conta_cont_cadastradas.update_acell(f'C{tamanho_tabela_contas_cont}', new_cat)
-          conta_cont_cadastradas.update_acell(f'D{tamanho_tabela_contas_cont}', True)
-          conta_cont_cadastradas.update_acell(f'E{tamanho_tabela_contas_cont}', new_atr)
+          conta_cont_cadastradas.update_acell(f'E{tamanho_tabela_contas_cont}', True)
+          conta_cont_cadastradas.update_acell(f'D{tamanho_tabela_contas_cont}', new_atr)
           st.rerun()
     
   with ativos_contas_cont:
