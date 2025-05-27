@@ -1,7 +1,7 @@
 import streamlit as st
 from dependencies import getloginandpasswords
 st.set_page_config(layout="wide")
-st.sidebar.page_link("LYNCE.py", label="LYNCE FINANCEIRO")
+
 # Função para verificar o login (simples, sem hash de senha)
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()

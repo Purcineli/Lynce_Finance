@@ -11,17 +11,17 @@ import plotly.express as px
 import numpy as np
 import math
 from LYNCE import verificar_login
-
+from TRADUTOR import traaducaoapp
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-idiomado_do_user = st.session_state.useridioma
+language_of_page = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
+idxidioma = idiomadasdisponiveis.index(language_of_page)
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.2,0.6,0.2], vertical_alignment='bottom')
 with language:
@@ -62,6 +62,8 @@ with bemvido:
   
   sheeitid = st.session_state.id
   sheetname = st.session_state.arquivo
+
+  textos = traaducaoapp(language_of_page)
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
   scopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -290,9 +292,9 @@ if st.toggle('Conciliar fatura'):
           with st.popover("PAGAR FATURA"):
               fatura_data = datetime.strptime(fatura_str, '%b/%Y').replace(day=1)
               fatura_data_str = fatura_data.strftime('%Y-%m-%d')
-              data = st.date_input('DATA', date.today(),format="DD/MM/YYYY")
+              data = st.date_input(textos['DATATEXT'], date.today(),format="DD/MM/YYYY")
               banco = st.selectbox('SELECIONE O BANCO', bancos, index=None, placeholder="Selecione")
-              number = abs(st.number_input("INSIRA O VALOR", format="%0.2f", value=df_true['VALOR'].sum()))
+              number = abs(st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", value=df_true['VALOR'].sum()))
               pagar_fatura = st.form_submit_button("PAGAR FATURA")
 
               if pagar_fatura:
@@ -450,33 +452,33 @@ projetos = tabela_evenproj_ativa['NOME'].tolist()
 
 def Alt_lançamentos_CC():
     with inserir:
-        st.write("Inserir novo registro")
+        st.write(textos['Inserir_novo_registroTEXT'])
         with st.form(clear_on_submit=True, key="form_inserir", border=False):
-            data = st.date_input('DATA', date.today(), format="DD/MM/YYYY")
+            data = st.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
             cart = st.selectbox('SELECIONE O CARTÃO', cards, index=None, placeholder="Selecione")
-            despesa = st.selectbox('SELECIONE A DESPESA', contas, index=None, placeholder="Selecione")
+            despesa = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=None, placeholder="Selecione")
             valor, estorno = st.columns(2, vertical_alignment="bottom")
             with valor:
-              number = st.number_input("INSIRA O VALOR", format="%0.2f")
+              number = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f")
             with estorno:
-              estornolan = st.checkbox("ESTORNO", key="lançamento de estorno")
-            descricao = st.text_input('DESCRIÇÃO')
+              estornolan = st.checkbox(textos['ESTORNOTEXT'], key="lançamento de estorno")
+            descricao = st.text_input(textos['DESCRIÇÃOTEXT'])
             descricao = str(descricao)
             descricao = descricao.upper()
-            proj = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-            status = st.checkbox('CONCILIADO', key='conciliado_checkbox')
-            analise = st.checkbox("ANALÍTICA", key='lançamento analitico')
+            proj = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], projetos, index=None)
+            status = st.checkbox(textos['CONCILIADOTEXT'], key='conciliado_checkbox')
+            analise = st.checkbox(textos['ANALÍTICATEXT'], key='lançamento analitico')
             dt,fat = st.columns(2)
             with dt:
               parcelas = st.number_input('Número de parcelas',1,36)
             with fat:
               data2 = st.date_input('FATURA', date.today(),format="DD/MM/YYYY")
               
-            submit = st.form_submit_button(label="INSERIR")
+            submit = st.form_submit_button(label=textos['INSERIRTEXT'])
 
         if submit:
           if cart == None or despesa == None or analise == None:
-            st.warning("Preencha todos os campos")
+            st.warning(textos['Preencha_todos_os_camposTEXT'])
           else:
             linhas = []  # Lista para armazenar as linhas a serem inseridas
             for x in range(parcelas):
@@ -544,22 +546,22 @@ def Alt_lançamentos_CC():
             # Atualizar todas as linhas de uma vez só
             lancamento_cartao.update(values=linhas,range_name=faixa,raw=False)
 
-            st.success("Registro(s) inserido(s) com sucesso!")
+            st.success(textos['Registro_inserido_com_sucessoTEXT'])
             st.rerun()
     with editar:
-        st.write('Editar registro')
+        st.write(textos['Editar_registroTEXT'])
         subcol1,subcol2 = st.columns(2)
         if tamanho_tabela==2:
-           st.write("INSERIR NOVO LANÇAMENTO")
+           st.write(textos['INSERIR_NOVO_LANÇAMENTOTEXT'])
         else:
           with subcol1:
-            id_selected = st.number_input('Digite o ID', min_value=0, max_value=tamanhotabela_lancamento_cartao, step=1, format="%d", value=None)
+            id_selected = st.number_input(textos['Digite_o_IDTEXT'], min_value=0, max_value=tamanhotabela_lancamento_cartao, step=1, format="%d", value=None)
           if id_selected == None:
             idxbanco = None
           else:
             with subcol2:
               data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
-              data2 = st.date_input('DATA', value=pd.to_datetime(data_raw).date(),format="DD/MM/YYYY")
+              data2 = st.date_input(textos['DATATEXT'], value=pd.to_datetime(data_raw).date(),format="DD/MM/YYYY")
               
             idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
             idxbanco = cards.index(idxbanco)
@@ -571,22 +573,22 @@ def Alt_lançamentos_CC():
               idxdespesas = contas.index(idxdespesas)
             except ValueError:
               idxdespesas = None
-            despesa2 = st.selectbox('SELECIONE A DESPESA', contas, index=idxdespesas, placeholder="Selecione", )
-            number2 = st.number_input("VALOR", format="%0.2f", value=tabela_lancamentos_cartao.loc[id_selected, 'VALOR'])
-            descricao2 = st.text_input('DESCRIÇÃO', value=tabela_lancamentos_cartao.loc[id_selected, 'DESCRIÇÃO'])
+            despesa2 = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=idxdespesas, placeholder="Selecione", )
+            number2 = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", value=tabela_lancamentos_cartao.loc[id_selected, 'VALOR'])
+            descricao2 = st.text_input(textos['DESCRIÇÃOTEXT'], value=tabela_lancamentos_cartao.loc[id_selected, 'DESCRIÇÃO'])
 
-            proj2 = st.selectbox('SELECIONE O PROJETO', projetos, index=None)
-            status2 = st.checkbox('CONCILIADO', key='conciliado_checkbox_EDITOR', value=tabela_lancamentos_cartao.loc[id_selected, 'CONCILIADO'])
-            analise2 = st.checkbox("ANALÍTICA", key='lançamento analitico2')
+            proj2 = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], projetos, index=None)
+            status2 = st.checkbox(textos['CONCILIADOTEXT'], key='conciliado_checkbox_EDITOR', value=tabela_lancamentos_cartao.loc[id_selected, 'CONCILIADO'])
+            analise2 = st.checkbox(textos['ANALÍTICATEXT'], key='lançamento analitico2')
             subcol3, subcol4 = st.columns(2)
             with subcol3:   
-              Submit_edit = st.button(label="EDITAR")
+              Submit_edit = st.button(label=textos['EDITARTEXT'])
             with subcol4:
-              Submit_delete = st.button(label="DELETAR")
+              Submit_delete = st.button(label=textos['DELETARTEXT'])
 
             if Submit_delete:
                 lancamento_cartao.delete_rows(id_selected)
-                st.success("Registro deletado com sucesso!")
+                st.success(textos['Registro_deletado_com_sucessoTEXT'])
                 st.rerun()
 
             if Submit_edit:
@@ -604,7 +606,7 @@ def Alt_lançamentos_CC():
                 lancamento_cartao.update_acell(f'L{id_selected}', proj2)
                 lancamento_cartao.update_acell(f'M{id_selected}', st.session_state.name)
                 lancamento_cartao.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-                st.success("Registro editado com sucesso!")
+                st.success(textos['Registro_editado_com_sucessoTEXT'])
                 st.rerun()
 
 

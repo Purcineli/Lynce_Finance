@@ -20,11 +20,11 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-idiomado_do_user = st.session_state.useridioma
+language_of_page = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
+idxidioma = idiomadasdisponiveis.index(language_of_page)
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:

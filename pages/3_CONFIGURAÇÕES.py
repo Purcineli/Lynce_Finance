@@ -102,8 +102,6 @@ lançamentos_cartao = pd.DataFrame(lançamentos_cartao[1:], columns=lançamentos
 lançamentos_cartao = lançamentos_cartao[['ID','CARTÃO', 'PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','PROJETO/EVENTO']]
 
 
-print(textos['CONTASBANCARIASTEXT'])
-
 toggle11,toggle12,toggle13,toggle14 = st.columns(4)
 with toggle11:
   togglecontas_bancarias = st.toggle(textos['CONTASBANCARIASTEXT'],value=False)
@@ -131,31 +129,31 @@ if togglecontas_bancarias:
   tamanho_tabela_contas_banco = tabela_contas_banco.shape[0] + 2
 
 
-  st.title('CONTAS BANCÁRIAS')
+  st.title(textos['CONTASBANCARIASTEXT'])
   inativos, ativos = st.columns(2)
   with inativos:
-    st.write('INATIVAS')
+    st.write(textos['INATIVAS_TEXT'])
     st.dataframe(tabela_contas_banco_inativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
-        id_selecionada = st.selectbox('SELECIONE A ID', list(tabela_contas_banco_inativa.index))
+        id_selecionada = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_contas_banco_inativa.index))
     with col02:
-        if st.button('ATIVAR'):
+        if st.button(textos['ATIVAR_TEXT']):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada}', True)
           st.rerun()
     with st.form(clear_on_submit=True,key="Inserir nova conta"):
-      st.write('NOVA CONTA BANCÁRIA')
+      st.write(textos['NOVA_CONTA_BANCÁRIA_TEXT'])
       nome,prop,but =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
       with nome:
-        new_bank = st.text_input('NOME')
+        new_bank = st.text_input(textos['NOME_TEXT'])
         new_bank = str(new_bank)
         new_bank = new_bank.upper()
       with prop:
-        nowner = st.text_input('PROPRIETÁRIO')
+        nowner = st.text_input(textos['PROPRIETÁRIO_TEXT'])
         nowner = str(nowner)
         nowner = nowner.upper()
       with but:
-        submit = st.form_submit_button(label="INSERIR")
+        submit = st.form_submit_button(label=textos['INSERIRTEXT'])
         if submit: #st.button('INSERIR NOVA CONTA'):
           if tamanho_tabela_contas_banco > 2:
             conta_banco_cadastradas.add_rows(1)
@@ -167,34 +165,34 @@ if togglecontas_bancarias:
           st.rerun()
 
   with ativos:
-    st.write('ATIVAS')
+    st.write(textos['ATIVAS_TEXT'])
     st.dataframe(tabela_contas_banco_ativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
         if pd.isna(tabela_contas_banco_ativa.index.max()):
-          id_selecionada2 = st.selectbox('SELECIONE A ID',options=None, key="id_contas")
+          id_selecionada2 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'],options=None, key="id_contas")
         else:
-          id_selecionada2 = int(st.selectbox('SELECIONE A ID', list(tabela_contas_banco_ativa.index), key="id_contas2"))
+          id_selecionada2 = int(st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_contas_banco_ativa.index), key="id_contas2"))
     with col02:
-        if st.button('INATIVAR'):
+        if st.button(textos['INATIVAR_TEXT']):
           conta_banco_cadastradas.update_acell(f'D{id_selecionada2}', False)
           st.rerun()
 
     with st.form(clear_on_submit=True, key='Editar conta'):
-      st.write('EDITAR CONTA BANCÁRIA') 
+      st.write(textos['EDITAR_CONTA_BANCÁRIA_TEXT']) 
       nome,prop,but,but2 =st.columns((0.3,0.32,0.13,0.15), vertical_alignment='bottom')
       with nome:
         if len(tabela_contas_banco_ativa)<1:
-          bank = st.text_input("NOME BANCO",value=None, key="one")
+          bank = st.text_input(textos['NOME_BANCO_TEXT'],value=None, key="one")
           bank = str(bank)
           bank = bank.upper()
         else:
-          bank = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"])
+          bank = st.text_input(textos['NOME_BANCO_TEXT'],tabela_contas_banco.loc[id_selecionada2, 'NOME BANCO'])
       with prop:
         if len(tabela_contas_banco_ativa)<1:
-          owner = st.text_input("NOME BANCO",value=None, key="two")
+          owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],value=None, key="two")
         else:
-          owner = st.text_input("NOME BANCO",tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"], key="two two")
+          owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],tabela_contas_banco.loc[id_selecionada2, 'PROPRIETÁRIO'], key="two two")
           owner = str(owner)
           owner = owner.upper()
       st.session_state['IDSEL'] = id_selecionada2
@@ -215,19 +213,19 @@ if togglecontas_bancarias:
       totallançamentos_BANK = lancamentos_filtro_BANK.shape[0]
 
 
-      st.write(f"Há {totallançamentos_BANK} lançamento(s) localizado(s), deseja alterar?")
+      st.write(f"{totallançamentos_BANK} {textos['LANCAMENTOS LOCALIZADOS']}")
 
 
 
       
-      submit = st.form_submit_button(label="EDITAR")
+      submit = st.form_submit_button(label=textos['EDITARTEXT'])
     if submit:
       if not st.session_state['lista_id_BANK']:
         lista_BANK = st.session_state['lista_id_BANK2']
       else:
         lista_BANK = st.session_state['lista_id_BANK']
-      oldBANK = tabela_contas_banco.loc[id_selecionada2, "NOME BANCO"]
-      oldOWNER = tabela_contas_banco.loc[id_selecionada2, "PROPRIETÁRIO"]
+      oldBANK = tabela_contas_banco.loc[id_selecionada2, textos['NOME_BANCO_TEXT']]
+      oldOWNER = tabela_contas_banco.loc[id_selecionada2, textos['PROPRIETÁRIO_TEXT']]
 
       if bank == oldBANK and oldOWNER == owner:
         pass
@@ -288,35 +286,35 @@ if togglecontas_contábeis:
   tabela_contas_cont.index = tabela_contas_cont.index.astype(int)
   tamanho_tabela_contas_cont = tabela_contas_cont.shape[0] + 2
 
-  st.title('CONTAS CONTÁBEIS')
+  st.title(textos['CONTASCONTABEISTEXT'])
   inativos_contas_cont, ativos_contas_cont = st.columns(2)
   with inativos_contas_cont:
-    st.write('INATIVAS')
+    st.write(textos['INATIVAS_TEXT'])
     st.dataframe(tabela_contas_cont_inativa, height=500)
     col11, col12 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col11:
-        id_selecionada_cont = st.selectbox('SELECIONE A ID', list(tabela_contas_cont_inativa.index), key="idcont")
+        id_selecionada_cont = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_contas_cont_inativa.index), key="idcont")
     with col12:
-        if st.button('ATIVAR CONTA CONTABIL'):
+        if st.button(textos['ATIVAR_TEXT']):
           conta_cont_cadastradas.update_acell(f'D{id_selecionada_cont}', True)
           st.rerun()
     with st.form(clear_on_submit=True,key="Inserir nova conta contabil"):
-      st.write('NOVA CONTA CONTÁBIL')
+      st.write(textos['NOVA_CONTA_CONTÁBIL_TEXT'])
       nome1,cat, atr,but =st.columns((0.3,0.3,0.25,0.15), vertical_alignment='bottom')
       with nome1:
-        new_conta = st.text_input('CONTA CONTÁBIL')
+        new_conta = st.text_input(textos['CONTA_CONTÁBIL_TEXT'])
         new_conta = str(new_conta)
         new_conta = new_conta.upper()
       with cat:
-        new_cat = st.text_input('CATEGORIA')
+        new_cat = st.text_input(textos['CATEGORIA_TEXT'])
         new_cat = str(new_cat)
         new_cat = new_cat.upper()
       with atr:
-        new_atr = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
+        new_atr = st.selectbox(textos['ATRIBUIÇÃO_TEXT'],['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
         new_atr = str(new_atr)
         new_atr = new_atr.upper()
       with but:
-        submit = st.form_submit_button(label="INSERIR")
+        submit = st.form_submit_button(label=textos['INSERIRTEXT'])
         if submit: #st.button('INSERIR NOVA CONTA'):
           if tamanho_tabela_contas_cont > 2:
             conta_cont_cadastradas.add_rows(1)
@@ -328,50 +326,50 @@ if togglecontas_contábeis:
           st.rerun()
     
   with ativos_contas_cont:
-    st.write('ATIVAS')
+    st.write(textos['ATIVAS_TEXT'])
     st.dataframe(tabela_contas_cont_ativa, height=500)
     col01, col02 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col01:
         if pd.isna(tabela_contas_cont_ativa.index.max()):
-          id_selecionada3 = st.selectbox('SELECIONE A ID', options=None, key="four")
+          id_selecionada3 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], options=None, key="four")
         else:
-          id_selecionada3 = int(st.selectbox('SELECIONE A ID', list(tabela_contas_cont_ativa.index), key="five"))
+          id_selecionada3 = int(st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_contas_cont_ativa.index), key="five"))
     with col02:
-        if st.button('INATIVAR CONTA CONTÁBIL'):
+        if st.button(textos['INATIVAR_TEXT']):
           conta_cont_cadastradas.update_acell(f'E{id_selecionada3}', False)
           st.rerun()
 
     with st.form(clear_on_submit=True, key='Editar conta contabil'):
-      st.write('EDITAR CONTA CONTÁBIL') 
+      st.write(textos['EDITARTEXT']) 
       conta,cate,atr =st.columns(3, vertical_alignment='bottom')
       with conta:
         if len(tabela_contas_cont_ativa)<1:
-          cont = st.text_input("CONTA",value=None, key="1")
+          cont = st.text_input(textos['NOME_TEXT'],value=None, key="1")
         else:
-          cont = st.text_input("CONTA",tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
+          cont = st.text_input(textos['NOME_TEXT'],tabela_contas_cont.loc[id_selecionada3, "CONTA CONTÁBIL"])
         cont = str(cont)
         cont = cont.upper()
       with cate:
         if len(tabela_contas_cont_ativa)<1:
-          categor = st.text_input("CATEGORIA",value=None, key="2")
+          categor = st.text_input(textos['CATEGORIA_TEXT'],value=None, key="2")
         else:
-          categor = st.text_input("CATEGORIA",tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
+          categor = st.text_input(textos['CATEGORIA_TEXT'],tabela_contas_cont.loc[id_selecionada3, "CATEGORIA"])    
         categor = str(categor)
         categor = categor.upper()
       with atr:
         
         if len(tabela_contas_cont_ativa)<1:
-          atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
+          atrib = st.selectbox(textos['ATRIBUIÇÃO_TEXT'],['DESPESAS','RECEITAS','ANALÍTICA'], index=0)
         else:
           analiseslist = ['DESPESAS','RECEITAS','ANALÍTICA']
           idxanalises = tabela_contas_cont.loc[id_selecionada3, 'ATRIBUIÇÃO']
           idxanalises = analiseslist.index(idxanalises)
-          atrib = st.selectbox("ATRIBUIÇÃO",['DESPESAS','RECEITAS','ANALÍTICA'], index=idxanalises)    
+          atrib = st.selectbox(textos['ATRIBUIÇÃO_TEXT'],['DESPESAS','RECEITAS','ANALÍTICA'], index=idxanalises)    
         atrib = str(atrib)
         atrib = atrib.upper()
         st.session_state['IDSEL'] = id_selecionada3
       
-        #submit = st.popover(label="EDITAR")
+        #submit = st.popover(label=textos['EDITARTEXT'])
         #with submit:
       print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
       lancamentos_filtro = lançamentos[(lançamentos['LANÇAMENTO'] == cont) & (lançamentos['CATEGORIA'] == categor)]
@@ -400,8 +398,8 @@ if togglecontas_contábeis:
       totallançamentos = lancamentos_filtro.shape[0] + lancamentos_filtro_cartao.shape[0]
 
 
-      st.write(f"Há {totallançamentos} lançamento(s) localizado(s), deseja alterar?")
-      editar = st.form_submit_button('EDITAR')
+      st.write(f"{totallançamentos} {textos['LANCAMENTOS LOCALIZADOS']}")
+      editar = st.form_submit_button(textos['EDITARTEXT'])
       #print(f'1{st.session_state['lista_id']}')
       #print(f'ID: {st.session_state['IDSEL']}')
       #print(id_selecionada3)
@@ -419,7 +417,7 @@ if togglecontas_contábeis:
           pass
         else:
           progesso_barra = 0
-          progress_bar = st.progress(progesso_barra, text="Editando informações")
+          progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
           for x in lista:
               try:
                 if cont == oldcont:
@@ -436,7 +434,7 @@ if togglecontas_contábeis:
                   sheet.update(values=[[atrib]], range_name=f'J{x}')
                 time.sleep(0.5)
                 progesso_barra = progesso_barra + int(100/len(lista))
-                progress_bar.progress(progesso_barra, text="Editando informações")
+                progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
               except APIError as e:
                   # Check if the error is related to quota being exceeded
                   if e.response.status_code == 429:
@@ -531,24 +529,24 @@ if togglecontas_proj:
   tamanho_tabela_evenproj = tabela_evenproj.shape[0] + 2
 
 
-  st.title('PROJETOS / EVENTOS')
+  st.title(textos['PROJETOS/EVENTOSTEXT'])
   proj_inativos, proj_ativos = st.columns(2)
   with proj_inativos:
-    st.write('INATIVOS')
+    st.write(textos['INATIVAS_TEXT'])
     st.dataframe(tabela_evenproj_inativa, height=500)
     col21, col22 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col21:
-        id_selecionada3 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_inativa.index), key="select3")
+        id_selecionada3 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_evenproj_inativa.index), key="select3")
     with col22:
-        if st.button('ATIVAR', key="123"):
+        if st.button(textos['ATIVAR_TEXT'], key="123"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada3}', True)
           st.rerun()
     with st.form(clear_on_submit=True, key="Inserir novo projeto / evento"):
-      st.write('NOVA PROJETO / EVENTO')
-      new_name = st.text_input('NOME')
+      st.write(textos['NOVO_PROJECT_TEXT'])
+      new_name = st.text_input(textos['NOME_TEXT'])
       new_name = str(new_name)
       new_name = new_name.upper()
-      submit = st.form_submit_button(label="INSERIR")
+      submit = st.form_submit_button(label=textos['INSERIRTEXT'])
       if submit: #st.button('INSERIR NOVA CONTA'):
         if tamanho_tabela_evenproj > 2:
           tabela_evenproj_sheet.add_rows(1)
@@ -559,25 +557,25 @@ if togglecontas_proj:
         st.rerun()
     
   with proj_ativos:
-    st.write('ATIVAS')
+    st.write(textos['ATIVAS_TEXT'])
     st.dataframe(tabela_evenproj_ativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
         if pd.isna(tabela_evenproj_ativa.index.max()):
-          id_selecionada5 = st.selectbox('SELECIONE A ID', options=None, key='5')
+          id_selecionada5 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], options=None, key='5')
         else:
-          id_selecionada5 = st.selectbox('SELECIONE A ID', list(tabela_evenproj_ativa.index))
+          id_selecionada5 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_evenproj_ativa.index))
     with col32:
-        if st.button('INATIVAR', key="1234"):
+        if st.button(textos['INATIVAR_TEXT'], key="1234"):
           tabela_evenproj_sheet.update_acell(f'D{id_selecionada5}', False)
           st.rerun()
 
     with st.form(clear_on_submit=True, key='Editar nome'):
-      st.write('EDITAR PROJETO') 
+      st.write(textos['EDITAR_PROJETO_EVENTO_TEXT']) 
       if pd.isna(tabela_evenproj_ativa.index.max()):
-        nome = st.text_input("NOME", value=None, key="7")
+        nome = st.text_input(textos['NOME_TEXT'], value=None, key="7")
       else:
-        nome = st.text_input("NOME",tabela_evenproj_ativa.loc[id_selecionada5, "NOME"])
+        nome = st.text_input(textos['NOME_TEXT'],tabela_evenproj_ativa.loc[id_selecionada5, 'NOME'])
       nome = str(nome)
       nome = nome.upper()
       st.session_state['IDSEL'] = id_selecionada5
@@ -609,8 +607,8 @@ if togglecontas_proj:
       totallançamentos_PROJECT = lancamentos_filtro_PROJECT.shape[0] + lancamentos_filtro_cartao_PROJECT.shape[0]
 
 
-      st.write(f"Há {totallançamentos_PROJECT} lançamento(s) localizado(s), deseja alterar?")
-      editar_PROJECT = st.form_submit_button('EDITAR')
+      st.write(f"{totallançamentos_PROJECT} {textos['LANCAMENTOS LOCALIZADOS']}")
+      editar_PROJECT = st.form_submit_button(textos['EDITARTEXT'])
       #print(f'1{st.session_state['lista_id']}')
       #print(f'ID: {st.session_state['IDSEL']}')
       #print(id_selecionada3)
@@ -621,7 +619,7 @@ if togglecontas_proj:
           lista_PROJECT = st.session_state['lista_id_PROJECT2']
         else:
           lista_PROJECT = st.session_state['lista_id_PROJECT']
-        oldproject = tabela_evenproj_ativa.loc[id_selecionada5, "NOME"]
+        oldproject = tabela_evenproj_ativa.loc[id_selecionada5, textos['NOME_TEXT']]
         if oldproject == nome:
           pass
         else:
@@ -678,31 +676,31 @@ if togglecontas_card:
 
 
   st.divider() 
-  st.title('CARTÕES DE CRÉDITO')
+  st.title(textos['CARTOES_DE_CREDITOTEXT'])
   card_inativos, card_ativos = st.columns(2)
   with card_inativos:
-    st.write('INATIVOS')
+    st.write(textos['INATIVAS_TEXT'])
     st.dataframe(tabela_cartoes_inativa, height=500)
     col31, col32 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col31:
-        id_selecionada4 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_inativa.index), key ="select4")
+        id_selecionada4 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_cartoes_inativa.index), key ="select4")
     with col32:
         if st.button('ATIVAR', key="ativa cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada4}', True)
           st.rerun()
     with st.form(clear_on_submit=True, key="Inserir cartão"):
-      st.write('NOVO CARTÃO DE CRÉDITO')
+      st.write(textos['NOVO_CARTÃO_DE_CRÉDITO_TEXT'])
       nome1,prop2,but3 =st.columns((0.3,0.55,0.15), vertical_alignment='bottom')
       with nome1:
-        new_card = st.text_input('NOME', key="new card")
+        new_card = st.text_input(textos['NOME_TEXT'], key="new card")
         new_card = str(new_card)
         new_card = new_card.upper()
       with prop2:
-        newcardowner = st.text_input('PROPRIETÁRIO', key="new owner")
+        newcardowner = st.text_input(textos['PROPRIETÁRIO_TEXT'], key="new owner")
         newcardowner = str(newcardowner)
         newcardowner = newcardowner.upper()
       with but3:
-        submit = st.form_submit_button(label="INSERIR")
+        submit = st.form_submit_button(label=textos['INSERIRTEXT'])
       if submit: #st.button('INSERIR NOVA CONTA'):
         if tamanho_tabela_cartoes > 2:
           tabela_cartoes_sheet.add_rows(1)
@@ -714,31 +712,31 @@ if togglecontas_card:
         st.rerun()
     
   with card_ativos:
-    st.write('ATIVAS')
+    st.write(textos['ATIVAS_TEXT'])
     st.dataframe(tabela_cartoes_ativa, height=500)
     col41, col42 = st.columns([0.2,0.8], vertical_alignment='bottom')
     with col41:
         if pd.isna(tabela_cartoes_ativa.index.max()):
-          id_selecionada6 = st.selectbox('SELECIONE A ID', options=None, key='10')
+          id_selecionada6 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], options=None, key='10')
         else:
-          id_selecionada6 = st.selectbox('SELECIONE A ID', list(tabela_cartoes_ativa.index))
+          id_selecionada6 = st.selectbox(textos['SELECIONAR_A_ID_TEXT'], list(tabela_cartoes_ativa.index))
     with col42:
-        if st.button('INATIVAR', key="inativar cartões"):
+        if st.button(textos['INATIVAR_TEXT'], key="inativar cartões"):
           tabela_cartoes_sheet.update_acell(f'G{id_selecionada6}', False)
           st.rerun()
 
     with st.form(clear_on_submit=True,key='Editar cartao'):
-      st.write('EDITAR CARTÃO') 
+      st.write(textos['EDITAR_CARTÃO_DE_CRÉDITO_TEXT']) 
       if len(tabela_cartoes_ativa)<1:
-        new_nome_card = st.text_input("NOME", value=None, key="17")
+        new_nome_card = st.text_input(textos['NOME_TEXT'], value=None, key="17")
       else:
-        new_nome_card = st.text_input("NOME",tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"])
+        new_nome_card = st.text_input(textos['NOME_TEXT'],tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"])
       new_nome_card = str(new_nome_card)
       new_nome_card = new_nome_card.upper()
       if len(tabela_cartoes_ativa)<1:
-        new_nome_owner = st.text_input("PROPRIETÁRIO", value=None, key="18")
+        new_nome_owner = st.text_input(textos['PROPRIETÁRIO_TEXT'], value=None, key="18")
       else:
-        new_nome_owner = st.text_input("PROPRIETÁRIO",tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"], key="20")
+        new_nome_owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],tabela_cartoes_ativa.loc[id_selecionada6, 'PROPRIETÁRIO'], key="20")
       new_nome_owner = str(new_nome_owner)
       new_nome_owner = new_nome_owner.upper()
 
@@ -760,19 +758,19 @@ if togglecontas_card:
       totallançamentos_CARD = lancamentos_filtro_CARD.shape[0]
 
 
-      st.write(f"Há {totallançamentos_CARD} lançamento(s) localizado(s), deseja alterar?")
+      st.write(f"{totallançamentos_CARD} {textos['LANCAMENTOS LOCALIZADOS']}")
 
 
 
       
-      submit = st.form_submit_button(label="EDITAR")
+      submit = st.form_submit_button(label=textos['EDITARTEXT'])
     if submit:
       if not st.session_state['lista_id_CARD']:
         lista_CARD = st.session_state['lista_id_CARD2']
       else:
         lista_CARD = st.session_state['lista_id_CARD']
       oldCARD = tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"]
-      oldOWNER = tabela_cartoes_ativa.loc[id_selecionada6, "PROPRIETÁRIO"]
+      oldOWNER = tabela_cartoes_ativa.loc[id_selecionada6, textos['PROPRIETÁRIO_TEXT']]
 
       if new_nome_card == oldCARD and new_nome_owner == oldOWNER:
         pass

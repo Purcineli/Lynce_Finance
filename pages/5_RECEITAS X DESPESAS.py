@@ -6,7 +6,8 @@ from datetime import date, timedelta, datetime
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import verificar_login\
+from LYNCE import verificar_login
+from TRADUTOR import traaducaoapp
 
 
 
@@ -15,11 +16,11 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-idiomado_do_user = st.session_state.useridioma
+language_of_page = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
+idxidioma = idiomadasdisponiveis.index(language_of_page)
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.2,0.6,0.2], vertical_alignment='bottom')
 with language:
@@ -60,6 +61,8 @@ with bemvido:
   
   sheeitid = st.session_state.id
   sheetname = st.session_state.arquivo
+
+  textos = traaducaoapp(language_of_page)
 
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
@@ -138,7 +141,7 @@ lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','V
 
 st.divider()
 lista_project = tabela_evenproj_ativa['NOME'].unique().tolist()
-project_report = st.checkbox('PROJETO/EVENTO')
+project_report = st.checkbox(textos['PROJETOS/EVENTOSTEXT'])
 all_records = st.checkbox('INCLUIR LANÇAMENTOS NÃO CONCILIADOS')
 
 if not project_report:
@@ -178,16 +181,16 @@ else:
   if not project_report:
     if all_records:
       lançamentos_conciliados = lançamentos_todos[(lançamentos_todos['DATA']>=data_inicio)&(lançamentos_todos['DATA']<=data_final)&(lançamentos_todos['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
-      st.write(1)
+
     else:
-      st.write(2)
+
       lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]   
   else:
     if all_records:
       lançamentos_conciliados = lançamentos_todos[(lançamentos_todos['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_todos['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
-      st.write(3)
+
     else:
-      st.write(4)
+
       lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
 
 
@@ -211,7 +214,7 @@ else:
   fig2.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
   col1, col2 = st.columns(2)
   with col1:
-    st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
+    st.header(f"{textos['RECEITASTEXT']} R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
     st.plotly_chart(fig1, key ='1')
     st.plotly_chart(fig3, key ='2')
     lançamentos_conciliados_receitas = lançamentos_conciliados_receitas.set_index('DATA')
