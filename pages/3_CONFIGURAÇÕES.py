@@ -230,6 +230,8 @@ if togglecontas_bancarias:
       if bank == oldBANK and oldOWNER == owner:
         pass
       else:
+        progesso_barra = 0
+        progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
         for x in lista_BANK:
             try:
               if bank == oldBANK:
@@ -240,7 +242,9 @@ if togglecontas_bancarias:
                 pass
               else:
                 sheet.update(values=[[owner]], range_name=f'D{x}')
-            
+              time.sleep(0.5)
+              progesso_barra = progesso_barra + int(100/len(lista_BANK))
+              progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
             except APIError as e:
                 # Check if the error is related to quota being exceeded
                 if e.response.status_code == 429:
@@ -623,6 +627,8 @@ if togglecontas_proj:
         if oldproject == nome:
           pass
         else:
+          progesso_barra = 0
+          progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
           for x in lista_PROJECT:
               try:
                 sheet.update(values=[[nome]], range_name=f'K{x}')
@@ -633,7 +639,8 @@ if togglecontas_proj:
                   time.sleep(60)  # Wait for 60 seconds before retrying
                   # Retry the current iteration after waitin
                   sheet.update(values=[[nome]], range_name=f'K{x}')
-
+                progesso_barra = progesso_barra + int(100/len(lista_PROJECT))
+                progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
           if not st.session_state['lista_id_cart_PROJECT1']:
             lista_PROJECT_CARD = st.session_state['lista_id_cart_PROJECT2']
           else:
@@ -775,6 +782,8 @@ if togglecontas_card:
       if new_nome_card == oldCARD and new_nome_owner == oldOWNER:
         pass
       else:
+        progesso_barra = 0
+        progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
         for x in lista_CARD:
             try:
               if new_nome_card == oldCARD:
@@ -785,7 +794,9 @@ if togglecontas_card:
                 pass
               else:
                 sheet.update(values=[[new_nome_owner]], range_name=f'D{x}')
-            
+                time.sleep(0.2)
+                progesso_barra = progesso_barra + int(100/len(lista_CARD))
+                progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])     
             except APIError as e:
                 # Check if the error is related to quota being exceeded
                 if e.response.status_code == 429:
