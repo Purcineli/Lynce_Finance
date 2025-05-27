@@ -468,6 +468,8 @@ if togglecontas_contábeis:
             lista = st.session_state['lista_id_cart2']
           else:
             lista = st.session_state['lista_id_cart1']
+          progesso_barra = 0
+          progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
           for x in lista:
               try:
                 if cont == oldcont:
@@ -483,6 +485,8 @@ if togglecontas_contábeis:
                 else:
                   sheet_cartao.update(values=[[atrib]], range_name=f'J{x}')
                 time.sleep(0.5)
+                progesso_barra = progesso_barra + int(100/len(lista))
+                progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
               except APIError as e:
                   # Check if the error is related to quota being exceeded
                   if e.response.status_code == 429:
