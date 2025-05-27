@@ -236,6 +236,7 @@ if togglecontas_bancarias:
       else:
         progesso_barra = 0
         progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
+        st.write(len(lista_BANK))
         for x in lista_BANK:
             try:
               if bank == oldBANK:
@@ -247,6 +248,7 @@ if togglecontas_bancarias:
               else:
                 sheet.update(values=[[owner]], range_name=f'D{x}')
               time.sleep(0.5)
+              
               progesso_barra = progesso_barra + int(100/len(lista_BANK))
               progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
             except APIError as e:
