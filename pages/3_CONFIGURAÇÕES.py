@@ -224,8 +224,8 @@ if togglecontas_bancarias:
         lista_BANK = st.session_state['lista_id_BANK2']
       else:
         lista_BANK = st.session_state['lista_id_BANK']
-      oldBANK = tabela_contas_banco.loc[id_selecionada2, textos['NOME_BANCO_TEXT']]
-      oldOWNER = tabela_contas_banco.loc[id_selecionada2, textos['PROPRIETÁRIO_TEXT']]
+      oldBANK = tabela_contas_banco.loc[id_selecionada2, 'NOME BANCO']
+      oldOWNER = tabela_contas_banco.loc[id_selecionada2, 'PROPRIETÁRIO']
 
       if bank == oldBANK and oldOWNER == owner:
         pass
@@ -623,7 +623,7 @@ if togglecontas_proj:
           lista_PROJECT = st.session_state['lista_id_PROJECT2']
         else:
           lista_PROJECT = st.session_state['lista_id_PROJECT']
-        oldproject = tabela_evenproj_ativa.loc[id_selecionada5, textos['NOME_TEXT']]
+        oldproject = tabela_evenproj_ativa.loc[id_selecionada5, 'NOME']
         if oldproject == nome:
           pass
         else:
@@ -777,7 +777,7 @@ if togglecontas_card:
       else:
         lista_CARD = st.session_state['lista_id_CARD']
       oldCARD = tabela_cartoes_ativa.loc[id_selecionada6, "CARTÃO"]
-      oldOWNER = tabela_cartoes_ativa.loc[id_selecionada6, textos['PROPRIETÁRIO_TEXT']]
+      oldOWNER = tabela_cartoes_ativa.loc[id_selecionada6, 'PROPRIETÁRIO']
 
       if new_nome_card == oldCARD and new_nome_owner == oldOWNER:
         pass
