@@ -188,13 +188,15 @@ if togglecontas_bancarias:
           bank = bank.upper()
         else:
           bank = st.text_input(textos['NOME_BANCO_TEXT'],tabela_contas_banco.loc[id_selecionada2, 'NOME BANCO'])
+        bank = str(bank)
+        bank = bank.upper()
       with prop:
         if len(tabela_contas_banco_ativa)<1:
           owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],value=None, key="two")
         else:
           owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],tabela_contas_banco.loc[id_selecionada2, 'PROPRIETÁRIO'], key="two two")
-          owner = str(owner)
-          owner = owner.upper()
+        owner = str(owner)
+        owner = owner.upper()
       st.session_state['IDSEL'] = id_selecionada2
 
       print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
@@ -230,8 +232,8 @@ if togglecontas_bancarias:
       if bank == oldBANK and oldOWNER == owner:
         pass
       else:
-        progesso_barra = 0
-        progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
+        progesso_barra_contasbancos = 0
+        progress_bar_contabancos = st.progress(progesso_barra_contasbancos, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
         for x in lista_BANK:
             try:
               if bank == oldBANK:
@@ -243,8 +245,8 @@ if togglecontas_bancarias:
               else:
                 sheet.update(values=[[owner]], range_name=f'D{x}')
               time.sleep(0.5)
-              progesso_barra = progesso_barra + int(100/len(lista_BANK))
-              progress_bar.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
+              progesso_barra_contasbancos = progesso_barra_contasbancos + int(100/len(lista_BANK))
+              progress_bar_contabancos.progress(progesso_barra_contasbancos, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
             except APIError as e:
                 # Check if the error is related to quota being exceeded
                 if e.response.status_code == 429:
