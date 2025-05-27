@@ -188,15 +188,17 @@ if togglecontas_bancarias:
           bank = bank.upper()
         else:
           bank = st.text_input(textos['NOME_BANCO_TEXT'],tabela_contas_banco.loc[id_selecionada2, 'NOME BANCO'])
-        bank = str(bank)
-        bank = bank.upper()
+          bank = str(bank)
+          bank = bank.upper()
       with prop:
         if len(tabela_contas_banco_ativa)<1:
           owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],value=None, key="two")
+          owner = str(owner)
+          owner = owner.upper()
         else:
           owner = st.text_input(textos['PROPRIETÁRIO_TEXT'],tabela_contas_banco.loc[id_selecionada2, 'PROPRIETÁRIO'], key="two two")
-        owner = str(owner)
-        owner = owner.upper()
+          owner = str(owner)
+          owner = owner.upper()
       st.session_state['IDSEL'] = id_selecionada2
 
       print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
