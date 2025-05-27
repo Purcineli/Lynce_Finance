@@ -39,6 +39,7 @@ with language:
   st.sidebar.page_link("pages/6_VERSÃO.py", label=textos['VERSÃO'], icon=":material/info:")
   st.sidebar.divider()
 
+
 with bemvido:
   st.write(f"{textos['BEMVINDO']} {st.session_state.name}!")
   
