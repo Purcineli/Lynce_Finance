@@ -460,7 +460,7 @@ def Alt_lançamentos_CC():
           else:
             linhas = []  # Lista para armazenar as linhas a serem inseridas
             for x in range(parcelas):
-                data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
+                data_parcela = (data).strftime('%d/%m/%Y')
                 data_fatura = (data2 + relativedelta(months=x)).strftime('%d/%m/%Y')
                 valor_parcela = round(number / parcelas, 2)
                 moeda = tabela_cards_cont.loc[
@@ -538,7 +538,7 @@ def Alt_lançamentos_CC():
             idxbanco = None
           else:
             with subcol2:
-              data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
+              data_raw = tabela_lancamentos_cartao.loc[id_selected, 'FATURA']
               data2 = st.date_input(textos['DATATEXT'], value=pd.to_datetime(data_raw).date(),format="DD/MM/YYYY")
               
             idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
