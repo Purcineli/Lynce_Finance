@@ -582,8 +582,9 @@ def Alt_lançamentos_CC():
                   lancamento_cartao.update_acell(f'J{id_selected}', "ANALÍTICA")
                 lancamento_cartao.update_acell(f'K{id_selected}', data2.strftime('%d/%m/%Y'))
                 lancamento_cartao.update_acell(f'L{id_selected}', proj2)
-                lancamento_cartao.update_acell(f'M{id_selected}', st.session_state.name)
-                lancamento_cartao.update_acell(f'N{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+                lancamento_cartao.update_acell(f'L{id_selected}', "BRL")
+                lancamento_cartao.update_acell(f'N{id_selected}', st.session_state.name)
+                lancamento_cartao.update_acell(f'O{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
                 st.success(textos['Registro_editado_com_sucessoTEXT'])
                 st.rerun()
 
