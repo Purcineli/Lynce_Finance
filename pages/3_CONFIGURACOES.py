@@ -575,7 +575,6 @@ if togglecontas_proj:
       nome = nome.upper()
       st.session_state['IDSEL'] = id_selecionada5
 
-      print(f"NEW {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
       lancamentos_filtro_PROJECT = lançamentos[(lançamentos['PROJETO/EVENTO'] == nome)]
       lancamentos_filtro_cartao_PROJECT = lançamentos_cartao[(lançamentos_cartao['PROJETO/EVENTO'] == nome)]
       if 'lista_id_PROJECT' not in st.session_state:  # só salva se houver algo
