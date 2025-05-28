@@ -16,7 +16,7 @@ idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
   language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
-
+  st.session_state.useridioma = language_of_page
 if language_of_page == "PORTUGUÊS":
   st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS", icon=":material/account_balance:")
   st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS", icon=":material/list:")
