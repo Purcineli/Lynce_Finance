@@ -10,59 +10,36 @@ from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
 
 
-
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-language_of_page = st.session_state.useridioma
+idiomado_do_user = st.session_state.useridioma
 
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(language_of_page)
+idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
 # Agora é seguro acessar os valores da sessão
-bemvido, x, language = st.columns([0.2,0.6,0.2], vertical_alignment='bottom')
+bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with language:
   language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
   st.session_state.useridioma = language_of_page
-if language_of_page == "PORTUGUÊS":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="SALDOS", icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="LANÇAMENTOS", icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="CONFIGURAÇÕES", icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CARTÕES DE CRÉDITO", icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="RECEITAS X DESPESAS", icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="VERSÃO", icon=":material/info:")
-  st.sidebar.divider()
-elif language_of_page =="ENGLISH":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="BANK BALANCE", icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="BANK ACCOUNTS RECORDS", icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="SETTINGS", icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="CREDIT CARDS", icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="INCOMES X EXPENSES", icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="ABOUT", icon=":material/info:")
-  st.sidebar.divider()
-elif language_of_page == "РУССКИЙ":
-  st.sidebar.page_link("pages/1_SALDOS.py", label="БАНК БАЛАНС", icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANÇAMENTOS.py", label="ЗАПИСИ БАНКОВСКИХ СЧЕТОВ", icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURAÇÕES.py", label="НАСТРОЙКИ", icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTÕES DE CRÉDITO.py", label="КРЕДИТНЫЕ КАРТЫ", icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label="ДОХОДЫ X РАСХОДЫ", icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSÃO.py", label="О", icon=":material/info:")
+  textos = traaducaoapp(language_of_page)
+  
+  st.sidebar.page_link("pages/1_SALDOS.py", label=textos['SALDOS'], icon=":material/account_balance:")
+  st.sidebar.page_link("pages/2_LANCAMENTOS.py", label=textos['LANÇAMENTOS'], icon=":material/list:")
+  st.sidebar.page_link("pages/3_CONFIGURACOES.py", label=textos['CONFIGURAÇÕES'], icon=":material/settings:")
+  st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
+  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
+  st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
   st.sidebar.divider()
 
 with bemvido:
-  if language_of_page == "PORTUGUÊS":
-    st.write(f"Bem-vindo, {st.session_state.name}!")
-  elif language_of_page =="ENGLISH":
-    st.write(f"Welcome, {st.session_state.name}!")
-  elif language_of_page == "РУССКИЙ":
-    st.write(f"Добро пожаловать, {st.session_state.name}!")
+  st.write(f"{textos['BEMVINDO']} {st.session_state.name}!")
   
   sheeitid = st.session_state.id
   sheetname = st.session_state.arquivo
-
-  textos = traaducaoapp(language_of_page)
 
 def lerdados(sheet_id_login_password,sheet_name_login_password):
 
@@ -142,15 +119,15 @@ lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','V
 st.divider()
 lista_project = tabela_evenproj_ativa['NOME'].unique().tolist()
 project_report = st.checkbox(textos['PROJETOS/EVENTOSTEXT'])
-all_records = st.checkbox('INCLUIR LANÇAMENTOS NÃO CONCILIADOS')
+all_records = st.toggle(textos['INCLUIR_LANÇAMENTOS_NÃO_CONCILIADOS_TEXT'])
 
 if not project_report:
   col01, col02 = st.columns(2)
   with col01:
-    data_inicio = st.date_input("Data Inicial", date.today().replace(day=1), format="DD/MM/YYYY")
+    data_inicio = st.date_input(textos['DATA INICIAL TEXT'], date.today().replace(day=1), format="DD/MM/YYYY")
     data_inicio = pd.to_datetime(data_inicio)
   with col02:
-    data_final = st.date_input("Data Final", date.today(),format="DD/MM/YYYY")
+    data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(),format="DD/MM/YYYY")
     data_final = pd.to_datetime(data_final)
 else:
   PROJECT_CHOSEN = st.selectbox('ESCOLHA O PROJETO', options=lista_project)
@@ -183,14 +160,11 @@ else:
       lançamentos_conciliados = lançamentos_todos[(lançamentos_todos['DATA']>=data_inicio)&(lançamentos_todos['DATA']<=data_final)&(lançamentos_todos['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
 
     else:
-
       lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['DATA']>=data_inicio)&(lançamentos_conciliados['DATA']<=data_final)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]   
   else:
     if all_records:
       lançamentos_conciliados = lançamentos_todos[(lançamentos_todos['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_todos['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
-
     else:
-
       lançamentos_conciliados = lançamentos_conciliados[(lançamentos_conciliados['PROJETO/EVENTO']==PROJECT_CHOSEN)&(lançamentos_conciliados['PROPRIETÁRIO'].isin(lista_prop_selecionado))]
 
 
@@ -221,7 +195,8 @@ else:
     st.dataframe(lançamentos_conciliados_receitas[['LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO']], height=300)
   with col2:
     valor_total_despesas = abs(lançamentos_conciliados_despesas['VALOR'].sum().round(2))
-    st.header(f"DESPESAS: R$ {valor_total_despesas:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="red")
+    valor_formatado = f"R$ {valor_total_despesas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    st.header(f"{textos['DESPESATEXT']} {valor_formatado}", divider="red")
     st.plotly_chart(fig2, key ='3')
     st.plotly_chart(fig4, key ='4')
     lançamentos_conciliados_despesas = lançamentos_conciliados_despesas.set_index('DATA')
