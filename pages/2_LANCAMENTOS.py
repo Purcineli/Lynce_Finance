@@ -112,31 +112,15 @@ tamanho_tabela_evenproj = len(tabela_evenproj_ativa)+2
 
 st.divider()
 
-if language_of_page == "PORTUGUÊS":
-  col01, col02 = st.columns(2)
-  with col01:
-    data_inicio = st.date_input("Data Inicial", date.today() - timedelta(days=30),format="DD/MM/YYYY")
-    data_inicio = pd.to_datetime(data_inicio)
-  with col02:
-    data_final = st.date_input("Data Final", date.today(), format="DD/MM/YYYY")
-    data_final = pd.to_datetime(data_final)
-elif language_of_page =="ENGLISH":
-  col01, col02 = st.columns(2)
-  with col01:
-    data_inicio = st.date_input("Start Date", date.today() - timedelta(days=30),format="DD/MM/YYYY")
-    data_inicio = pd.to_datetime(data_inicio)
-  with col02:
-    data_final = st.date_input("End Date", date.today(), format="DD/MM/YYYY")
-    data_final = pd.to_datetime(data_final)
-elif language_of_page == "РУССКИЙ":
-  col01, col02 = st.columns(2)
-  with col01:
-    data_inicio = st.date_input("Дата начала", date.today() - timedelta(days=30),format="DD/MM/YYYY")
-    data_inicio = pd.to_datetime(data_inicio)
-  with col02:
-    data_final = st.date_input("Дата окончания", date.today(), format="DD/MM/YYYY")
-    data_final = pd.to_datetime(data_final)
-  
+
+col01, col02 = st.columns(2)
+with col01:
+  data_inicio = st.date_input(textos['DATA INICIAL TEXT'], date.today() - timedelta(days=30),format="DD/MM/YYYY")
+  data_inicio = pd.to_datetime(data_inicio)
+with col02:
+  data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(), format="DD/MM/YYYY")
+  data_final = pd.to_datetime(data_final)
+
 
 
 
@@ -157,44 +141,19 @@ else:
   lançamentos = lançamentos.set_index('ID')
   colunas = list(lançamentos.columns)
 
-  if language_of_page == "PORTUGUÊS":
-    colunas_selecionadas = st.multiselect('Selecione as colunas da tabela:', colunas, colunas,)
-    contasbancarias_selecionadas = st.sidebar.multiselect('Selecione o banco',lançamentos['BANCO'].unique(),None)
-    if not contasbancarias_selecionadas:
-      contasbancarias_selecionadas = lançamentos['BANCO'].unique()
-    contasconta_selecionadas = st.sidebar.multiselect('Selecione o tipo de lançamento',lançamentos['LANÇAMENTO'].unique(),None)
-    if not contasconta_selecionadas:
-      contasconta_selecionadas = lançamentos['LANÇAMENTO'].unique()
-    contascategoria_selecionadas = st.sidebar.multiselect('Selecione a categoria',lançamentos['CATEGORIA'].unique(),None)
-    if not contascategoria_selecionadas:
-      contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
-    pesqdescri = st.sidebar.text_input('Pesquisar descrição')
 
-  elif language_of_page =="ENGLISH":
-    colunas_selecionadas = st.multiselect('Select the table columns:', colunas, colunas,)
-    contasbancarias_selecionadas = st.sidebar.multiselect('Select the bank',lançamentos['BANCO'].unique(),None)
-    if not contasbancarias_selecionadas:
-      contasbancarias_selecionadas = lançamentos['BANCO'].unique()
-    contasconta_selecionadas = st.sidebar.multiselect('Select the type of record',lançamentos['LANÇAMENTO'].unique(),None)
-    if not contasconta_selecionadas:
-      contasconta_selecionadas = lançamentos['LANÇAMENTO'].unique()
-    contascategoria_selecionadas = st.sidebar.multiselect('Select the category',lançamentos['CATEGORIA'].unique(),None)
-    if not contascategoria_selecionadas:
-      contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
-    pesqdescri = st.sidebar.text_input('Search description')
+  colunas_selecionadas = st.multiselect(textos['SELECIONE_AS_COLUNAS_DA_TABELA_TEXT'], colunas, colunas,)
+  contasbancarias_selecionadas = st.sidebar.multiselect(textos['SELECIONE_O_BANCOTEXT'],lançamentos['BANCO'].unique(),None)
+  if not contasbancarias_selecionadas:
+    contasbancarias_selecionadas = lançamentos['BANCO'].unique()
+  contasconta_selecionadas = st.sidebar.multiselect(textos['SELECIONE_O_LANÇAMENTOTEXT'],lançamentos['LANÇAMENTO'].unique(),None)
+  if not contasconta_selecionadas:
+    contasconta_selecionadas = lançamentos['LANÇAMENTO'].unique()
+  contascategoria_selecionadas = st.sidebar.multiselect(textos['SELECIONE_A_CATEGORIA_TEXT'],lançamentos['CATEGORIA'].unique(),None)
+  if not contascategoria_selecionadas:
+    contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
+  pesqdescri = st.sidebar.text_input(textos['PESQUISAR_DESCRICAO_TEXT'])
 
-  elif language_of_page == "РУССКИЙ":
-    colunas_selecionadas = st.multiselect('Выберите столбцы таблицы:', colunas, colunas,)
-    contasbancarias_selecionadas = st.sidebar.multiselect('Выбрать банк',lançamentos['BANCO'].unique(),None)
-    if not contasbancarias_selecionadas:
-      contasbancarias_selecionadas = lançamentos['BANCO'].unique()
-    contasconta_selecionadas = st.sidebar.multiselect('Выберите тип выпуска',lançamentos['LANÇAMENTO'].unique(),None)
-    if not contasconta_selecionadas:
-      contasconta_selecionadas = lançamentos['LANÇAMENTO'].unique()
-    contascategoria_selecionadas = st.sidebar.multiselect('Выберите категорию',lançamentos['CATEGORIA'].unique(),None)
-    if not contascategoria_selecionadas:
-      contascategoria_selecionadas = lançamentos['CATEGORIA'].unique()
-    pesqdescri = st.sidebar.text_input('Описание поиска')
 
   #lançamentos['VALOR'] = (
   #  lançamentos['VALOR']
@@ -214,39 +173,31 @@ else:
   lançamentos_conciliados['DATA'] = lançamentos_conciliados['DATA'].dt.strftime('%d/%m/%Y')
   st.dataframe(lançamentos_conciliados[colunas_selecionadas])
 
-  if language_of_page == "PORTUGUÊS":
-    st.markdown(f'SALDO TOTAL: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
-  elif language_of_page =="ENGLISH":
-    st.markdown(f'TOTAL BALANCE: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
-  elif language_of_page == "РУССКИЙ":
-    st.markdown(f'ОБЩИЙ БАЛАНС:: R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
+
+  st.markdown(f'{textos['SALDO_TOTALTEXT']} R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
+
   #st.write(lançamentos_conciliados)
   lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] < hoje)]
   lançamentos_nao_conciliados = lançamentos_nao_conciliados[colunas_selecionadas]
   #lançamentos_nao_conciliados = lançamentos_nao_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
   if len(lançamentos_nao_conciliados) >0:
     st.divider()
-    if language_of_page == "PORTUGUÊS":
-      st.write('Você tem lançamentos não conciliados. Favor verificar.')
-    elif language_of_page =="ENGLISH":
-      st.write('You have unreconciled entries. Please check.')
-    elif language_of_page == "РУССКИЙ":
-      st.write('У вас есть несогласованные записи. пожалуйста, проверьте.')
+    st.write(textos['VOCE_TEM_LANCAMENTOS_NAO_CONCILIADOS_TEXT'])
 
     st.write(lançamentos_nao_conciliados)
     col11, col12 = st.columns(2)
     with col11:
-      if st.button("Conciliar todos"):
+      if st.button(textos['CONCILIAR_TODOS_TEXT']):
         ids = pd.Series(lançamentos_nao_conciliados.index)
         ids = ids.tolist()
         for i in reversed(ids):
           sheet.update_acell(f'I{i}',True)
-        st.success("Todos os lançamentos foram conciliados!")
+        st.success(textos['TODOS_OS_LANCAMENTOS_FORAM_CONCILIADOS_TEXT'])
         st.rerun()
       else:
         st.write()
     with col12:
-      st.button('Editar Lançamentos')
+      st.button(textos['EDITAR_LANCAMENTOS_TEXT'])
   else:
     st.write()
 
@@ -312,7 +263,7 @@ def Alt_lançamentos():
                   sheet.update_acell(f'G{tamanho_tabela}', -number)
                   if estornolan:
                     sheet.update_acell(f'G{tamanho_tabela}', number)
-                else:
+                elif analise == "RECEITAS":
                   sheet.update_acell(f'G{tamanho_tabela}', number)
                   if estornolan:
                     sheet.update_acell(f'G{tamanho_tabela}', -number)
@@ -401,7 +352,29 @@ def Alt_lançamentos():
                 sheet.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
                 sheet.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
                 sheet.update_acell(f'F{id_selected}', despesa2.split(" / ")[1])
-                sheet.update_acell(f'G{id_selected}', number2)
+                if analise2:
+                  analise2 = "ANALÍTICA"
+                  sheet.update_acell(f'G{tamanho_tabela}', number2)
+                  print(1)
+                else:
+                  analise2 = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa2.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa2.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+                  if analise2 == "DESPESAS":
+                    if estornolan2:
+                      sheet.update_acell(f'G{id_selected}', number)
+                      print(3)
+                    else:
+                      sheet.update_acell(f'G{id_selected}', -number2)
+                      print(2)
+                    
+                  elif analise2 == "RECEITAS":
+                    if estornolan2:
+                      sheet.update_acell(f'G{id_selected}', -number2)
+                      print(5)                   
+                    else:
+                      sheet.update_acell(f'G{id_selected}', number2)
+                      print(4)
+
+                
                 descricao2 = str(descricao2)
                 descricao2 = descricao2.upper()
                 sheet.update_acell(f'H{id_selected}', descricao2)

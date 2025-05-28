@@ -251,7 +251,7 @@ if togglecontas_bancarias:
         conta_banco_cadastradas.update(values=[[owner]],range_name=f'C{id_selecionada2}')
         
         #print("alterações efetuadas com sucesso na tabela de contas contábeis")
-        st.success("Alterações Efetuadas")
+        st.success(textos['ALTERACOES_EFETUADAS_TEXT'])
         st.session_state['lista_id_BANK'] = []
         st.rerun()
 ########################################################################
@@ -493,7 +493,7 @@ if togglecontas_contábeis:
           conta_cont_cadastradas.update(values=[[categor]],range_name=f'C{id_selecionada3}')
           conta_cont_cadastradas.update(values=[[atrib]],range_name=f'D{id_selecionada3}')
           #print("alterações efetuadas com sucesso na tabela de contas contábeis")
-          st.success("Alterações Efetuadas")
+          st.success(textos['ALTERACOES_EFETUADAS_TEXT'])
           st.session_state['lista_id'] = []
           st.rerun()
 
@@ -604,10 +604,6 @@ if togglecontas_proj:
 
       st.write(f"{totallançamentos_PROJECT} {textos['LANCAMENTOS LOCALIZADOS']}")
       editar_PROJECT = st.form_submit_button(textos['EDITARTEXT'])
-      #print(f'1{st.session_state['lista_id']}')
-      #print(f'ID: {st.session_state['IDSEL']}')
-      #print(id_selecionada3)
-      #print(f'2{st.session_state['lista_id2']}')
       if editar_PROJECT:
         #print(f'3{st.session_state['lista_id']}')
         if not st.session_state['lista_id_PROJECT']:
@@ -649,7 +645,7 @@ if togglecontas_proj:
           #print(f'4{st.session_state['lista_id']}')
           tabela_evenproj_sheet.update( values=[[nome]],range_name=f'B{id_selecionada5}')
           #print("alterações efetuadas com sucesso na tabela de contas contábeis")
-          st.success("Alterações Efetuadas")
+          st.success(textos['ALTERACOES_EFETUADAS_TEXT'])
           st.session_state['lista_id'] = []
           st.rerun()
 ########################################################################
@@ -807,6 +803,6 @@ if togglecontas_card:
         tabela_cartoes_sheet.update(values=[[new_nome_owner]],range_name=f'C{id_selecionada2}')
         
         #print("alterações efetuadas com sucesso na tabela de contas contábeis")
-        st.success("Alterações Efetuadas")
+        st.success(textos['ALTERACOES_EFETUADAS_TEXT'])
         st.session_state['lista_id_CARD'] = []
         st.rerun()

@@ -130,10 +130,10 @@ if not project_report:
     data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(),format="DD/MM/YYYY")
     data_final = pd.to_datetime(data_final)
 else:
-  PROJECT_CHOSEN = st.selectbox('ESCOLHA O PROJETO', options=lista_project)
+  PROJECT_CHOSEN = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], options=lista_project)
 tamanho_tabela = len(lançamentos)
 if tamanho_tabela==1:
-  st.write("SEM LANÇAMENTOS")
+  st.write(textos['SEM_LANCAMENTOS_TEXT'])
 else:
   tamanho_tabela = len(lançamentos)
   try:
@@ -145,7 +145,7 @@ else:
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   
   listas_owners = list(lançamentos['PROPRIETÁRIO'].unique())
-  lista_prop_selecionado = st.multiselect("Selecione", listas_owners, listas_owners)
+  lista_prop_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_owners, listas_owners)
 
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
   lançamentos['ANO'] = lançamentos['DATA'].dt.year
