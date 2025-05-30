@@ -232,7 +232,43 @@ lançamentos_conciliados_para_pivot_despesas['Total'] = lançamentos_conciliados
 total_coluna_despesas = lançamentos_conciliados_para_pivot_despesas.sum(axis=0)
 #st.dataframe(lançamentos_conciliados_para_pivot_despesas)
 
+listaCat_receitas = tabela_contas_cont[tabela_contas_cont['ATRIBUIÇÃO'] == 'RECEITAS']['CONTA CONTÁBIL'].unique().tolist()
+listaCat_despesas = tabela_contas_cont[tabela_contas_cont['ATRIBUIÇÃO'] == 'DESPESAS']['CONTA CONTÁBIL'].unique().tolist()
 
+ST01, ST02 = st.columns(2)
+with ST01:
+  categoriasescolhidasrec = st.multiselect("select", listaCat_receitas)
+with ST02:
+  categoriasescolhidasdesp = st.multiselect("select", listaCat_despesas)
+
+categoriasescolhidas = categoriasescolhidasrec + categoriasescolhidasdesp
+st.write(categoriasescolhidas)
+lancamentoscatt = lançamentos[lançamentos['LANÇAMENTO'].isin(categoriasescolhidas)]
+
+lancamentograph = pd.pivot_table(
+    lancamentoscatt,
+    index='LANÇAMENTO',
+    columns='ANO_MES',
+    values='VALOR',
+    aggfunc='sum' # Preenche com 0 onde não houver dados
+)
+df_plot = lancamentograph.reset_index()
+
+# "Derretendo" o DataFrame para o formato longo (long format)
+df_long = df_plot.melt(id_vars='LANÇAMENTO', var_name='ANO_MES', value_name='VALOR')
+
+# Criando o gráfico interativo de linhas
+fig = px.line(
+    df_long,
+    x='ANO_MES',
+    y='VALOR',
+    color='LANÇAMENTO',
+    markers=True,
+    title='Despesas por Categoria ao Longo do Tempo'
+)
+
+# Exibir o gráfico
+st.plotly_chart(fig)
 
 try:
     # Exportar como Excel (XLSX)

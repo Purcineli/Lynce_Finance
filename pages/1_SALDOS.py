@@ -133,7 +133,7 @@ else:
   
 
 
-  col01, col02, col03, col04 = st.columns([0.2, 0.2, 0.2, 0.4])  # Define layout de 3 colunas com larguras proporcionais
+  col01, col02, col03, col04, col05 = st.columns([0.2, 0.2, 0.2, 0.2, 0.2])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
     data_saldo = pd.to_datetime(st.date_input(textos['DATA_SALDOTEXT'], date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
 
@@ -165,23 +165,47 @@ else:
     primeiro_dia_do_mes = pd.to_datetime(primeiro_dia_do_mes)
     ultimo_dia_do_mes = DATAESCOLHIDA + pd.offsets.MonthEnd(0)
     
-    lançamentos_RECDES = lançamentos_RECDES[(lançamentos_RECDES['DATA']>=primeiro_dia_do_mes)&(lançamentos_RECDES['DATA']<=ultimo_dia_do_mes)]
-    lançamentos_RECDES_RECEITAS = lançamentos_RECDES[lançamentos_RECDES['ANALISE']=="RECEITAS"]
-    lançamentos_RECDES_DESPESAS = lançamentos_RECDES[lançamentos_RECDES['ANALISE']=="DESPESAS"]
+    primeiro_dia_ultimo_mes = (DATAESCOLHIDA.replace(day=1) - pd.DateOffset(months=1)).replace(day=1)
+    # Último dia do mês anterior
+    ultimo_dia_ultimo_mes = DATAESCOLHIDA.replace(day=1) - pd.DateOffset(days=1)
+
+    
+    lançamentos_RECDES_mes = lançamentos_RECDES[(lançamentos_RECDES['DATA']>=primeiro_dia_do_mes)&(lançamentos_RECDES['DATA']<=ultimo_dia_do_mes)]
+    lançamentos_RECDES_RECEITAS = lançamentos_RECDES_mes[lançamentos_RECDES_mes['ANALISE']=="RECEITAS"]
+    lançamentos_RECDES_DESPESAS = lançamentos_RECDES_mes[lançamentos_RECDES_mes['ANALISE']=="DESPESAS"]
     soma_receitas = lançamentos_RECDES_RECEITAS['VALOR'].sum()
     soma_despesas = lançamentos_RECDES_DESPESAS['VALOR'].sum()
-    diferencarecdes = soma_receitas - abs(soma_despesas)
-    diferencarecdes = f"{diferencarecdes:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    lançamentos_RECDES_mesanterior = lançamentos_RECDES[(lançamentos_RECDES['DATA']>=primeiro_dia_ultimo_mes)&(lançamentos_RECDES['DATA']<=ultimo_dia_ultimo_mes)]
+    lançamentos_RECDES_RECEITAS_mesanterior = lançamentos_RECDES_mesanterior[lançamentos_RECDES['ANALISE']=="RECEITAS"]
+    lançamentos_RECDES_DESPESAS_mesanterior = lançamentos_RECDES_mesanterior[lançamentos_RECDES['ANALISE']=="DESPESAS"]
+    soma_receitas_mes_anterior = lançamentos_RECDES_RECEITAS_mesanterior['VALOR'].sum()
+    soma_despesas_mes_anterior = lançamentos_RECDES_DESPESAS_mesanterior['VALOR'].sum()   
+
+    diferencarec = soma_receitas - soma_receitas_mes_anterior
+    diferencarec = f"{diferencarec:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     soma_receitas = f"{soma_receitas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-    st.metric(label=textos['RECEITASTEXT'], value=f'R$ {soma_receitas}', delta=diferencarecdes, border=True)
+
+
+    st.metric(label=textos['RECEITASTEXT'], value=f'R$ {soma_receitas}', delta=diferencarec, border=True)
+  with col04:
+    diferencades = abs(soma_despesas) - abs(soma_despesas_mes_anterior)
+    diferencades = f"{diferencades:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    soma_despesas = f"{soma_despesas:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    st.metric(label=textos['DESPESATEXT'], value=f'R$ {soma_despesas}', delta=diferencades, border=True, delta_color="inverse" )
 
     
   st.divider()  # Linha divisória no app
   col011, col012 = st.columns([0.2, 0.8])  # Define nova linha com duas colunas
   with col011:
     filtro1 = st.toggle(textos['FILTRAR_PROPRIETÁRIOTEXT'])  # Botão liga/desliga para aplicar filtro por usuário
-    users_selecionado = st.selectbox(textos['SELECIONE UM PROPRIETÁRIOTEXT'], users)  # Seleção do proprietário (usuário)
+    if filtro1:
+      users_selecionado = st.selectbox(textos['SELECIONE UM PROPRIETÁRIOTEXT'], users, disabled=False)  # Seleção do proprietário (usuário)
+    else:
+      users_selecionado = st.selectbox(textos['SELECIONE UM PROPRIETÁRIOTEXT'], users, index=None, disabled=True, placeholder="")  # Seleção do proprietário (usuário)
+    
+
 
 
 
