@@ -3,6 +3,8 @@ def traaducaoapp(language_of_page):
 
     if language_of_page == "PORTUGUÊS":
         textos = {
+            'DATA_DA_COMPRA_TEXT': 'DATA DA COMPRA',
+            'DATA_DA_DESPESA_TEXT': 'DATA DA DESPESA',
             'SEM_LANCAMENTOS_TEXT': 'SEM LANÇAMENTOS',
             'FATURA_TEXT': 'FATURA',
             'NUMERO_DE_PARCELAS_TEXT': 'NÚMERO DE PARCELAS',
@@ -101,6 +103,8 @@ def traaducaoapp(language_of_page):
 
     elif language_of_page == "ENGLISH":
         textos = {
+            'DATA_DA_COMPRA_TEXT': 'PURCHASE DATE',
+            'DATA_DA_DESPESA_TEXT': 'EXPENSE DATE',
             'SEM_LANCAMENTOS_TEXT': 'NO ENTRIES',
             'FATURA_TEXT': 'INVOICE',
             'NUMERO_DE_PARCELAS_TEXT': 'NUMBER OF INSTALLMENTS',
@@ -199,6 +203,8 @@ def traaducaoapp(language_of_page):
 
     elif language_of_page == "РУССКИЙ":
         textos = {
+            'DATA_DA_COMPRA_TEXT': 'ДАТА ПОКУПКИ',
+            'DATA_DA_DESPESA_TEXT': 'ДАТА РАСХОДА',
             'SEM_LANCAMENTOS_TEXT': 'БЕЗ ЗАПИСЕЙ',
             'FATURA_TEXT': 'СЧЁТ-ФАКТУРА',
             'NUMERO_DE_PARCELAS_TEXT': 'КОЛИЧЕСТВО ВЗНОСОВ',

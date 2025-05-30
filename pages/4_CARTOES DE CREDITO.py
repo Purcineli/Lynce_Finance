@@ -324,7 +324,7 @@ if st.toggle(textos['CONCILIAR_FATURA']):
 
           
 else:
-  dataini, datafim =st.columns(2)
+  dataini, datafim, optiondata =st.columns(3, vertical_alignment="center")
   with dataini:
     data_inicio = st.date_input(textos['DATA INICIAL TEXT'], date.today() - timedelta(days=30), format="DD/MM/YYYY")
     data_inicio = pd.to_datetime(data_inicio,format="DD/MM/YYYY")
@@ -333,20 +333,39 @@ else:
     data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(), format="DD/MM/YYYY")
     data_final = pd.to_datetime(data_final)
 
+  with optiondata:
+     optionslist = (textos['DATA_DA_COMPRA_TEXT'],textos['DATA_DA_DESPESA_TEXT'])
+     filterrecords = st.radio(label="opção", options=optionslist, label_visibility="hidden", index=0, horizontal=True)
+     selected_indexradio = optionslist.index(filterrecords)
+
   tabela_lancamentos_cartao['DATA'] = pd.to_datetime(tabela_lancamentos_cartao['DATA'], dayfirst=True, errors='coerce')
   tabela_lancamentos_cartao['DATA COMPRA'] = pd.to_datetime(tabela_lancamentos_cartao['DATA COMPRA'], dayfirst=True, errors='coerce')
   tabela_lancamentos_cartao['FATURA'] = pd.to_datetime(tabela_lancamentos_cartao['FATURA'], dayfirst=True, errors='coerce')
-  lançamentos_cartao_filtro_data = tabela_lancamentos_cartao[
-    (tabela_lancamentos_cartao['DATA COMPRA'] >= data_inicio) &
-    (tabela_lancamentos_cartao['DATA COMPRA'] <= data_final) &
-    (tabela_lancamentos_cartao['LANÇAMENTO'].isin(contasconta_selecionadas))&
-    (tabela_lancamentos_cartao['CATEGORIA'].isin(contascategoria_selecionadas))&
-    (tabela_lancamentos_cartao['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
-  lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA COMPRA')
-  lançamentos_cartao_filtro_data['DATA COMPRA'] = lançamentos_cartao_filtro_data['DATA COMPRA'].dt.strftime('%d/%m/%Y')
-  lançamentos_cartao_filtro_data['DATA'] = lançamentos_cartao_filtro_data['DATA'].dt.strftime('%d/%m/%Y')
-  lançamentos_cartao_filtro_data['FATURA'] = lançamentos_cartao_filtro_data['FATURA'].dt.strftime('%m/%Y')
-  lançamentos_cartao_filtro_data= lançamentos_cartao_filtro_data[lançamentos_cartao_filtro_data.columns[[10,1,2,3,4,5,6,7,8,9,0,11,12,13,14]]]
+
+  if selected_indexradio == 0:
+    lançamentos_cartao_filtro_data = tabela_lancamentos_cartao[
+      (tabela_lancamentos_cartao['DATA COMPRA'] >= data_inicio) &
+      (tabela_lancamentos_cartao['DATA COMPRA'] <= data_final) &
+      (tabela_lancamentos_cartao['LANÇAMENTO'].isin(contasconta_selecionadas))&
+      (tabela_lancamentos_cartao['CATEGORIA'].isin(contascategoria_selecionadas))&
+      (tabela_lancamentos_cartao['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
+    lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA COMPRA')
+    lançamentos_cartao_filtro_data['DATA COMPRA'] = lançamentos_cartao_filtro_data['DATA COMPRA'].dt.strftime('%d/%m/%Y')
+    lançamentos_cartao_filtro_data['DATA'] = lançamentos_cartao_filtro_data['DATA'].dt.strftime('%d/%m/%Y')
+    lançamentos_cartao_filtro_data['FATURA'] = lançamentos_cartao_filtro_data['FATURA'].dt.strftime('%m/%Y')
+    lançamentos_cartao_filtro_data= lançamentos_cartao_filtro_data[lançamentos_cartao_filtro_data.columns[[10,1,2,3,4,5,6,7,8,9,0,11,12,13,14]]]
+  elif selected_indexradio == 1:
+    lançamentos_cartao_filtro_data = tabela_lancamentos_cartao[
+      (tabela_lancamentos_cartao['DATA'] >= data_inicio) &
+      (tabela_lancamentos_cartao['DATA'] <= data_final) &
+      (tabela_lancamentos_cartao['LANÇAMENTO'].isin(contasconta_selecionadas))&
+      (tabela_lancamentos_cartao['CATEGORIA'].isin(contascategoria_selecionadas))&
+      (tabela_lancamentos_cartao['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
+    lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA COMPRA')
+    lançamentos_cartao_filtro_data['DATA COMPRA'] = lançamentos_cartao_filtro_data['DATA COMPRA'].dt.strftime('%d/%m/%Y')
+    lançamentos_cartao_filtro_data['DATA'] = lançamentos_cartao_filtro_data['DATA'].dt.strftime('%d/%m/%Y')
+    lançamentos_cartao_filtro_data['FATURA'] = lançamentos_cartao_filtro_data['FATURA'].dt.strftime('%m/%Y')
+
 
   st.write(lançamentos_cartao_filtro_data)
 
