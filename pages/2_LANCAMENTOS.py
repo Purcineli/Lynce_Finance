@@ -177,7 +177,8 @@ else:
   st.markdown(f'{textos['SALDO_TOTALTEXT']} R$ {lançamentos_conciliados['VALOR'].sum().round(2)}')
 
   #st.write(lançamentos_conciliados)
-  lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] < hoje)]
+  lançamentos_nao_conciliados = lançamentos[(lançamentos['CONCILIADO'] == "FALSE") & (lançamentos['DATA'] <= data_final)]
+  lançamentos_nao_conciliados['DATA'] = lançamentos_nao_conciliados['DATA'].dt.strftime('%d/%m/%Y')
   lançamentos_nao_conciliados = lançamentos_nao_conciliados[colunas_selecionadas]
   #lançamentos_nao_conciliados = lançamentos_nao_conciliados[['DATA','BANCO','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE']]
   if len(lançamentos_nao_conciliados) >0:
@@ -196,8 +197,6 @@ else:
         st.rerun()
       else:
         st.write()
-    with col12:
-      st.button(textos['EDITAR_LANCAMENTOS_TEXT'])
   else:
     st.write()
 

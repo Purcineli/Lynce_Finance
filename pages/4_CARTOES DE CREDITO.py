@@ -215,14 +215,14 @@ if st.toggle(textos['CONCILIAR_FATURA']):
     lancamentos_filtrados = tabela_lancamentos_cartao_filtrada[filtro].copy()
 
     lancamentos_filtrados['FATURA_MES'] = lancamentos_filtrados['FATURA_MES'].dt.strftime('%b/%Y')
-    lancamentos_visual = lancamentos_filtrados[['DATA', 'CARTÃO', 'PROPRIETÁRIO', 'LANÇAMENTO', 'CATEGORIA', 'VALOR', 'DESCRIÇÃO', 'ANALISE', 'FATURA_MES']].copy()
+    lancamentos_visual = lancamentos_filtrados[['DATA', 'CARTÃO', 'PROPRIETÁRIO', 'LANÇAMENTO', 'CATEGORIA', 'VALOR', 'DESCRIÇÃO', 'ANALISE', 'FATURA_MES', 'DATA COMPRA']].copy()
     lancamentos_visual = lancamentos_visual.rename(columns={'FATURA_MES': 'FATURA CARTÃO'})
 
     df_false = lancamentos_filtrados[lancamentos_filtrados['CONCILIADO'] == "FALSE"].copy()
     df_true = lancamentos_filtrados[lancamentos_filtrados['CONCILIADO'] == "TRUE"].copy()
     naoconc, conc = st.columns(2)
     with naoconc:
-      df_false_display = df_false[['DATA', 'LANÇAMENTO', 'VALOR', 'DESCRIÇÃO']].copy()
+      df_false_display = df_false[['DATA COMPRA', 'LANÇAMENTO', 'VALOR', 'DESCRIÇÃO']].copy()
       df_false_display.insert(3, 'SELECIONAR', False)
       editar_false = st.data_editor(
           df_false_display,
@@ -244,7 +244,7 @@ if st.toggle(textos['CONCILIAR_FATURA']):
           time.sleep(1)
           st.rerun()
     with conc:
-      df_true_display = df_true[['DATA', 'LANÇAMENTO', 'VALOR', 'DESCRIÇÃO']].copy()
+      df_true_display = df_true[['DATA COMPRA', 'LANÇAMENTO', 'VALOR', 'DESCRIÇÃO']].copy()
       df_true_display.insert(3, 'SELECIONAR', False)
       editar_true = st.data_editor(
           df_true_display,
@@ -334,17 +334,20 @@ else:
     data_final = pd.to_datetime(data_final)
 
   tabela_lancamentos_cartao['DATA'] = pd.to_datetime(tabela_lancamentos_cartao['DATA'], dayfirst=True, errors='coerce')
+  tabela_lancamentos_cartao['DATA COMPRA'] = pd.to_datetime(tabela_lancamentos_cartao['DATA COMPRA'], dayfirst=True, errors='coerce')
   tabela_lancamentos_cartao['FATURA'] = pd.to_datetime(tabela_lancamentos_cartao['FATURA'], dayfirst=True, errors='coerce')
   lançamentos_cartao_filtro_data = tabela_lancamentos_cartao[
-    (tabela_lancamentos_cartao['DATA'] >= data_inicio) &
-    (tabela_lancamentos_cartao['DATA'] <= data_final) &
+    (tabela_lancamentos_cartao['DATA COMPRA'] >= data_inicio) &
+    (tabela_lancamentos_cartao['DATA COMPRA'] <= data_final) &
     (tabela_lancamentos_cartao['LANÇAMENTO'].isin(contasconta_selecionadas))&
     (tabela_lancamentos_cartao['CATEGORIA'].isin(contascategoria_selecionadas))&
     (tabela_lancamentos_cartao['DESCRIÇÃO'].str.contains(pesqdescri, case=False))]
-  lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA')
+  lançamentos_cartao_filtro_data = lançamentos_cartao_filtro_data.sort_values(by='DATA COMPRA')
+  lançamentos_cartao_filtro_data['DATA COMPRA'] = lançamentos_cartao_filtro_data['DATA COMPRA'].dt.strftime('%d/%m/%Y')
   lançamentos_cartao_filtro_data['DATA'] = lançamentos_cartao_filtro_data['DATA'].dt.strftime('%d/%m/%Y')
   lançamentos_cartao_filtro_data['FATURA'] = lançamentos_cartao_filtro_data['FATURA'].dt.strftime('%m/%Y')
-  
+  lançamentos_cartao_filtro_data= lançamentos_cartao_filtro_data[lançamentos_cartao_filtro_data.columns[[10,1,2,3,4,5,6,7,8,9,0,11,12,13,14]]]
+
   st.write(lançamentos_cartao_filtro_data)
 
 st.divider()
@@ -460,7 +463,8 @@ def Alt_lançamentos_CC():
           else:
             linhas = []  # Lista para armazenar as linhas a serem inseridas
             for x in range(parcelas):
-                data_parcela = (data).strftime('%d/%m/%Y')
+                data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
+                data_compra = data.strftime('%d/%m/%Y')
                 data_fatura = (data2 + relativedelta(months=x)).strftime('%d/%m/%Y')
                 valor_parcela = round(number / parcelas, 2)
                 moeda = tabela_cards_cont.loc[
@@ -505,10 +509,11 @@ def Alt_lançamentos_CC():
                     status,                            # I - Conciliado
                     analise_valor,                     # J - Alínea
                     data_fatura,                       # K - Data base
-                    proj,                              # L - Projeto
-                    moeda,                             # M - Moeda
-                    st.session_state.name,             # N - Usuário
-                    timestamp                          # O - Timestamp
+                    data_compra,                       # L - DATA COMPRA 
+                    proj,                              # M - PROJETO
+                    moeda,                             # N - Moeda
+                    st.session_state.name,             # O - Usuário
+                    timestamp                          # P - Timestamp
                 ]
                 linhas.append(linha)
 
@@ -519,7 +524,7 @@ def Alt_lançamentos_CC():
               lancamento_cartao.add_rows(parcelas-1)
             inicio_linha = tamanho_tabela 
             fim_linha = inicio_linha + parcelas - 1
-            faixa = f"A{inicio_linha}:O{fim_linha}"
+            faixa = f"A{inicio_linha}:P{fim_linha}"
 
             # Atualizar todas as linhas de uma vez só
             lancamento_cartao.update(values=linhas,range_name=faixa,raw=False)
@@ -581,10 +586,10 @@ def Alt_lançamentos_CC():
                 if analise2:
                   lancamento_cartao.update_acell(f'J{id_selected}', "ANALÍTICA")
                 lancamento_cartao.update_acell(f'K{id_selected}', data2.strftime('%d/%m/%Y'))
-                lancamento_cartao.update_acell(f'L{id_selected}', proj2)
-                lancamento_cartao.update_acell(f'M{id_selected}', "BRL")
-                lancamento_cartao.update_acell(f'N{id_selected}', st.session_state.name)
-                lancamento_cartao.update_acell(f'O{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+                lancamento_cartao.update_acell(f'M{id_selected}', proj2)
+                lancamento_cartao.update_acell(f'N{id_selected}', "BRL")
+                lancamento_cartao.update_acell(f'O{id_selected}', st.session_state.name)
+                lancamento_cartao.update_acell(f'P{id_selected}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
                 st.success(textos['Registro_editado_com_sucessoTEXT'])
                 st.rerun()
 
