@@ -360,7 +360,7 @@ else:
           df_saldos_user_filtrado = df_saldos_user_filtrado.rename(columns={'PROPRIETÁRIO': 'ВЛАДЕЛЕЦ','BANCO': 'БАНК', 'VALOR': 'ЦЕНИТЬ'})
           st.dataframe(df_saldos_user_filtrado, hide_index=True)  # Exibe tabela filtrada
           
-        st.markdown(f"{textos['SALDO_ATUALTEXT']}] R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        st.markdown(f"{textos['SALDO_ATUALTEXT']} R$ {saldototalperprop:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
       
     else:
       if language_of_page == "PORTUGUÊS":
