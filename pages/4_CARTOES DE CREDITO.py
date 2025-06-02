@@ -12,6 +12,8 @@ import numpy as np
 import math
 from LYNCE import verificar_login
 
+
+
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
@@ -474,6 +476,7 @@ def Alt_lançamentos_CC():
             with dt:
               parcelas = st.number_input(textos['NUMERO_DE_PARCELAS_TEXT'],1,36)
             with fat:
+              
               data2 = st.date_input(textos['FATURA_TEXT'], date.today(),format="DD/MM/YYYY")
               
             submit = st.form_submit_button(label=textos['INSERIRTEXT'])
