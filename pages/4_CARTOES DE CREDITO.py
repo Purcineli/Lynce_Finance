@@ -125,11 +125,12 @@ pesqdescri = st.sidebar.text_input(textos['PESQUISAR_DESCRICAO_TEXT'])
 
 hoje = pd.Timestamp.today()
 primeiro_dia_mes_atual = hoje.replace(day=1)
-primeiro_dia_mes_anterior = (primeiro_dia_mes_atual - pd.DateOffset(months=1))
+primeiro_dia_mes_anterior = (primeiro_dia_mes_atual - pd.DateOffset(months=2))
 
 tabela_filtrada = tabela_lancamentos_cartao[
     tabela_lancamentos_cartao['FATURA'] >= primeiro_dia_mes_anterior
 ].copy()
+
 tabela_filtrada['FATURA_MES'] = tabela_filtrada['FATURA'].dt.to_period('M')
 tabela_filtrada['CARTÃO'] = tabela_filtrada['CARTÃO'] + "  /  " + tabela_filtrada['PROPRIETÁRIO']
 lista_faturas = list(tabela_lancamentos_cartao['FATURA'].dropna().unique())
@@ -153,6 +154,7 @@ faturas_cartao = tabela_filtrada.pivot_table(
   columns='FATURA_MES',
   aggfunc='sum'
 ).round(2)
+
 faturas_cartao.columns = [col.strftime('%b/%Y') for col in faturas_cartao.columns.to_timestamp()]
 faturas_cartao = faturas_cartao.replace(0, pd.NA)
 faturas_cartao = faturas_cartao.dropna(axis=0, how='all')
