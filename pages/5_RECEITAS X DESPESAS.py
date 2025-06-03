@@ -8,6 +8,7 @@ import numpy as np
 import math
 from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
+from dateutil.relativedelta import relativedelta
 
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -242,9 +243,23 @@ with ST02:
   categoriasescolhidasdesp = st.multiselect("select", listaCat_despesas)
 
 categoriasescolhidas = categoriasescolhidasrec + categoriasescolhidasdesp
-st.write(categoriasescolhidas)
+
 lancamentoscatt = lançamentos[lançamentos['LANÇAMENTO'].isin(categoriasescolhidas)]
 
+minimomes = lançamentos['ANO_MES'].min()
+minimomes = datetime.strptime(minimomes, "%Y-%m")
+maximomes = lançamentos['ANO_MES'].max()
+maximomes = datetime.strptime(maximomes, "%Y-%m")
+
+# Slider de período
+periodo = st.slider("PERÍODO", 
+                    min_value=minimomes, 
+                    max_value=maximomes, 
+                    value=(minimomes, maximomes), 
+                    format="MM/YYYY")
+
+
+lancamentoscatt = lancamentoscatt[lancamentoscatt['DATA']<=periodo[1]+relativedelta(months=1)-timedelta(days=1)]
 lancamentograph = pd.pivot_table(
     lancamentoscatt,
     index='LANÇAMENTO',
