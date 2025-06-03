@@ -205,85 +205,64 @@ else:
 
 st.divider()
 
-listaanos = lançamentos['ANO'].unique().tolist()
-ano_escolhido =st.selectbox("Selecione o ano", options=listaanos, index=0)
-
-
-lançamentos2 = lançamentos.copy()
-lançamentos2['VALOR'] = lançamentos2['VALOR'].abs()
-lançamentos2 = lançamentos2[lançamentos2['ANALISE']!="ANALITICA"]
-graph = px.line(lançamentos2, x="DATA", y="VALOR", color='ANALISE')
-#st.plotly_chart(graph)
-
-lançamentos_receitas = lançamentos[lançamentos['ANALISE']=="RECEITAS"]
-lançamentos_conciliados_para_pivot_receitas_GRAPH = lançamentos_receitas.pivot_table(index='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
-lançamentos_conciliados_para_pivot_receitas = lançamentos_receitas[(lançamentos['ANO']==ano_escolhido)]
-lançamentos_conciliados_para_pivot_receitas = lançamentos_conciliados_para_pivot_receitas.pivot_table(index=['CATEGORIA','LANÇAMENTO'],columns='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
-lançamentos_conciliados_para_pivot_receitas['Total'] = lançamentos_conciliados_para_pivot_receitas.sum(axis=1)
-total_coluna_receitas = lançamentos_conciliados_para_pivot_receitas.sum(axis=0)
-
-#st.dataframe(lançamentos_conciliados_para_pivot_receitas_GRAPH)
-
-
-lançamentos_despesas = lançamentos[lançamentos['ANALISE']=="DESPESAS"]
-lançamentos_conciliados_para_pivot_despesas_GRAPH = lançamentos_despesas.pivot_table(index='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
-lançamentos_conciliados_para_pivot_despesas = lançamentos_despesas[(lançamentos['ANO']==ano_escolhido)]
-lançamentos_conciliados_para_pivot_despesas = lançamentos_conciliados_para_pivot_despesas.pivot_table(index=['CATEGORIA','LANÇAMENTO'],columns='ANO_MES', values="VALOR", aggfunc="sum",fill_value=0).round(2)
-lançamentos_conciliados_para_pivot_despesas['Total'] = lançamentos_conciliados_para_pivot_despesas.sum(axis=1)
-total_coluna_despesas = lançamentos_conciliados_para_pivot_despesas.sum(axis=0)
-#st.dataframe(lançamentos_conciliados_para_pivot_despesas)
 
 listaCat_receitas = tabela_contas_cont[tabela_contas_cont['ATRIBUIÇÃO'] == 'RECEITAS']['CONTA CONTÁBIL'].unique().tolist()
 listaCat_despesas = tabela_contas_cont[tabela_contas_cont['ATRIBUIÇÃO'] == 'DESPESAS']['CONTA CONTÁBIL'].unique().tolist()
+@st.fragment
+def makegraph():
+  ST01, ST02 = st.columns(2)
+  with ST01:
+    categoriasescolhidasrec = st.multiselect("select", listaCat_receitas)
+  with ST02:
+    categoriasescolhidasdesp = st.multiselect("select", listaCat_despesas)
 
-ST01, ST02 = st.columns(2)
-with ST01:
-  categoriasescolhidasrec = st.multiselect("select", listaCat_receitas)
-with ST02:
-  categoriasescolhidasdesp = st.multiselect("select", listaCat_despesas)
+  categoriasescolhidas = categoriasescolhidasrec + categoriasescolhidasdesp
 
-categoriasescolhidas = categoriasescolhidasrec + categoriasescolhidasdesp
+  lancamentoscatt = lançamentos[lançamentos['LANÇAMENTO'].isin(categoriasescolhidas)]
 
-lancamentoscatt = lançamentos[lançamentos['LANÇAMENTO'].isin(categoriasescolhidas)]
+  minimomes = lançamentos['ANO_MES'].min()
+  minimomes = datetime.strptime(minimomes, "%Y-%m")
+  maximomes = lançamentos['ANO_MES'].max()
+  maximomes = datetime.strptime(maximomes, "%Y-%m")
 
-minimomes = lançamentos['ANO_MES'].min()
-minimomes = datetime.strptime(minimomes, "%Y-%m")
-maximomes = lançamentos['ANO_MES'].max()
-maximomes = datetime.strptime(maximomes, "%Y-%m")
+  # Slider de período
+  periodo = st.slider("PERÍODO", 
+                      min_value=minimomes, 
+                      max_value=maximomes, 
+                      value=(minimomes, maximomes), 
+                      format="MM/YYYY")
 
-# Slider de período
-periodo = st.slider("PERÍODO", 
-                    min_value=minimomes, 
-                    max_value=maximomes, 
-                    value=(minimomes, maximomes), 
-                    format="MM/YYYY")
+  lancamentoscatt = lancamentoscatt[
+    (lancamentoscatt['DATA'] >= periodo[0]) &
+    (lancamentoscatt['DATA'] <= periodo[1] + relativedelta(months=1) - timedelta(days=1))
+]
+  #lancamentoscatt = lancamentoscatt[lancamentoscatt['DATA']<=periodo[1]+relativedelta(months=1)-timedelta(days=1)]
+  lancamentograph = pd.pivot_table(
+      lancamentoscatt,
+      index='LANÇAMENTO',
+      columns='ANO_MES',
+      values='VALOR',
+      aggfunc='sum' # Preenche com 0 onde não houver dados
+  )
+  df_plot = lancamentograph.reset_index()
 
+  # "Derretendo" o DataFrame para o formato longo (long format)
+  df_long = df_plot.melt(id_vars='LANÇAMENTO', var_name='ANO_MES', value_name='VALOR')
 
-lancamentoscatt = lancamentoscatt[lancamentoscatt['DATA']<=periodo[1]+relativedelta(months=1)-timedelta(days=1)]
-lancamentograph = pd.pivot_table(
-    lancamentoscatt,
-    index='LANÇAMENTO',
-    columns='ANO_MES',
-    values='VALOR',
-    aggfunc='sum' # Preenche com 0 onde não houver dados
-)
-df_plot = lancamentograph.reset_index()
+  # Criando o gráfico interativo de linhas
+  fig = px.line(
+      df_long,
+      x='ANO_MES',
+      y='VALOR',
+      color='LANÇAMENTO',
+      markers=True,
+      title='Despesas por Categoria ao Longo do Tempo'
+  )
 
-# "Derretendo" o DataFrame para o formato longo (long format)
-df_long = df_plot.melt(id_vars='LANÇAMENTO', var_name='ANO_MES', value_name='VALOR')
+  # Exibir o gráfico
+  st.plotly_chart(fig)
 
-# Criando o gráfico interativo de linhas
-fig = px.line(
-    df_long,
-    x='ANO_MES',
-    y='VALOR',
-    color='LANÇAMENTO',
-    markers=True,
-    title='Despesas por Categoria ao Longo do Tempo'
-)
-
-# Exibir o gráfico
-st.plotly_chart(fig)
+makegraph()
 
 try:
     # Exportar como Excel (XLSX)
