@@ -463,8 +463,8 @@ def lancamentorapido():
       elif analise == "RECEITAS":
         sheet.update_acell(f'G{tamanho_tabela}', number)
       sheet.update_acell(f'H{tamanho_tabela}', descricao)
-      sheet.update_acell(f'I{tamanho_tabela}', F)
-      sheet.update_acell(f'J{tamanho_tabela}', 'TRUE')
+      sheet.update_acell(f'I{tamanho_tabela}', 'TRUE')
+      sheet.update_acell(f'J{tamanho_tabela}', analise)
       moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == bankorcard.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == bankorcard.split(" / ")[1]),'MOEDA'].values[0]
       sheet.update_acell(f'L{tamanho_tabela}', moeda)
       sheet.update_acell(f'M{tamanho_tabela}', st.session_state.name)
