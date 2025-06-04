@@ -114,6 +114,7 @@ tamanho_tabela_contas_banco = len(tabela_contas_banco)+2
 
   # Ler a tabela de lançamentos do Google Sheets
 lançamentos = lançamentos.set_index('ID')  # Definir a coluna 'ID' como índice do DataFrame
+
 if len(lançamentos)==0:
   st.write("Sem lançamentos")
 else:
@@ -390,3 +391,90 @@ else:
       st.plotly_chart(fig3)
   else:
     st.plotly_chart(fig3)
+
+
+def lancamentorapido():
+  novolancamentodestination = st.sidebar.radio('',("BANCO","CARTÃO DE CRÉDITO"),horizontal=True)
+
+  with st.sidebar.form(key="formsidebar", clear_on_submit=True):
+    data = st.sidebar.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
+    
+    #CONTAS BANCÁRIAS#
+    conta_banco_cadastradas = workbook.get_worksheet(2)
+    tabela_contas_banco = conta_banco_cadastradas.get_all_values()
+    tabela_contas_banco = pd.DataFrame(tabela_contas_banco[1:], columns=tabela_contas_banco[0])
+    tabela_contas_banco = tabela_contas_banco.set_index('ID')
+    tabela_contas_banco_ativa = tabela_contas_banco[tabela_contas_banco['ATIVO']=='TRUE']
+    tabela_contas_banco_ativa = tabela_contas_banco_ativa[['NOME BANCO','PROPRIETÁRIO','MOEDA']]
+
+    tabela_contas_banco_ativa['BANCO_PROP'] = tabela_contas_banco_ativa["NOME BANCO"] + " / " + tabela_contas_banco_ativa["PROPRIETÁRIO"]
+    bancos = tabela_contas_banco_ativa['BANCO_PROP'].tolist()
+
+    conta_cards_cadastradas = workbook.get_worksheet(4)
+    tabela_cards_cont = conta_cards_cadastradas.get_all_values()
+    tabela_cards_cont = pd.DataFrame(tabela_cards_cont[1:], columns=tabela_cards_cont[0])
+    tabela_cards_cont = tabela_cards_cont.set_index('ID')
+    tabela_cards_cont = tabela_cards_cont[tabela_cards_cont['ATIVO']=='TRUE']
+    tabela_cards_cont = tabela_cards_cont[['CARTÃO','PROPRIETÁRIO','MOEDA','FECHAMENTO', 'VENCIMENTO']]
+
+    tabela_cards_cont['CARTÃO_PROP'] = tabela_cards_cont["CARTÃO"] + " / " + tabela_cards_cont["PROPRIETÁRIO"]
+    cards = tabela_cards_cont['CARTÃO_PROP'].tolist()
+
+    if novolancamentodestination == 'BANCO':
+      textos1 = "BANCO"
+      opcoes = bancos
+    else:
+      textos1 = "CARTÃO"
+      opcoes = cards
+
+    bankorcard = st.sidebar.selectbox(textos1,options=opcoes)
+
+    conta_cont_cadastradas = workbook.get_worksheet(3)
+    tabela_contas_cont = conta_cont_cadastradas.get_all_values()
+    tabela_contas_cont = pd.DataFrame(tabela_contas_cont[1:], columns=tabela_contas_cont[0])
+    tabela_contas_cont = tabela_contas_cont.set_index('ID')
+    tabela_contas_cont_ativa = tabela_contas_cont[tabela_contas_cont['ATIVO']=='TRUE']
+    tabela_contas_cont_ativa = tabela_contas_cont_ativa[['CONTA CONTÁBIL','CATEGORIA','ATRIBUIÇÃO']]
+
+    tabela_contas_cont_ativa['CONT_CAT'] = tabela_contas_cont_ativa['CONTA CONTÁBIL'] + " / " + tabela_contas_cont_ativa["CATEGORIA"]
+    contas = tabela_contas_cont_ativa['CONT_CAT'].tolist()
+
+    despesa = st.sidebar.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=None, placeholder="Selecione")
+    number = st.sidebar.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f")
+    descricao = st.text_input(textos['DESCRIÇÃOTEXT'])
+    descricao = str(descricao)
+    descricao = descricao.upper()
+
+    #inserirbutton = st.form_submit_button('INSERIR')
+  inserirbutton2 = st.sidebar.button('INSERIR')
+
+  if inserirbutton2:
+    if novolancamentodestination == 'BANCO':
+      sheet.add_rows(1)
+      sheet.update_acell(f'A{tamanho_tabela}', f"=ROW(B{tamanho_tabela})")
+      sheet.update_acell(f'B{tamanho_tabela}', data.strftime('%d/%m/%Y'))
+      sheet.update_acell(f'C{tamanho_tabela}', bankorcard.split(" / ")[0])
+      sheet.update_acell(f'D{tamanho_tabela}', bankorcard.split(" / ")[1])
+      sheet.update_acell(f'E{tamanho_tabela}', despesa.split(" / ")[0])
+      sheet.update_acell(f'F{tamanho_tabela}', despesa.split(" / ")[1])
+      analise = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
+      if analise == "DESPESAS":
+        sheet.update_acell(f'G{tamanho_tabela}', -number)
+      elif analise == "RECEITAS":
+        sheet.update_acell(f'G{tamanho_tabela}', number)
+      sheet.update_acell(f'H{tamanho_tabela}', descricao)
+      sheet.update_acell(f'I{tamanho_tabela}', F)
+      sheet.update_acell(f'J{tamanho_tabela}', 'TRUE')
+      moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == bankorcard.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == bankorcard.split(" / ")[1]),'MOEDA'].values[0]
+      sheet.update_acell(f'L{tamanho_tabela}', moeda)
+      sheet.update_acell(f'M{tamanho_tabela}', st.session_state.name)
+      sheet.update_acell(f'N{tamanho_tabela}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+      st.success(textos['Registro_inserido_com_sucessoTEXT'])
+      st.rerun()
+    else:
+      textos1 = "CARTÃO"
+      opcoes = cards
+
+
+
+#lancamentorapido()
