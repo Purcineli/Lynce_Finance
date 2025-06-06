@@ -147,6 +147,7 @@ tabela_cadastro_cartao = get_contas_bancarias(workbook, 4)
 
 tabela_cadastro_cartao = pd.DataFrame(tabela_cadastro_cartao[1:], columns=tabela_cadastro_cartao[0])
 tabela_cadastro_cartao = tabela_cadastro_cartao.set_index('ID')
+tabela_cadastro_cartao_ATIVOS = tabela_cadastro_cartao[tabela_cadastro_cartao['ATIVO']=='TRUE']
 
 saldo,lancamentos = st.columns([0.3,0.7],vertical_alignment='top')
 
@@ -161,21 +162,24 @@ faturas_cartao.columns = [col.strftime('%b/%Y') for col in faturas_cartao.column
 faturas_cartao = faturas_cartao.replace(0, pd.NA)
 faturas_cartao = faturas_cartao.dropna(axis=0, how='all')
 faturas_cartao = faturas_cartao.dropna(axis=1, how='all')
+faturas_cartao = faturas_cartao.fillna(0)
 st.write(faturas_cartao)
 VALORTOTAL = f"{faturas_cartao.values.sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 st.markdown(f'{textos['VALOR_TOTAL_À_PAGAR']} R$: {VALORTOTAL}')
 #st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
-listas_cartoes = list(tabela_lancamentos_cartao['CARTÃO'].dropna().unique())
-listas_owners = list(tabela_lancamentos_cartao['PROPRIETÁRIO'].dropna().unique())
+listas_cartoes = list(tabela_cadastro_cartao_ATIVOS['CARTÃO'].dropna().unique())
+listas_owners = list(tabela_cadastro_cartao_ATIVOS['PROPRIETÁRIO'].dropna().unique())
 colun1, colun2 = st.columns(2)
 with colun1:
-  lista_cartoes_selecionado = st.selectbox(textos['SELECIONE_TEXT'], listas_cartoes, index=0, key="1")
+  lista_cartoes_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_cartoes, default=listas_cartoes, key="1")
+  numberofcard = len(lista_cartoes_selecionado)
 with colun2:
-  lista_owners_selecionado = st.selectbox(textos['SELECIONE_TEXT'], listas_owners, index=0, key="2")
+  lista_owners_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_owners, default=listas_owners, key="2")
+  numberofowners = len(lista_owners_selecionado)
 
 tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
-    (tabela_lancamentos_cartao['CARTÃO'] == lista_cartoes_selecionado) & 
-    (tabela_lancamentos_cartao['PROPRIETÁRIO'] == lista_owners_selecionado)
+    (tabela_lancamentos_cartao['CARTÃO'].isin(lista_cartoes_selecionado))& 
+    (tabela_lancamentos_cartao['PROPRIETÁRIO'].isin(lista_owners_selecionado))
 ]
 
 tamanho_tabela = tabela_lancamentos_cartao.shape[0] + 2
@@ -277,7 +281,10 @@ if st.toggle(textos['CONCILIAR_FATURA']):
               data = st.date_input(textos['DATATEXT'], date.today(),format="DD/MM/YYYY")
               banco = st.selectbox(textos['SELECIONE_O_BANCOTEXT'], bancos, index=None, placeholder=textos['SELECIONE_TEXT'])
               number = abs(st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", value=df_true['VALOR'].sum()))
-              pagar_fatura = st.form_submit_button(textos['PAGAR_FATURA_TEXT'])
+              if numberofcard + numberofowners > 2:
+                pagar_fatura = st.form_submit_button(textos['PAGAR_FATURA_TEXT'], disabled=True, help="Selecione apenas um cartão e proprietário")
+              else:
+                pagar_fatura = st.form_submit_button(textos['PAGAR_FATURA_TEXT'])
 
               if pagar_fatura:
                 now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
