@@ -26,6 +26,7 @@ with language:
   st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
   st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
+  st.sidebar.page_link("pages/7_IA.py", label=textos['VERSÃO'], icon=":material/info:")
   st.sidebar.divider()
 
 with bemvido:
