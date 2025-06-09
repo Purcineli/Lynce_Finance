@@ -10,12 +10,16 @@ from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
 from dateutil.relativedelta import relativedelta
 from openai import OpenAI
+import google.generativeai as genai
+from google.generativeai import list_models
 
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
+
+genai.configure(api_key=st.secrets['geminiapikey'])
 
 idiomado_do_user = st.session_state.useridioma
 
@@ -92,39 +96,76 @@ lançamentos = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=
 lançamentos = lançamentos.reset_index()
 lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
 
+lancamentos_json = lançamentos.to_json()
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+def map_role(role):
+    if role == "model":
+        return "assistant"
+    else:
+        return role
 
-# Set a default model
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
+def fetch_gemini_response(user_query):
+    # Use the session's model to generate a response
+    response = st.session_state.chat_session.model.generate_content(user_query)
+    print(f"Gemini's Response: {response}")
+    return response.parts[0].text
 
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+#client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# Display chat messages from history on app rerun
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
 
-# Accept user input
-if prompt := st.chat_input("What is up?"):
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    # Display user message in chat message container
-    with st.chat_message("user"):
-        st.markdown(prompt)
+model = genai.GenerativeModel('gemini-2.5-flash-preview-05-20')
 
- # Display assistant response in chat message container
+
+'''# Initialize chat session in Streamlit if not already present
+if "chat_session" not in st.session_state:
+    st.session_state.chat_session = model.start_chat(history=[])
+
+# Display the chatbot's title on the page
+st.title("🤖 Chat with Gemini-Pro")
+
+# Display the chat history
+for msg in st.session_state.chat_session.history:
+    with st.chat_message(map_role(msg["role"])):
+        st.markdown(msg["content"])
+
+# Input field for user's message
+#user_input = st.chat_input("Ask Gemini-Pro...")
+user_input = lancamentos_json
+if user_input:
+    # Add user's message to chat and display it
+    st.chat_message("user").markdown(user_input)
+
+    # Send user's message to Gemini and get the response
+    gemini_response = fetch_gemini_response(user_input)
+
+    # Display Gemini's response
     with st.chat_message("assistant"):
-        stream = client.chat.completions.create(
-            model=st.session_state["openai_model"],
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
-        response = st.write_stream(stream)
-    st.session_state.messages.append({"role": "assistant", "content": response})
+        st.markdown(gemini_response)
+
+    # Add user and assistant messages to the chat history
+    st.session_state.chat_session.history.append({"role": "user", "content": user_input})
+    st.session_state.chat_session.history.append({"role": "model", "content": gemini_response})'''
+
+# --- PAGE SETUP ---
+st.set_page_config(page_title="Chat with your CSV 📊", layout="wide")
+st.title("🧠 Chat with your CSV using PandasAI + Gemini")
+
+# --- UPLOAD FILE ---
+uploaded_file = st.file_uploader("Upload your CSV", type=["csv"])
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.dataframe(df.head(10))
+
+    sdf = SmartDataframe(df, config={"llm": llm})
+
+    question = st.text_input("Ask a question about your data:")
+
+    if question:
+        with st.spinner("Thinking..."):
+            try:
+                answer = sdf.chat(question)
+                st.success("✅ Answer:")
+                st.markdown(f"**{answer}**")
+            except Exception as e:
+                st.error(f"❌ Error: {str(e)}")
