@@ -128,7 +128,7 @@ else:
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)  # Converter 'VALOR' de texto para float
   lançamentos = lançamentos[lançamentos['CONCILIADO'] == True]  # Filtrar apenas registros conciliados
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')  # Converter 'DATA' para datetime (dia/mês/ano)
-  tamanho_tabela = lançamentos.shape[0] + 2
+  tamanho_tabela = lançamentos.index.shape[0] + 2
   contas = list(lançamentos['BANCO'].dropna().unique())  # Lista de bancos únicos, ignorando valores nulos
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
