@@ -323,7 +323,7 @@ else:
               print(listofaccount)   
               progesso_barra = 0
               progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
-              
+              tamanho_tabela = tamanho_tabela+1
               for index, i in enumerate(listofaccount):
                 sheet.add_rows(1)
                 sheet.update_acell(f'A{tamanho_tabela+index}', f"=ROW(B{tamanho_tabela+index})")
