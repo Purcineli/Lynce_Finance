@@ -128,7 +128,7 @@ else:
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)  # Converter 'VALOR' de texto para float
   lançamentos = lançamentos[lançamentos['CONCILIADO'] == True]  # Filtrar apenas registros conciliados
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')  # Converter 'DATA' para datetime (dia/mês/ano)
-  tamanho_tabela = lançamentos.index.shape[0] + 2
+  tamanho_tabela = lançamentos.index.max()+1
   contas = list(lançamentos['BANCO'].dropna().unique())  # Lista de bancos únicos, ignorando valores nulos
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
@@ -189,7 +189,7 @@ else:
 
 
     st.metric(label=textos['RECEITASTEXT'], value=f'R$ {soma_receitas}', delta=diferencarec, border=True)
-    st.write(tamanho_tabela)
+
   with col04:
     diferencades = abs(soma_despesas) - abs(soma_despesas_mes_anterior)
     diferencades = f"{diferencades:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -324,7 +324,6 @@ else:
               print(listofaccount)   
               progesso_barra = 0
               progress_bar = st.progress(progesso_barra, text=textos['INSERINDO_INFORMAÇÕESTEXT'])
-              tamanho_tabela = tamanho_tabela+1
               for index, i in enumerate(listofaccount):
                 sheet.add_rows(1)
                 sheet.update_acell(f'A{tamanho_tabela+index}', f"=ROW(B{tamanho_tabela+index})")
