@@ -189,7 +189,7 @@ else:
 
 
     st.metric(label=textos['RECEITASTEXT'], value=f'R$ {soma_receitas}', delta=diferencarec, border=True)
-    print(tamanho_tabela)
+    st.write(tamanho_tabela)
   with col04:
     diferencades = abs(soma_despesas) - abs(soma_despesas_mes_anterior)
     diferencades = f"{diferencades:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
