@@ -132,7 +132,7 @@ else:
   contas = list(lançamentos['BANCO'].dropna().unique())  # Lista de bancos únicos, ignorando valores nulos
   users = list(lançamentos['PROPRIETÁRIO'].dropna().unique())  # Lista de proprietários únicos, ignorando valores nulos
   
-  print(tamanho_tabela)
+  
 
   col01, col02, col03, col04, col05 = st.columns([0.2, 0.2, 0.2, 0.2, 0.2])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
@@ -189,6 +189,7 @@ else:
 
 
     st.metric(label=textos['RECEITASTEXT'], value=f'R$ {soma_receitas}', delta=diferencarec, border=True)
+    print(tamanho_tabela)
   with col04:
     diferencades = abs(soma_despesas) - abs(soma_despesas_mes_anterior)
     diferencades = f"{diferencades:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
