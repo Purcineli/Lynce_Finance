@@ -9,17 +9,16 @@ import math
 from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
 from dateutil.relativedelta import relativedelta
-from openai import OpenAI
-import google.generativeai as genai
-from google.generativeai import list_models
-
+import pandasai as pai
+from pandasai import SmartDataframe
+from pandasai.llm import BambooLLM
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
-genai.configure(api_key=st.secrets['geminiapikey'])
+
 
 idiomado_do_user = st.session_state.useridioma
 
@@ -96,76 +95,15 @@ lançamentos = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=
 lançamentos = lançamentos.reset_index()
 lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
 
-lancamentos_json = lançamentos.to_json()
+df = pd.DataFrame({
+    "country": ["United States", "United Kingdom", "France", "Germany", "Italy", "Spain", "Canada", "Australia", "Japan", "China"],
+    "revenue": [5000, 3200, 2900, 4100, 2300, 2100, 2500, 2600, 4500, 7000]
+})
 
-def map_role(role):
-    if role == "model":
-        return "assistant"
-    else:
-        return role
-
-def fetch_gemini_response(user_query):
-    # Use the session's model to generate a response
-    response = st.session_state.chat_session.model.generate_content(user_query)
-    print(f"Gemini's Response: {response}")
-    return response.parts[0].text
-
-#client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
-
-model = genai.GenerativeModel('gemini-2.5-flash-preview-05-20')
-
-
-'''# Initialize chat session in Streamlit if not already present
-if "chat_session" not in st.session_state:
-    st.session_state.chat_session = model.start_chat(history=[])
-
-# Display the chatbot's title on the page
-st.title("🤖 Chat with Gemini-Pro")
-
-# Display the chat history
-for msg in st.session_state.chat_session.history:
-    with st.chat_message(map_role(msg["role"])):
-        st.markdown(msg["content"])
-
-# Input field for user's message
-#user_input = st.chat_input("Ask Gemini-Pro...")
-user_input = lancamentos_json
-if user_input:
-    # Add user's message to chat and display it
-    st.chat_message("user").markdown(user_input)
-
-    # Send user's message to Gemini and get the response
-    gemini_response = fetch_gemini_response(user_input)
-
-    # Display Gemini's response
-    with st.chat_message("assistant"):
-        st.markdown(gemini_response)
-
-    # Add user and assistant messages to the chat history
-    st.session_state.chat_session.history.append({"role": "user", "content": user_input})
-    st.session_state.chat_session.history.append({"role": "model", "content": gemini_response})'''
-
-# --- PAGE SETUP ---
-st.set_page_config(page_title="Chat with your CSV 📊", layout="wide")
-st.title("🧠 Chat with your CSV using PandasAI + Gemini")
-
-# --- UPLOAD FILE ---
-uploaded_file = st.file_uploader("Upload your CSV", type=["csv"])
-
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.dataframe(df.head(10))
-
+try:
+    llm = BambooLLM(api_key="PAI-50ddf571-06ff-4b01-8058-9952f1d08a51")
     sdf = SmartDataframe(df, config={"llm": llm})
-
-    question = st.text_input("Ask a question about your data:")
-
-    if question:
-        with st.spinner("Thinking..."):
-            try:
-                answer = sdf.chat(question)
-                st.success("✅ Answer:")
-                st.markdown(f"**{answer}**")
-            except Exception as e:
-                st.error(f"❌ Error: {str(e)}")
+    response = sdf.chat("Which are the top 5 countries by sales?")
+    print("Resposta do LLM:", response)
+except Exception as e:
+    print("Erro:", e)

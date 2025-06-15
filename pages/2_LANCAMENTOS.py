@@ -359,7 +359,7 @@ def Alt_lançamentos():
                   analise2 = tabela_contas_cont_ativa.loc[(tabela_contas_cont_ativa['CONTA CONTÁBIL'] == despesa2.split(" / ")[0])&(tabela_contas_cont_ativa['CATEGORIA'] == despesa2.split(" / ")[1]),'ATRIBUIÇÃO'].values[0]
                   if analise2 == "DESPESAS":
                     if estornolan2:
-                      sheet.update_acell(f'G{id_selected}', number)
+                      sheet.update_acell(f'G{id_selected}', number2)
                       print(3)
                     else:
                       sheet.update_acell(f'G{id_selected}', -number2)
