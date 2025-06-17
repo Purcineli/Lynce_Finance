@@ -153,7 +153,6 @@ else:
     .unique()
 )
   lista_prop_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_owners, listas_owners)
-
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
   lançamentos['ANO'] = lançamentos['DATA'].dt.year
   lançamentos['ANO_MES'] = lançamentos['DATA'].dt.to_period('M').astype(str)
