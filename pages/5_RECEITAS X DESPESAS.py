@@ -145,7 +145,13 @@ else:
   lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
   lançamentos['VALOR'] = lançamentos['VALOR'].astype(float)
   
-  listas_owners = list(lançamentos['PROPRIETÁRIO'].dropna().unique())
+  listas_owners = list(
+    lançamentos['PROPRIETÁRIO']
+    .dropna()
+    .loc[lançamentos['PROPRIETÁRIO'].str.strip() != '']
+    .str.strip()
+    .unique()
+)
   lista_prop_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_owners, listas_owners)
 
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
