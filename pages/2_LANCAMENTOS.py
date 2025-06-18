@@ -39,6 +39,7 @@ def logout():
     # Limpa cookies
     cookies["logged_in"] = ""
     cookies["username"] = ""
+    st.session_state.logged_in = False
     #cookies.set_expiry(0)   # 🔥 Faz o cookie expirar imediatamente
     cookies.save()
 
