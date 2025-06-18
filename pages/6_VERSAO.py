@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
 import streamlit as st
-from LYNCE import verificar_login, logout
+from LYNCE import verificar_login_cookie_ou_session, logout
 from TRADUTOR import traaducaoapp
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
-
+verificar_login_cookie_ou_session()
 idiomado_do_user = st.session_state.useridioma
 
 
