@@ -10,7 +10,7 @@ from LYNCE import verificar_login, logout, cookies
 from gspread.exceptions import APIError
 import time
 from TRADUTOR import traaducaoapp
-
+from streamlit_cookies_manager import EncryptedCookieManager
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #col1,col2,col3 = st.columns(3)
 #with col2:
@@ -22,6 +22,9 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 language_of_page = st.session_state.useridioma
 
+cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123")
+if not cookies.ready():
+    st.stop()
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
