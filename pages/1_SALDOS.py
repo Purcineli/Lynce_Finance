@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 import plotly.express as px
 import numpy as np
 import json
-from LYNCE import verificar_login, logout, inicializar_cookies
+from LYNCE import verificar_login, logout
 from gspread.exceptions import APIError
 import time
 from TRADUTOR import traaducaoapp
@@ -21,7 +21,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.stop()
 
 language_of_page = st.session_state.useridioma
-cookies = inicializar_cookies()
+
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)

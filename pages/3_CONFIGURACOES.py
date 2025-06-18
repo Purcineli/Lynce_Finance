@@ -7,7 +7,7 @@ from gspread.exceptions import APIError
 import time
 import plotly.express as px
 import numpy as np
-from LYNCE import verificar_login, logout, inicializar_cookies
+from LYNCE import verificar_login, logout
 from TRADUTOR import traaducaoapp
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -18,7 +18,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 hoje = pd.to_datetime(date.today()) 
 language_of_page = st.session_state.useridioma
-cookies = inicializar_cookies()
+
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)

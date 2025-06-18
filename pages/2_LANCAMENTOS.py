@@ -24,12 +24,7 @@ language_of_page = st.session_state.useridioma
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
 
-cookies = EncryptedCookieManager(
-    prefix="login_LYNCE",
-    password="JAYTEST123"  # coloque sua senha forte aqui
-)
-if not cookies.ready():
-    st.stop()
+
 
 
 
@@ -46,7 +41,7 @@ with language:
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
   st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
   if st.sidebar.button("🚪 Logout"):
-        logout()
+    logout()
   st.sidebar.divider()
 
 

@@ -10,7 +10,7 @@ from TRADUTOR import traaducaoapp
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import verificar_login, logout, inicializar_cookies
+from LYNCE import verificar_login, logout
 
 
 
@@ -20,7 +20,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.stop()
 
 idiomado_do_user = st.session_state.useridioma
-cookies = inicializar_cookies()
+
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(idiomado_do_user)

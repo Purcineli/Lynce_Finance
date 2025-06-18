@@ -4,7 +4,7 @@ from streamlit_cookies_manager import EncryptedCookieManager
 
 st.set_page_config(layout="wide")
 
-cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123", key="cookies_lynce")
+cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123")
 if not cookies.ready():
     st.stop()
 
