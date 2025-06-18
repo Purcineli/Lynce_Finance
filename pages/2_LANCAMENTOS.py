@@ -32,14 +32,12 @@ if not cookies.ready():
     st.stop()
 
 def logout():
-    # Limpa session_state
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-        
+    st.session_state.logged_in = False
+    print("logout com sucesso")
     # Limpa cookies
     cookies["logged_in"] = ""
     cookies["username"] = ""
-    st.session_state.logged_in = False
+    
     #cookies.set_expiry(0)   # 🔥 Faz o cookie expirar imediatamente
     cookies.save()
 
