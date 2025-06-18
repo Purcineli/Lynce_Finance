@@ -25,8 +25,8 @@ idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
 
 cookies = EncryptedCookieManager(
-    prefix="login_",
-    password="sua-senha-super-secreta"  # coloque sua senha forte aqui
+    prefix="login_LYNCE",
+    password="JAYTEST123"  # coloque sua senha forte aqui
 )
 if not cookies.ready():
     st.stop()

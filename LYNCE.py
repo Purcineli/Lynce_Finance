@@ -6,8 +6,8 @@ st.set_page_config(layout="wide")
 
 # === Inicializa cookies ===
 cookies = EncryptedCookieManager(
-    prefix="login_",
-    password="sua-senha-super-secreta"  # Troque por uma senha forte
+    prefix="login_LYNCE",
+    password="JAYTEST123"  # Troque por uma senha forte
 )
 if not cookies.ready():
     st.stop()
