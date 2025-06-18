@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 import plotly.express as px
 import numpy as np
 import json
-from LYNCE import verificar_login, verificar_login_cookie_ou_session
+from LYNCE import verificar_login, verificar_login_cookie_ou_session, logout
 from gspread.exceptions import APIError
 import time
 from TRADUTOR import traaducaoapp
