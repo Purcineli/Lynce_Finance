@@ -58,7 +58,7 @@ def tela_login():
                 # Grava os cookies (login persiste após refresh)
                 cookies["logged_in"] = "true"
                 cookies["username"] = username
-                cookies.set_expiry(days=1)  # <<< Definindo expiração de 1 dia
+                #cookies.set_expiry(days=1)  # <<< Definindo expiração de 1 dia
                 cookies.save()
 
                 st.success("Login bem-sucedido!")

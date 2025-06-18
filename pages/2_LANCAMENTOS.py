@@ -39,12 +39,13 @@ def logout():
     # Limpa cookies
     cookies["logged_in"] = ""
     cookies["username"] = ""
-    cookies.set_expiry(0)   # 🔥 Faz o cookie expirar imediatamente
+    #cookies.set_expiry(0)   # 🔥 Faz o cookie expirar imediatamente
     cookies.save()
 
     
     st.success("Logout realizado com sucesso!")
-    st.rerun()  # Atualiza a página, levando o usuário de volta para a tela de login
+    st.switch_page('LYNCE.py')
+    # Atualiza a página, levando o usuário de volta para a tela de login
 
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
