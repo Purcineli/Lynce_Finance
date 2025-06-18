@@ -10,7 +10,7 @@ import numpy as np
 import math
 from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
-
+from streamlit_cookies_manager import EncryptedCookieManager
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 
@@ -24,6 +24,18 @@ language_of_page = st.session_state.useridioma
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
 
+def logout():
+    # Limpa session_state
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+        
+    # Limpa cookies
+    cookies["logged_in"] = "false"
+    cookies["username"] = ""
+    cookies.save()
+    
+    st.success("Logout realizado com sucesso!")
+    st.rerun()  # Atualiza a página, levando o usuário de volta para a tela de login
 
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
@@ -37,7 +49,10 @@ with language:
   st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
   st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
+  if st.sidebar.button("🚪 Logout"):
+        logout()
   st.sidebar.divider()
+
 
 
 with bemvido:
