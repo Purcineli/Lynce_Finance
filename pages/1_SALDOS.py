@@ -17,13 +17,15 @@ st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #with col2:
   #st.image('https://i.postimg.cc/yxJnfSLs/logo-lynce.png',)
 
+verificar_login_cookie_ou_session()
+
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
 language_of_page = st.session_state.useridioma
 
-verificar_login_cookie_ou_session()
+
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
