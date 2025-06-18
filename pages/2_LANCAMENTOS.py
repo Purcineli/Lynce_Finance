@@ -24,6 +24,13 @@ language_of_page = st.session_state.useridioma
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
 
+cookies = EncryptedCookieManager(
+    prefix="login_",
+    password="sua-senha-super-secreta"  # coloque sua senha forte aqui
+)
+if not cookies.ready():
+    st.stop()
+    
 def logout():
     # Limpa session_state
     for key in list(st.session_state.keys()):
