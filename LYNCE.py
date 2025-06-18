@@ -1,6 +1,5 @@
 import streamlit as st
 from dependencies import getloginandpasswords
-from streamlit_cookies_manager import EncryptedCookieManager
 from cookies_manager import cookies
 
 st.set_page_config(layout="wide")
