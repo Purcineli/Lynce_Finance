@@ -24,6 +24,9 @@ language_of_page = st.session_state.useridioma
 
 verificar_login_cookie_ou_session()
 def logout():
+    cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123")
+    if not cookies.ready():
+      st.stop()
     st.session_state.logged_in = False
     print("logout com sucesso")
     # Limpa cookies
