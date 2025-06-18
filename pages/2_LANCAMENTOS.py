@@ -8,7 +8,7 @@ import time
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import verificar_login
+from LYNCE import verificar_login, logout
 from TRADUTOR import traaducaoapp
 from streamlit_cookies_manager import EncryptedCookieManager
 
@@ -31,20 +31,7 @@ cookies = EncryptedCookieManager(
 if not cookies.ready():
     st.stop()
 
-def logout():
-    st.session_state.logged_in = False
-    print("logout com sucesso")
-    # Limpa cookies
-    cookies["logged_in"] = ""
-    cookies["username"] = ""
-    
-    #cookies.set_expiry(0)   # 🔥 Faz o cookie expirar imediatamente
-    cookies.save()
 
-    
-    st.success("Logout realizado com sucesso!")
-    st.switch_page('LYNCE.py')
-    # Atualiza a página, levando o usuário de volta para a tela de login
 
 # Agora é seguro acessar os valores da sessão
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')

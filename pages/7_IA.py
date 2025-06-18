@@ -6,12 +6,10 @@ from datetime import date, timedelta, datetime
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import verificar_login
+from LYNCE import verificar_login, logout, inicializar_cookies
 from TRADUTOR import traaducaoapp
 from dateutil.relativedelta import relativedelta
-import pandasai as pai
-from pandasai import SmartDataframe
-from pandasai.llm import BambooLLM
+
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
@@ -100,10 +98,3 @@ df = pd.DataFrame({
     "revenue": [5000, 3200, 2900, 4100, 2300, 2100, 2500, 2600, 4500, 7000]
 })
 
-try:
-    llm = BambooLLM(api_key="PAI-50ddf571-06ff-4b01-8058-9952f1d08a51")
-    sdf = SmartDataframe(df, config={"llm": llm})
-    response = sdf.chat("Which are the top 5 countries by sales?")
-    print("Resposta do LLM:", response)
-except Exception as e:
-    print("Erro:", e)

@@ -7,7 +7,7 @@ from gspread.exceptions import APIError
 import time
 import plotly.express as px
 import numpy as np
-from LYNCE import verificar_login
+from LYNCE import verificar_login, logout, inicializar_cookies
 from TRADUTOR import traaducaoapp
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -18,7 +18,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 hoje = pd.to_datetime(date.today()) 
 language_of_page = st.session_state.useridioma
-
+cookies = inicializar_cookies()
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
@@ -35,6 +35,8 @@ with language:
   st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
   st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
+  if st.sidebar.button("🚪 Logout"):
+    logout()
   st.sidebar.divider()
 
 

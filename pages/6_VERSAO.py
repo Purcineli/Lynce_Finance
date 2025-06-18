@@ -1,14 +1,14 @@
 import streamlit as st
 import pandas as pd
 import streamlit as st
-from LYNCE import verificar_login
+from LYNCE import verificar_login, logout, inicializar_cookies
 from TRADUTOR import traaducaoapp
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.stop()
 
 idiomado_do_user = st.session_state.useridioma
-
+cookies = inicializar_cookies()
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
@@ -27,6 +27,8 @@ with language:
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
   st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
   st.sidebar.page_link("pages/7_IA.py", label=textos['VERSÃO'], icon=":material/info:")
+  if st.sidebar.button("🚪 Logout"):
+    logout()
   st.sidebar.divider()
 
 with bemvido:
