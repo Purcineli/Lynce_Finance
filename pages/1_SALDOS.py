@@ -22,7 +22,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 language_of_page = st.session_state.useridioma
 
-verificar_login_cookie_ou_session
+verificar_login_cookie_ou_session()
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
