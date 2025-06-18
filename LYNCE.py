@@ -4,16 +4,11 @@ from streamlit_cookies_manager import EncryptedCookieManager
 
 st.set_page_config(layout="wide")
 
-def inicializar_cookies():
-    cookies = EncryptedCookieManager(
-        prefix="login_LYNCE",
-        password="JAYTEST123"  # 🔒 Use uma senha forte e segura
-    )
-    if not cookies.ready():
-        st.stop()
-    return cookies
+cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123", key="cookies_lynce")
+if not cookies.ready():
+    st.stop()
 
-cookies = inicializar_cookies()
+
 # === Função para verificar o login ===
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()
@@ -106,7 +101,6 @@ def logout():
 
 # === Função principal ===
 def main():
-    cookies = inicializar_cookies()
     if verificar_login_cookie_ou_session():
         # Sidebar com informações do usuário e botão de logout
         with st.sidebar:
