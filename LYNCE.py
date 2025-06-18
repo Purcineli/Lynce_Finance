@@ -1,12 +1,11 @@
 import streamlit as st
 from dependencies import getloginandpasswords
 from streamlit_cookies_manager import EncryptedCookieManager
+from cookies_manager import cookies
 
 st.set_page_config(layout="wide")
 
-cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123")
-if not cookies.ready():
-    st.stop()
+
 
 
 # === Função para verificar o login ===
