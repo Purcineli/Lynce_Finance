@@ -30,15 +30,15 @@ cookies = EncryptedCookieManager(
 )
 if not cookies.ready():
     st.stop()
-    
+
 def logout():
     # Limpa session_state
     for key in list(st.session_state.keys()):
         del st.session_state[key]
         
     # Limpa cookies
-    cookies["logged_in"] = "false"
-    cookies["username"] = ""
+    cookies.delete("logged_in")
+    cookies.delete("username")
     cookies.save()
     
     st.success("Logout realizado com sucesso!")
