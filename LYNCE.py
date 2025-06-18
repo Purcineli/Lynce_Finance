@@ -4,17 +4,19 @@ from streamlit_cookies_manager import EncryptedCookieManager
 
 st.set_page_config(layout="wide")
 
-# === Inicializa cookies ===
-def initialize_cookies():
+def inicializar_cookies():
     cookies = EncryptedCookieManager(
         prefix="login_LYNCE",
-        password="JAYTEST123"  # Troque por uma senha forte
+        password="JAYTEST123"  # 🔒 Use uma senha forte e segura
     )
     if not cookies.ready():
         st.stop()
+    return cookies
 
+cookies = inicializar_cookies()
 # === Função para verificar o login ===
 def verificar_login(username, password):
+    cookies = inicializar_cookies()
     lgnpass = getloginandpasswords()
     try:
         if lgnpass[lgnpass['LOGIN'] == username].index[0] >= 0:
@@ -26,6 +28,7 @@ def verificar_login(username, password):
 
 # === Função para carregar dados do usuário ===
 def carregar_dados_usuario(username):
+    cookies = inicializar_cookies()
     lgnpass = getloginandpasswords()
     user = lgnpass[lgnpass['LOGIN'] == username].index[0]
     nome = lgnpass['NOME'][user] + " " + lgnpass['SOBRENOME'][user]
@@ -36,7 +39,7 @@ def carregar_dados_usuario(username):
 
 # === Função para a tela de login ===
 def tela_login():
-    initialize_cookies()
+    cookies = inicializar_cookies()
     iamge, logn, cont = st.columns([0.3, 0.3, 0.4])
     with iamge:
         st.image('https://i.ibb.co/xKhjx0ny/lynce-versao.png')
@@ -70,6 +73,7 @@ def tela_login():
 
 # === Função para checar login ativo ===
 def verificar_login_cookie_ou_session():
+    cookies = inicializar_cookies()
     if st.session_state.get("logged_in"):
         return True
     elif cookies.get("logged_in") == "true":
@@ -90,6 +94,7 @@ def verificar_login_cookie_ou_session():
 
 # === Função de logout ===
 def logout():
+    cookies = inicializar_cookies()
     st.session_state.logged_in = False
     print("logout com sucesso")
     # Limpa cookies
@@ -106,7 +111,7 @@ def logout():
 
 # === Função principal ===
 def main():
-    initialize_cookies()
+    cookies = inicializar_cookies()
     if verificar_login_cookie_ou_session():
         # Sidebar com informações do usuário e botão de logout
         with st.sidebar:
