@@ -25,7 +25,9 @@ idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
 
 
-
+cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123")
+if not cookies.ready():
+    st.stop()
 
 
 # Agora é seguro acessar os valores da sessão
