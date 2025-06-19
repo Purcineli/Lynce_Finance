@@ -132,7 +132,7 @@ if togglecontas_bancarias:
         new_bank = str(new_bank)
         new_bank = new_bank.upper()
       with prop:
-        nowner = st.multiselect(textos['PROPRIETÁRIO_TEXT'],accept_new_options=True)
+        nowner = st.multiselect(textos['PROPRIETÁRIO_TEXT'], options=lista_owners,accept_new_options=True)
         nowner = st.text_input(textos['PROPRIETÁRIO_TEXT'])
         nowner = str(nowner)
         nowner = nowner.upper()
