@@ -278,7 +278,7 @@ if togglecontas_contábeis:
   tabela_contas_cont = tabela_contas_cont[~tabela_contas_cont.index.isna()]
   tabela_contas_cont.index = tabela_contas_cont.index.astype(int)
   tamanho_tabela_contas_cont = tabela_contas_cont.shape[0] + 2
-
+  listcategorias = tabela_contas_cont['CATEGORIA'].unique().tolist()
   st.title(textos['CONTASCONTABEISTEXT'])
   inativos_contas_cont, ativos_contas_cont = st.columns(2)
   with inativos_contas_cont:
@@ -299,7 +299,7 @@ if togglecontas_contábeis:
         new_conta = str(new_conta)
         new_conta = new_conta.upper()
       with cat:
-        new_cat = st.text_input(textos['CATEGORIA_TEXT'])
+        new_cat = st.selectbox(textos['CATEGORIA_TEXT'], options =listcategorias,accept_new_option=True)
         new_cat = str(new_cat)
         new_cat = new_cat.upper()
       with atr:
@@ -668,7 +668,7 @@ if togglecontas_card:
   tabela_cartoes = tabela_cartoes[~tabela_cartoes.index.isna()]
   tabela_cartoes.index = tabela_cartoes.index.astype(int)
   tamanho_tabela_cartoes = tabela_cartoes.shape[0] + 2
-
+  listaprop = tabela_cartoes['PROPRIETÁRIO'].unique().tolist()
 
   st.divider() 
   st.title(textos['CARTOES_DE_CREDITOTEXT'])
@@ -691,7 +691,7 @@ if togglecontas_card:
         new_card = str(new_card)
         new_card = new_card.upper()
       with prop2:
-        newcardowner = st.text_input(textos['PROPRIETÁRIO_TEXT'], key="new owner")
+        newcardowner = st.selectbox(textos['PROPRIETÁRIO_TEXT'],options =listaprop,accept_new_option=True, key="new owner")
         newcardowner = str(newcardowner)
         newcardowner = newcardowner.upper()
       with but3:
