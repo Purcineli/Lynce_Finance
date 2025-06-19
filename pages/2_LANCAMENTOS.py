@@ -14,8 +14,10 @@ from streamlit_cookies_manager import EncryptedCookieManager
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 
-verificar_login_cookie_ou_session()
-if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+if verificar_login_cookie_ou_session():
+  continue
+else:
+  if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.switch_page('LYNCE.py')
 
