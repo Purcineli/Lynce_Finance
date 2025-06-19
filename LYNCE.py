@@ -100,14 +100,7 @@ def logout():
 # === Função principal ===
 def main():
     if verificar_login_cookie_ou_session():
-        # Sidebar com informações do usuário e botão de logout
-        with st.sidebar:
-            st.markdown(f"👤 **Usuário:** {st.session_state.name}")
-            st.markdown(f"📄 **Arquivo:** {st.session_state.arquivo}")
-            st.markdown(f"🌐 **Idioma:** {st.session_state.useridioma}")
-            if st.button("🚪 Logout"):
-                logout()
-
+        # Sidebar com informações do usuário e botão de logou
         st.switch_page('pages/1_SALDOS.py')
     else:
         tela_login()
