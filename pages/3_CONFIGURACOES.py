@@ -13,7 +13,7 @@ from TRADUTOR import traaducaoapp
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
-    st.stop()
+    st.switch_page('LYNCE.py')
 
 
 hoje = pd.to_datetime(date.today()) 
@@ -110,7 +110,7 @@ if togglecontas_bancarias:
   tabela_contas_banco = tabela_contas_banco[~tabela_contas_banco.index.isna()]
   tabela_contas_banco.index = tabela_contas_banco.index.astype(int)
   tamanho_tabela_contas_banco = tabela_contas_banco.shape[0] + 2
-
+  lista_owners = tabela_contas_banco['PROPRIETÁRIO'].unique().tolist()
 
   st.title(textos['CONTASBANCARIASTEXT'])
   inativos, ativos = st.columns(2)
@@ -132,6 +132,7 @@ if togglecontas_bancarias:
         new_bank = str(new_bank)
         new_bank = new_bank.upper()
       with prop:
+        nowner = st.multiselect(textos['PROPRIETÁRIO_TEXT'],accept_new_options=True)
         nowner = st.text_input(textos['PROPRIETÁRIO_TEXT'])
         nowner = str(nowner)
         nowner = nowner.upper()
