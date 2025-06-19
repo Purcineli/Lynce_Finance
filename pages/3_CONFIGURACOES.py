@@ -299,7 +299,7 @@ if togglecontas_contábeis:
         new_conta = str(new_conta)
         new_conta = new_conta.upper()
       with cat:
-        new_cat = st.selectbox(textos['CATEGORIA_TEXT'], options =listcategorias,accept_new_option=True)
+        new_cat = st.selectbox(textos['CATEGORIA_TEXT'], options =listcategorias,accept_new_options=True)
         new_cat = str(new_cat)
         new_cat = new_cat.upper()
       with atr:
@@ -691,7 +691,7 @@ if togglecontas_card:
         new_card = str(new_card)
         new_card = new_card.upper()
       with prop2:
-        newcardowner = st.selectbox(textos['PROPRIETÁRIO_TEXT'],options =listaprop,accept_new_option=True, key="new owner")
+        newcardowner = st.selectbox(textos['PROPRIETÁRIO_TEXT'],options =listaprop,accept_new_options=True, key="new owner")
         newcardowner = str(newcardowner)
         newcardowner = newcardowner.upper()
       with but3:
