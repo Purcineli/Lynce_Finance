@@ -247,7 +247,7 @@ else:
       lançamentos2
       .set_index('DATA')
       .groupby('PROPRIETÁRIO')['ACUMULADO']
-      .resample('ME')
+      .resample('M')
       .last()
       .reset_index()
   )
@@ -255,7 +255,7 @@ else:
       lançamentos_filtrado12
       .set_index('DATA')
       .groupby('PROPRIETÁRIO')['ACUMULADO']
-      .resample('ME')
+      .resample('M')
       .last()
       .reset_index()
   )
@@ -264,7 +264,7 @@ else:
       lançamentos_filtrado
       .set_index('DATA')
       .groupby(['BANCO', 'PROPRIETÁRIO'])['ACUMULADO']
-      .resample('ME')
+      .resample('M')
       .last()
       .reset_index()
   )
@@ -272,7 +272,7 @@ else:
       lançamentos_filtrado2
       .set_index('DATA')
       .groupby(['BANCO', 'PROPRIETÁRIO'])['ACUMULADO']
-      .resample('ME')
+      .resample('M')
       .last()
       .reset_index()
   )
