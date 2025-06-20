@@ -12,6 +12,7 @@ from gspread.exceptions import APIError
 import time
 from TRADUTOR import traaducaoapp
 from streamlit_cookies_manager import EncryptedCookieManager
+from zoneinfo import ZoneInfo
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 #col1,col2,col3 = st.columns(3)
 #with col2:
@@ -25,7 +26,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 language_of_page = st.session_state.useridioma
 
-
+today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
 
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(language_of_page)
@@ -142,7 +143,7 @@ else:
 
   col01, col02, col03, col04, col05 = st.columns([0.2, 0.2, 0.2, 0.2, 0.2])  # Define layout de 3 colunas com larguras proporcionais
   with col01:
-    data_saldo = pd.to_datetime(st.date_input(textos['DATA_SALDOTEXT'], date.today(),format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
+    data_saldo = pd.to_datetime(st.date_input(textos['DATA_SALDOTEXT'], today,format="DD/MM/YYYY"))  # Input de data para filtrar os saldos
 
     df_saldos_user = lançamentos[lançamentos['DATA'] <= data_saldo]  # Filtra lançamentos com data menor ou igual à selecionada
     df_saldo_user1 = df_saldos_user['VALOR'].sum().round(2)
@@ -311,7 +312,7 @@ else:
       if ajustar:
         with st.form(key="editar_form", border=False):
           editar_df = st.data_editor(df_saldos_user_filtrado)
-          data = st.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
+          data = st.date_input(textos['DATATEXT'], today, format="DD/MM/YYYY")
           contacont = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], options=contas_contabeis, index = None)
           check = st.form_submit_button(textos['INSERIRTEXT'])
 
@@ -403,7 +404,7 @@ def lancamentorapido():
   novolancamentodestination = st.sidebar.radio('',("BANCO","CARTÃO DE CRÉDITO"),horizontal=True)
 
   with st.sidebar.form(key="formsidebar", clear_on_submit=True):
-    data = st.sidebar.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
+    data = st.sidebar.date_input(textos['DATATEXT'], today, format="DD/MM/YYYY")
     
     #CONTAS BANCÁRIAS#
     conta_banco_cadastradas = workbook.get_worksheet(2)
@@ -471,7 +472,7 @@ def lancamentorapido():
       sheet.update_acell(f'H{tamanho_tabela}', descricao)
       sheet.update_acell(f'I{tamanho_tabela}', 'TRUE')
       sheet.update_acell(f'J{tamanho_tabela}', analise)
-      moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == bankorc.ard.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == bankorcard.split(" / ")[1]),'MOEDA'].values[0]
+      moeda = tabela_contas_banco_ativa.loc[(tabela_contas_banco_ativa['NOME BANCO'] == bankorcard.split(" / ")[0])&(tabela_contas_banco_ativa['PROPRIETÁRIO'] == bankorcard.split(" / ")[1]),'MOEDA'].values[0]
       sheet.update_acell(f'L{tamanho_tabela}', moeda)
       sheet.update_acell(f'M{tamanho_tabela}', st.session_state.name)
       sheet.update_acell(f'N{tamanho_tabela}', datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
