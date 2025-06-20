@@ -11,7 +11,7 @@ import math
 from LYNCE import verificar_login_cookie_ou_session, logout
 from TRADUTOR import traaducaoapp
 from streamlit_cookies_manager import EncryptedCookieManager
-
+from zoneinfo import ZoneInfo
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 
 
@@ -29,6 +29,8 @@ idxidioma = idiomadasdisponiveis.index(language_of_page)
 cookies = EncryptedCookieManager(prefix="login_LYNCE",password="JAYTEST123")
 if not cookies.ready():
     st.stop()
+
+today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
 
 
 # Agora é seguro acessar os valores da sessão
@@ -89,7 +91,7 @@ except APIError:
   time.sleep(tempo_espera)
   st.rerun()
 
-hoje = pd.to_datetime(date.today()) 
+hoje = pd.to_datetime(today) 
 
 lançamentos = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
 #CONTAS BANCÁRIAS#
@@ -124,10 +126,10 @@ st.divider()
 
 col01, col02 = st.columns(2)
 with col01:
-  data_inicio = st.date_input(textos['DATA INICIAL TEXT'], date.today() - timedelta(days=30),format="DD/MM/YYYY")
+  data_inicio = st.date_input(textos['DATA INICIAL TEXT'], today - timedelta(days=30),format="DD/MM/YYYY")
   data_inicio = pd.to_datetime(data_inicio)
 with col02:
-  data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(), format="DD/MM/YYYY")
+  data_final = st.date_input(textos['DATA FINAL TEXT'], today, format="DD/MM/YYYY")
   data_final = pd.to_datetime(data_final)
 
 
@@ -233,7 +235,7 @@ def Alt_lançamentos():
     with inserir:
         st.write(textos['Inserir_novo_registroTEXT'])
         with st.form(clear_on_submit=True,key="form_inserir", border=False):
-            data = st.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
+            data = st.date_input(textos['DATATEXT'], today, format="DD/MM/YYYY")
             banco = st.selectbox(textos['SELECIONE_O_BANCOTEXT'], bancos, index=None, placeholder="Selecione")
             despesa = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=None, placeholder="Selecione")
             valor, estorno = st.columns(2, vertical_alignment="bottom")
@@ -405,7 +407,7 @@ def inserir_lançamento():
     with transf:
         st.write(textos['Inserir_nova_transferência_entre_contasTEXT'])
         with st.form(clear_on_submit=True, key="form_inserir_transf", border=False):
-            data_transf = st.date_input(textos['DATATEXT'], date.today(),format="DD/MM/YYYY")
+            data_transf = st.date_input(textos['DATATEXT'], today,format="DD/MM/YYYY")
             banco_origem = st.selectbox(textos['SELECIONE_O_BANCO_DE_ORIGEMTEXT'], bancos, index=None, placeholder="Selecione", key="banco_origem")
             banco_destino = st.selectbox(textos['SELECIONE_O_BANCO_DE_DESTINOTEXT'], bancos, index=None, placeholder="Selecione", key="banco_destino")
             valor = st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", key="valor_transf")

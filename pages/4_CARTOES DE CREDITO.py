@@ -11,7 +11,7 @@ import plotly.express as px
 import numpy as np
 import math
 from LYNCE import verificar_login, logout
-
+from zoneinfo import ZoneInfo
 
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -41,6 +41,7 @@ with language:
     logout()
   st.sidebar.divider()
 
+today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
 with bemvido:
   st.write(f"{textos['BEMVINDO']} {st.session_state.name}!")
   
@@ -280,7 +281,7 @@ if st.toggle(textos['CONCILIAR_FATURA']):
           with st.popover(textos['PAGAR_FATURA_TEXT']):
               fatura_data = datetime.strptime(fatura_str, '%b/%Y').replace(day=1)
               fatura_data_str = fatura_data.strftime('%Y-%m-%d')
-              data = st.date_input(textos['DATATEXT'], date.today(),format="DD/MM/YYYY")
+              data = st.date_input(textos['DATATEXT'], today,format="DD/MM/YYYY")
               banco = st.selectbox(textos['SELECIONE_O_BANCOTEXT'], bancos, index=None, placeholder=textos['SELECIONE_TEXT'])
               number = abs(st.number_input(textos['INSIRA_O_VALORTEXT'], format="%0.2f", value=df_true['VALOR'].sum()))
               if numberofcard + numberofowners > 2:
@@ -339,11 +340,11 @@ if st.toggle(textos['CONCILIAR_FATURA']):
 else:
   dataini, datafim, optiondata =st.columns(3, vertical_alignment="center")
   with dataini:
-    data_inicio = st.date_input(textos['DATA INICIAL TEXT'], date.today() - timedelta(days=30), format="DD/MM/YYYY")
+    data_inicio = st.date_input(textos['DATA INICIAL TEXT'], today - timedelta(days=30), format="DD/MM/YYYY")
     data_inicio = pd.to_datetime(data_inicio,format="DD/MM/YYYY")
     
   with datafim:
-    data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(), format="DD/MM/YYYY")
+    data_final = st.date_input(textos['DATA FINAL TEXT'], today, format="DD/MM/YYYY")
     data_final = pd.to_datetime(data_final)
 
   with optiondata:
@@ -467,7 +468,7 @@ def Alt_lançamentos_CC():
     with inserir:
         st.write(textos['Inserir_novo_registroTEXT'])
         with st.form(clear_on_submit=True, key="form_inserir", border=False):
-            data = st.date_input(textos['DATATEXT'], date.today(), format="DD/MM/YYYY")
+            data = st.date_input(textos['DATATEXT'], today, format="DD/MM/YYYY")
             cart = st.selectbox(textos['SELECIONE_O_CARTAO_TEXT'], cards, index=None, placeholder="Selecione")
             despesa = st.selectbox(textos['SELECIONE_O_LANÇAMENTOTEXT'], contas, index=None, placeholder="Selecione")
             valor, estorno = st.columns(2, vertical_alignment="bottom")
@@ -486,7 +487,7 @@ def Alt_lançamentos_CC():
               parcelas = st.number_input(textos['NUMERO_DE_PARCELAS_TEXT'],1,36)
             with fat:
               
-              data2 = st.date_input(textos['FATURA_TEXT'], date.today(),format="DD/MM/YYYY")
+              data2 = st.date_input(textos['FATURA_TEXT'], today,format="DD/MM/YYYY")
               
             submit = st.form_submit_button(label=textos['INSERIRTEXT'])
 

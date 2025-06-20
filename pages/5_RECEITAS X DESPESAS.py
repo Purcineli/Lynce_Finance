@@ -9,7 +9,7 @@ import math
 from LYNCE import verificar_login, logout
 from TRADUTOR import traaducaoapp
 from dateutil.relativedelta import relativedelta
-
+from zoneinfo import ZoneInfo
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:
@@ -18,7 +18,7 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
 
 idiomado_do_user = st.session_state.useridioma
 
-
+today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
 idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
 idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
 # Agora é seguro acessar os valores da sessão
@@ -71,7 +71,7 @@ def lerdados(sheet_id_login_password,sheet_name_login_password):
 #sheetname = "records"
 lançamentos, workbook = lerdados(sheeitid, sheetname)
 sheet = workbook.get_worksheet(0)
-hoje = pd.to_datetime(date.today()) 
+hoje = pd.to_datetime(today) 
 lançamentos = sheet.get_all_values()
 lançamentos_CONTAS = pd.DataFrame(lançamentos[1:], columns=lançamentos[0])
 lançamentos_CONTAS = lançamentos_CONTAS.set_index('ID')
@@ -127,10 +127,10 @@ all_records = st.toggle(textos['INCLUIR_LANÇAMENTOS_NÃO_CONCILIADOS_TEXT'])
 if not project_report:
   col01, col02 = st.columns(2)
   with col01:
-    data_inicio = st.date_input(textos['DATA INICIAL TEXT'], date.today().replace(day=1), format="DD/MM/YYYY")
+    data_inicio = st.date_input(textos['DATA INICIAL TEXT'], today.replace(day=1), format="DD/MM/YYYY")
     data_inicio = pd.to_datetime(data_inicio)
   with col02:
-    data_final = st.date_input(textos['DATA FINAL TEXT'], date.today(),format="DD/MM/YYYY")
+    data_final = st.date_input(textos['DATA FINAL TEXT'], today,format="DD/MM/YYYY")
     data_final = pd.to_datetime(data_final)
 else:
   PROJECT_CHOSEN = st.selectbox(textos['SELECIONE_O_PROJETOTEXT'], options=lista_project)
