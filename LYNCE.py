@@ -2,111 +2,59 @@ import streamlit as st
 from dependencies import getloginandpasswords
 st.set_page_config(layout="wide")
 
-from cookies_manager import cookies
-
-
-
-
-
-
-# === Função para verificar o login ===
+# Função para verificar o login (simples, sem hash de senha)
 def verificar_login(username, password):
     lgnpass = getloginandpasswords()
     try:
-        if lgnpass[lgnpass['LOGIN'] == username].index[0] >= 0:
-            user = lgnpass[lgnpass['LOGIN'] == username].index[0]
+        if lgnpass[lgnpass['LOGIN']==username].index[0] >= 0:
+            user = lgnpass[lgnpass['LOGIN']==username].index[0]
+            print(user)
             if password == lgnpass['SENHA'][user]:
                 return True
     except:
         return False
 
-# === Função para carregar dados do usuário ===
-def carregar_dados_usuario(username):
-    lgnpass = getloginandpasswords()
-    user = lgnpass[lgnpass['LOGIN'] == username].index[0]
-    nome = lgnpass['NOME'][user] + " " + lgnpass['SOBRENOME'][user]
-    id_arquivo = lgnpass['ID ARQUIVO'][user]
-    nome_arquivo = lgnpass['ARQUIVO'][user]
-    idioma = lgnpass['IDIOMA'][user]
-    return nome, id_arquivo, nome_arquivo, idioma
-
-# === Função para a tela de login ===
+# Função para a tela de login
 def tela_login():
-    iamge, logn, cont = st.columns([0.3, 0.3, 0.4])
+    iamge, logn,cont = st.columns([0.3,0.3,0.4])
     with iamge:
         st.image('https://i.ibb.co/xKhjx0ny/lynce-versao.png')
     with logn:
         st.title("Tela de Login")
+        # Inputs de login
         username = st.text_input("Usuário")
         password = st.text_input("Senha", type="password")
 
         if st.button("Entrar"):
+            # Verifica o login
             if verificar_login(username, password):
-                # Preenche o session_state
+                
                 st.session_state.logged_in = True
                 st.session_state.username = username
-
-                nome, id_arquivo, nome_arquivo, idioma = carregar_dados_usuario(username)
+                st.success("Login bem-sucedido!")
+                
+                lgnpass = getloginandpasswords()
+                user = lgnpass[lgnpass['LOGIN']==username].index[0]
+                nome = lgnpass['NOME'][user] + " " + lgnpass['SOBRENOME'][user]
+                id_arquivo = lgnpass['ID ARQUIVO'][user]
+                nome_arquivo = lgnpass['ARQUIVO'][user]
+                idioma = lgnpass['IDIOMA'][user]
                 st.session_state.name = nome
                 st.session_state.id = id_arquivo
                 st.session_state.arquivo = nome_arquivo
                 st.session_state.useridioma = idioma
-
-                # Grava os cookies (login persiste após refresh)
-                cookies["logged_in"] = "true"
-                cookies["username"] = username
-                #cookies.set_expiry(days=1)  # <<< Definindo expiração de 1 dia
-                cookies.save()
-
-                st.success("Login bem-sucedido!")
-                st.switch_page('pages/1_SALDOS.py')
+                st.switch_page('pages/1_SALDOS.py')  # Atualiza para a próxima página
             else:
                 st.error("Usuário ou senha incorretos!")
 
-# === Função para checar login ativo ===
-def verificar_login_cookie_ou_session():
-    if st.session_state.get("logged_in"):
-        return True
-    elif cookies.get("logged_in") == "true":
-        username = cookies.get("username")
-        if username:
-            # Recupera dados do usuário e popula o session_state
-            st.session_state.logged_in = True
-            st.session_state.username = username
 
-            nome, id_arquivo, nome_arquivo, idioma = carregar_dados_usuario(username)
-            st.session_state.name = nome
-            st.session_state.id = id_arquivo
-            st.session_state.arquivo = nome_arquivo
-            st.session_state.useridioma = idioma
-
-            return True
-    return False
-
-# === Função de logout ===
-def logout():
-    st.session_state.logged_in = False
-    print("logout com sucesso")
-    # Limpa cookies
-    cookies["logged_in"] = ""
-    cookies["username"] = ""
-    
-    #cookies.set_expiry(0)   # 🔥 Faz o cookie expirar imediatamente
-    cookies.save()
-
-    
-    st.success("Logout realizado com sucesso!")
-    st.switch_page('LYNCE.py')
-    # Atualiza a página, levando o usuário de volta para a tela de login
-
-# === Função principal ===
+# Função principal para controlar as páginas
 def main():
-    if verificar_login_cookie_ou_session():
-        # Sidebar com informações do usuário e botão de logou
-        st.switch_page('pages/1_SALDOS.py')
+    if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+        tela_login()  # Exibe a tela de login
     else:
-        tela_login()
+        st.switch_page('pages/1_SALDOS.py')
 
-# === Executa o app ===
+# Rodar a aplicação
 if __name__ == "__main__":
     main()
