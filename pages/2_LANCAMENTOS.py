@@ -8,7 +8,7 @@ import time
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import verificar_login_cookie_ou_session, logout
+
 from TRADUTOR import traaducaoapp
 from streamlit_cookies_manager import EncryptedCookieManager
 from zoneinfo import ZoneInfo
