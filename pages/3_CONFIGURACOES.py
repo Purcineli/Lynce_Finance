@@ -7,7 +7,7 @@ from gspread.exceptions import APIError
 import time
 import plotly.express as px
 import numpy as np
-from LYNCE import verificar_login, logout
+from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
