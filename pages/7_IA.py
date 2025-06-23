@@ -6,7 +6,7 @@ from datetime import date, timedelta, datetime
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import logout
+from LYNCE import verificar_login
 from TRADUTOR import traaducaoapp
 from dateutil.relativedelta import relativedelta
 import openai
