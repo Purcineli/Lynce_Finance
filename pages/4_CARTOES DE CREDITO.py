@@ -10,7 +10,7 @@ from TRADUTOR import traaducaoapp
 import plotly.express as px
 import numpy as np
 import math
-from LYNCE import verificar_login, logout
+from LYNCE import verificar_login
 from zoneinfo import ZoneInfo
 
 
