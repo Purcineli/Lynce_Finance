@@ -6,6 +6,7 @@ from datetime import date, timedelta, datetime
 from gspread.exceptions import APIError
 import time
 import plotly.express as px
+from LYNCE import verificar_login
 import numpy as np
 import math
 
