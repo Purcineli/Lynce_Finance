@@ -304,6 +304,7 @@ if st.toggle(textos['CONCILIAR_FATURA']):
                     "ANALÍTICA",
                     fatura_data_str,
                     "",
+                    "",
                     "BRL",
                     st.session_state.name,
                     now
