@@ -139,7 +139,7 @@ tabela_filtrada = tabela_lancamentos_cartao[
 tabela_filtrada['FATURA_MES'] = tabela_filtrada['FATURA'].dt.to_period('M')
 tabela_filtrada['CARTÃO'] = tabela_filtrada['CARTÃO'] + "  /  " + tabela_filtrada['PROPRIETÁRIO']
 lista_faturas = list(tabela_lancamentos_cartao['FATURA'].dropna().unique())
-st.write(tabela_filtrada)
+#st.write(tabela_filtrada)
 @st.cache_data(ttl=300)
 def get_cartoes_bancarias(_workbook, sheet_index):
     cadastro_cartao = workbook.get_worksheet(sheet_index)
