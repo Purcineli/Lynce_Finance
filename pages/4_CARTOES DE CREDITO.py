@@ -37,8 +37,7 @@ with language:
   st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
   st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
   st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
-  if st.sidebar.button("🚪 Logout"):
-    logout()
+
   st.sidebar.divider()
 
 today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
@@ -500,7 +499,7 @@ def Alt_lançamentos_CC():
             for x in range(parcelas):
                 data_parcela = (data + relativedelta(months=x)).strftime('%d/%m/%Y')
                 data_compra = data.strftime('%d/%m/%Y')
-                data_fatura = (data2 + relativedelta(months=x)).strftime('%d/%m/%Y')
+                data_fatura = (data2.replace(day=1) + relativedelta(months=x)).strftime('%d/%m/%Y')
                 valor_parcela = round(number / parcelas, 2)
                 moeda = tabela_cards_cont.loc[
                     (tabela_cards_cont['CARTÃO'] == cart.split(" / ")[0]) &
