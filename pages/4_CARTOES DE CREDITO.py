@@ -577,7 +577,7 @@ def Alt_lançamentos_CC():
             idxbanco = None
           else:
             with subcol2:
-              data_raw = tabela_lancamentos_cartao.loc[id_selected, 'FATURA']
+              data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
               data2 = st.date_input(textos['DATATEXT'], value=pd.to_datetime(data_raw).date(),format="DD/MM/YYYY")
               
             idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
