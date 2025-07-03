@@ -619,7 +619,6 @@ def Alt_lançamentos_CC():
                 lancamento_cartao.update_acell(f'I{id_selected}', status2)
                 if analise2:
                   lancamento_cartao.update_acell(f'J{id_selected}', "ANALÍTICA")
-                lancamento_cartao.update_acell(f'K{id_selected}', data2.strftime('%d/%m/%Y'))
                 lancamento_cartao.update_acell(f'M{id_selected}', proj2)
                 lancamento_cartao.update_acell(f'N{id_selected}', "BRL")
                 lancamento_cartao.update_acell(f'O{id_selected}', st.session_state.name)
