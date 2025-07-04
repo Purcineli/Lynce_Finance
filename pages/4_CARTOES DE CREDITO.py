@@ -577,8 +577,9 @@ def Alt_lançamentos_CC():
             idxbanco = None
           else:
             with subcol2:
-              data_raw = tabela_lancamentos_cartao.loc[id_selected, 'DATA']
+              data_raw = tabela_lancamentos_cartao.loc[id_selected, 'FATURA']
               data2 = st.date_input(textos['DATATEXT'], value=pd.to_datetime(data_raw).date(),format="DD/MM/YYYY")
+              data2 = data2.replace(day=1).strftime('%d/%m/%Y')
               
             idxbanco = tabela_lancamentos_cartao.loc[id_selected, 'CARTÃO'] + " / " + tabela_lancamentos_cartao.loc[id_selected, 'PROPRIETÁRIO']
             idxbanco = cards.index(idxbanco)
@@ -609,7 +610,7 @@ def Alt_lançamentos_CC():
                 st.rerun()
 
             if Submit_edit:
-                lancamento_cartao.update_acell(f'B{id_selected}', data2.strftime('%d/%m/%Y'))
+                lancamento_cartao.update_acell(f'K{id_selected}', data2)
                 lancamento_cartao.update_acell(f'C{id_selected}', banco2.split(" / ")[0])
                 lancamento_cartao.update_acell(f'D{id_selected}', banco2.split(" / ")[1])
                 lancamento_cartao.update_acell(f'E{id_selected}', despesa2.split(" / ")[0])
