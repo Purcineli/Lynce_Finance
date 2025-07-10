@@ -328,7 +328,7 @@ if st.toggle(textos['CONCILIAR_FATURA']):
 
                 if tamanho_tabela > 2:
                     lancamento_cartao.add_rows(1)
-                lancamento_cartao.update(f'A{tamanho_tabela}:O{tamanho_tabela}', [row_cartao], raw=False)
+                lancamento_cartao.update(f'A{tamanho_tabela}:P{tamanho_tabela}', [row_cartao], raw=False)
                 sheet.add_rows(1)
                 sheet.update(f'A{tamanho_tabela_lançamentos}:O{tamanho_tabela_lançamentos}', [row_banco], raw=False)
                 time.sleep(1)
