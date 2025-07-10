@@ -175,11 +175,10 @@ colun1, colun2 = st.columns(2)
 with colun1:
   lista_cartoes_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_cartoes, default=listas_cartoes, key="1")
   numberofcard = len(lista_cartoes_selecionado)
-  st.text(str(lista_cartoes_selecionado))
 with colun2:
   lista_owners_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_owners, default=listas_owners, key="2")
   numberofowners = len(lista_owners_selecionado)
-  st.text(str(lista_owners_selecionado))
+
 
 tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
     (tabela_lancamentos_cartao['CARTÃO'].isin(lista_cartoes_selecionado))& 
