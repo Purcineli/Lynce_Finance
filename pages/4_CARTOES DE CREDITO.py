@@ -293,8 +293,8 @@ if st.toggle(textos['CONCILIAR_FATURA']):
                 row_cartao = [
                     f"=ROW(B{tamanho_tabela})",
                     data.strftime('%d/%m/%Y'),
-                    lista_cartoes_selecionado,
-                    "",#lista_owners_selecionado,
+                    "",#lista_cartoes_selecionado,
+                    lista_owners_selecionado,
                     "FATURA",
                     "CARTÃO DE CRÉDITO",
                     number,
