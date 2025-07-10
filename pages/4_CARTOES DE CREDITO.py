@@ -292,11 +292,13 @@ if st.toggle(textos['CONCILIAR_FATURA']):
 
               if pagar_fatura:
                 now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                lista_cartoes_selecionado = "".join(lista_cartoes_selecionado)
+                lista_owners_selecionado = "".join(lista_owners_selecionado)
                 row_cartao = [
                     f"=ROW(B{tamanho_tabela})",
                     data.strftime('%d/%m/%Y'),
-                    str(lista_cartoes_selecionado),
-                    str(lista_owners_selecionado),
+                    lista_cartoes_selecionado,
+                    lista_owners_selecionado,
                     "FATURA",
                     "CARTÃO DE CRÉDITO",
                     number,
