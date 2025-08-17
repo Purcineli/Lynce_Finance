@@ -277,12 +277,26 @@ else:
       .reset_index()
   )
 
+  total_mensal_all = (
+    resultado_mensal
+    .copy()
+    .assign(BANCO='TOTAL')                     # vira um "banco" chamado TOTAL
+    [['DATA', 'BANCO', 'PROPRIETÁRIO', 'ACUMULADO']]
+)
+  
+  resultado_mensal3_com_total = (
+    pd.concat([resultado_mensal3, total_mensal_all], ignore_index=True)
+    .sort_values(['PROPRIETÁRIO', 'DATA', 'BANCO'])
+    .reset_index(drop=True)
+)
+
 
   if filtro1:
     fig1 = px.pie(df_saldos_user_filtrado, names='BANCO', values='VALOR')  # Gráfico de pizza com saldos filtrados
     fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user_filtrado, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com saldos filtrados
-    fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
+    #fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3 = px.line(resultado_mensal3_com_total, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
     fig4 = px.line(resultado_mensal2, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
