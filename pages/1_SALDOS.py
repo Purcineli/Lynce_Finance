@@ -295,7 +295,7 @@ else:
     fig1 = px.pie(df_saldos_user_filtrado, names='BANCO', values='VALOR')  # Gráfico de pizza com saldos filtrados
     fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user_filtrado, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com saldos filtrados
-    #fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
+    fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3 = px.line(resultado_mensal3_com_total, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
@@ -306,6 +306,7 @@ else:
     fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com todos os dados
     fig3 = px.line(resultado_mensal4, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title=textos['SALDO ACUMULADO NO FIM DE CADA MÊSTEXT'], markers=False)
+    fig3 = px.line(resultado_mensal3_com_total, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
 
