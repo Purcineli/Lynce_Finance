@@ -179,6 +179,7 @@ with colun2:
   lista_owners_selecionado = st.multiselect(textos['SELECIONE_TEXT'], listas_owners, default=listas_owners, key="2")
   numberofowners = len(lista_owners_selecionado)
 
+
 tabela_lancamentos_cartao_filtrada = tabela_lancamentos_cartao[
     (tabela_lancamentos_cartao['CARTÃO'].isin(lista_cartoes_selecionado))& 
     (tabela_lancamentos_cartao['PROPRIETÁRIO'].isin(lista_owners_selecionado))
@@ -290,6 +291,8 @@ if st.toggle(textos['CONCILIAR_FATURA']):
 
               if pagar_fatura:
                 now = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                lista_cartoes_selecionado = "".join(lista_cartoes_selecionado)
+                lista_owners_selecionado = "".join(lista_owners_selecionado)
                 row_cartao = [
                     f"=ROW(B{tamanho_tabela})",
                     data.strftime('%d/%m/%Y'),
@@ -328,7 +331,7 @@ if st.toggle(textos['CONCILIAR_FATURA']):
 
                 if tamanho_tabela > 2:
                     lancamento_cartao.add_rows(1)
-                lancamento_cartao.update(f'A{tamanho_tabela}:O{tamanho_tabela}', [row_cartao], raw=False)
+                lancamento_cartao.update(f'A{tamanho_tabela}:P{tamanho_tabela}', [row_cartao], raw=False)
                 sheet.add_rows(1)
                 sheet.update(f'A{tamanho_tabela_lançamentos}:O{tamanho_tabela_lançamentos}', [row_banco], raw=False)
                 time.sleep(1)
