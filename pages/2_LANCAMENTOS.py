@@ -28,7 +28,7 @@ if not cookies.ready():
 today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
 
 # Create sidebar navigation and get translated texts
-textos = create_sidebar_navigation()
+textos, _ = create_sidebar_navigation()
 
 # Welcome section
 bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')

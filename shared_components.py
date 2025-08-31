@@ -30,7 +30,7 @@ def create_sidebar_navigation():
     
     st.sidebar.divider()
     
-    return textos
+    return textos, language_of_page
 
 def logout():
     """
