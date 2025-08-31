@@ -231,6 +231,7 @@ else:
   lançamentos2['ACUMULADO'] = lançamentos2.groupby('PROPRIETÁRIO')['VALOR'].cumsum()
   lançamentos2['ACUMULADO'] = lançamentos2['ACUMULADO'].round(2)
   lançamentos['ACUMULADO'] = lançamentos.groupby(['BANCO', 'PROPRIETÁRIO'])['VALOR'].cumsum()
+  
   lançamentos = lançamentos[['DATA','BANCO','PROPRIETÁRIO','ACUMULADO']]
   lançamentos['ACUMULADO'] = lançamentos['ACUMULADO'].round(2)
   lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'])
@@ -283,18 +284,37 @@ else:
     fig1 = px.pie(df_saldos_user_filtrado, names='BANCO', values='VALOR')  # Gráfico de pizza com saldos filtrados
     fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user_filtrado, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com saldos filtrados
+    
+    # Calcular total para fig3
+    total_mensal3 = resultado_mensal3.groupby('DATA')['ACUMULADO'].sum().reset_index()
+    total_mensal3['BANCO'] = 'TOTAL'
+    
     fig3 = px.line(resultado_mensal3, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
+    
+    # Adicionar linha de total
+    fig3.add_scatter(x=total_mensal3['DATA'], y=total_mensal3['ACUMULADO'], 
+                     mode='lines', name='TOTAL', line=dict(color='white', width=3, dash='dash'))
+    
     fig4 = px.line(resultado_mensal2, x="DATA", y="ACUMULADO", color='BANCO', title='Saldo acumulado no fim de cada mês', markers=False)
     fig4.update_xaxes(tickformat="%m/%Y")
   else:
     fig1 = px.pie(df_saldos_user, names='PROPRIETÁRIO', values='VALOR')  # Gráfico de pizza com todos os dados
     fig1.update_traces(textposition='inside', textinfo='percent+label')
     fig2 = px.bar(df_saldos_user, x='BANCO', y='VALOR', color='PROPRIETÁRIO', text_auto=True)  # Gráfico de barras com todos os dados
+    
+    # Calcular total para fig3
+    total_mensal4 = resultado_mensal4.groupby('DATA')['ACUMULADO'].sum().reset_index()
+    total_mensal4['PROPRIETÁRIO'] = 'TOTAL'
+    
     fig3 = px.line(resultado_mensal4, x="DATA", y="ACUMULADO", color='PROPRIETÁRIO', title=textos['SALDO ACUMULADO NO FIM DE CADA MÊSTEXT'], markers=False)
     fig3.update_traces(connectgaps=True)
     fig3.update_xaxes(tickformat="%m/%Y")
+    
+    # Adicionar linha de total
+    fig3.add_scatter(x=total_mensal4['DATA'], y=total_mensal4['ACUMULADO'], 
+                     mode='lines', name='TOTAL', line=dict(color='white', width=3, dash='dash'))
 
   col11, col12, col13 = st.columns(3)  # Layout de três colunas para exibir tabelas e gráficos
 
