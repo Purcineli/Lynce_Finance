@@ -12,6 +12,7 @@ import numpy as np
 import math
 from LYNCE import verificar_login
 from zoneinfo import ZoneInfo
+from shared_components import create_sidebar_navigation
 
 
 st.logo('https://i.postimg.cc/yxJnfSLs/logo-lynce.png', size='large' )
@@ -19,28 +20,13 @@ if 'logged_in' not in st.session_state or not st.session_state.logged_in:
     st.markdown('Você precisa fazer <a href="https://lyncefinanceiro.streamlit.app/" target="_self">login</a> primeiro.', unsafe_allow_html=True)
     st.switch_page('LYNCE.py')
 
-idiomado_do_user = st.session_state.useridioma
-
-
-idiomadasdisponiveis = ['PORTUGUÊS', 'ENGLISH', 'РУССКИЙ']
-idxidioma = idiomadasdisponiveis.index(idiomado_do_user)
-# Agora é seguro acessar os valores da sessão
-bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
-with language:
-  language_of_page = st.selectbox("", options=idiomadasdisponiveis, index=idxidioma)
-
-  textos = traaducaoapp(language_of_page)
-  st.session_state.useridioma = language_of_page
-  st.sidebar.page_link("pages/1_SALDOS.py", label=textos['SALDOS'], icon=":material/account_balance:")
-  st.sidebar.page_link("pages/2_LANCAMENTOS.py", label=textos['LANÇAMENTOS'], icon=":material/list:")
-  st.sidebar.page_link("pages/3_CONFIGURACOES.py", label=textos['CONFIGURAÇÕES'], icon=":material/settings:")
-  st.sidebar.page_link("pages/4_CARTOES DE CREDITO.py", label=textos['CARTÕES_DE_CRÉDITO'], icon=":material/credit_card:")
-  st.sidebar.page_link("pages/5_RECEITAS X DESPESAS.py", label=textos['RECEITAS X DESPESAS'], icon=":material/finance:")
-  st.sidebar.page_link("pages/6_VERSAO.py", label=textos['VERSÃO'], icon=":material/info:")
-
-  st.sidebar.divider()
-
 today = datetime.now(ZoneInfo("America/Sao_Paulo")).date()
+
+# Create sidebar navigation and get translated texts
+textos = create_sidebar_navigation()
+
+# Welcome section
+bemvido, x, language = st.columns([0.3,0.5,0.2], vertical_alignment='bottom')
 with bemvido:
   st.write(f"{textos['BEMVINDO']} {st.session_state.name}!")
   
@@ -167,7 +153,7 @@ faturas_cartao = faturas_cartao.dropna(axis=1, how='all')
 faturas_cartao = faturas_cartao.fillna(0)
 st.write(faturas_cartao)
 VALORTOTAL = f"{faturas_cartao.values.sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-st.markdown(f'{textos['VALOR_TOTAL_À_PAGAR']} R$: {VALORTOTAL}')
+st.markdown(f"{textos['VALOR_TOTAL_À_PAGAR']} R$: {VALORTOTAL}")
 #st.header(f"RECEITAS: R$ {lançamentos_conciliados_receitas['VALOR'].sum().round(2):,.2f}".replace(",", "X").replace(".", ",").replace("X", "."), divider="blue")
 listas_cartoes = list(tabela_cadastro_cartao_ATIVOS['CARTÃO'].dropna().unique())
 listas_owners = list(tabela_cadastro_cartao_ATIVOS['PROPRIETÁRIO'].dropna().unique())
