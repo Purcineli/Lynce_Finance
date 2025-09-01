@@ -85,7 +85,7 @@ lançamentos = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=
 lançamentos = lançamentos.reset_index()
 lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
 
-
+st.write(len(lançamentos))
 sheetia = workbook.get_worksheet(6)
 
 # Data preprocessing for Pygwalker
