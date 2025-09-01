@@ -92,6 +92,12 @@ if len(lançamentos) > 0:
     # Convert data types for better analysis
     st.write(len(lançamentos))
     lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
+    lançamentos['VALOR'] = (
+    lançamentos['VALOR']
+    .astype(str)                         # make sure it's string
+    .str.replace('.', '', regex=False)   # remove thousands separator
+    .str.replace(',', '.', regex=False)  # replace decimal comma with dot
+)
     st.write(len(lançamentos))
     lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
     
