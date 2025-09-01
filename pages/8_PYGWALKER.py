@@ -188,7 +188,7 @@ if len(lançamentos) > 0:
     """)
     
     # Initialize Pygwalker
-    @st.cache_data
+    @st.cache_data(ttl=120)
     def load_data():
         return lançamentos_filtered
     
