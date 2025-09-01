@@ -85,19 +85,21 @@ lançamentos = pd.concat([lançamentos_CONTAS, tabela_lancamentos_cartao], axis=
 lançamentos = lançamentos.reset_index()
 lançamentos = lançamentos[['DATA','PROPRIETÁRIO','LANÇAMENTO','CATEGORIA','VALOR','DESCRIÇÃO','ANALISE','PROJETO/EVENTO', 'MOEDA', 'CONCILIADO']]
 
-st.write(len(lançamentos))
 sheetia = workbook.get_worksheet(6)
 
 # Data preprocessing for Pygwalker
 if len(lançamentos) > 0:
     # Convert data types for better analysis
+    st.write(len(lançamentos))
     lançamentos['DATA'] = pd.to_datetime(lançamentos['DATA'], dayfirst=True, errors='coerce')
+    st.write(len(lançamentos))
     lançamentos['VALOR'] = pd.to_numeric(lançamentos['VALOR'], errors='coerce')
     
     # Clean and prepare data
     lançamentos_clean = lançamentos.copy()
     lançamentos_clean = lançamentos_clean.dropna(subset=['VALOR'])
-    
+    st.write(len(lançamentos))
+    st.write(len(lançamentos_clean))
     # Add some useful derived columns
     lançamentos_clean['MÊS'] = lançamentos_clean['DATA'].dt.month
     lançamentos_clean['ANO'] = lançamentos_clean['DATA'].dt.year
