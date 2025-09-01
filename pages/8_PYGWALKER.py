@@ -109,6 +109,7 @@ if len(lançamentos) > 0:
     # Add some useful derived columns
     lançamentos_clean['MÊS'] = lançamentos_clean['DATA'].dt.month
     lançamentos_clean['ANO'] = lançamentos_clean['DATA'].dt.year
+    lançamentos_clean['ANO'] = lançamentos_clean['ANO'].astype(str)
     lançamentos_clean['DIA_SEMANA'] = lançamentos_clean['DATA'].dt.day_name()
     lançamentos_clean['TIPO'] = lançamentos_clean['ANALISE'].map({'RECEITAS': 'Receita', 'DESPESAS': 'Despesa'})
     
@@ -171,7 +172,7 @@ if len(lançamentos) > 0:
         st.metric("Total Despesas", f"R$ {total_despesas:,.2f}")
     
     with col4:
-        saldo = total_receitas - total_despesas
+        saldo = total_receitas + total_despesas
         st.metric("Saldo", f"R$ {saldo:,.2f}", delta=f"{saldo:,.2f}")
     
     st.markdown("---")
